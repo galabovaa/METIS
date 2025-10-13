@@ -31,7 +31,7 @@
 #include <proto.h>
 
 
-#if defined(COMPILER_MSC)
+#if defined(COMPILER_MSC) && (_MSC_VER < 1900)
 #if defined(rint)
   #undef rint
 #endif

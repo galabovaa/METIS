@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.22)
 project(METIS)
 
 set(GKLIB_PATH "${CMAKE_SOURCE_DIR}/GKlib" CACHE PATH "path to GKlib")
 set(SHARED FALSE CACHE BOOL "build a shared library")
 
-if(MSVC)
+if(0)
   set(METIS_INSTALL FALSE)
 else()
   set(METIS_INSTALL TRUE)
@@ -24,4 +24,4 @@ include_directories(include)
 # Recursively look for CMakeLists.txt in subdirs.
 add_subdirectory("include")
 add_subdirectory("libmetis")
-add_subdirectory("programs")
+# add_subdirectory("programs")

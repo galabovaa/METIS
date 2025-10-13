@@ -36,6 +36,9 @@
 #ifndef _MSC_INTTYPES_H_ // [
 #define _MSC_INTTYPES_H_
 
+#include <inttypes.h>
+#elif 0
+
 #if _MSC_VER > 1000
 #pragma once
 #endif

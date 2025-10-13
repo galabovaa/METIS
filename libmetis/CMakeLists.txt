@@ -4,6 +4,8 @@ include_directories(.)
 file(GLOB metis_sources *.c)
 # Build libmetis.
 add_library(metis ${METIS_LIBRARY_TYPE} ${GKlib_sources} ${metis_sources})
+set_target_properties(metis PROPERTIES OUTPUT_NAME "${BINARY_NAME}")
+
 if(UNIX)
   target_link_libraries(metis m)
 endif()
@@ -15,8 +17,9 @@ else()
 endif()
 
 if(METIS_INSTALL)
-  install(TARGETS metis
+  install(TARGETS metis EXPORT metisTargets
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION ${RT_DEST}
-    ARCHIVE DESTINATION lib)
+    ARCHIVE DESTINATION lib
+    INCLUDES DESTINATION include)
 endif()
