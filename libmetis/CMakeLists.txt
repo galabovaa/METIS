@@ -8,9 +8,15 @@ if(UNIX)
   target_link_libraries(metis m)
 endif()
 
+if(WIN32)
+  set(RT_DEST bin)
+else()
+  set(RT_DEST lib)
+endif()
+
 if(METIS_INSTALL)
   install(TARGETS metis
     LIBRARY DESTINATION lib
-    RUNTIME DESTINATION lib
+    RUNTIME DESTINATION ${RT_DEST}
     ARCHIVE DESTINATION lib)
 endif()
