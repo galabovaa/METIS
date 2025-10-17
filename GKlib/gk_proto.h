@@ -263,6 +263,7 @@ GK_MKRANDOM_PROTO(gk_z,   size_t, ssize_t)
 void gk_randinit(uint64_t);
 uint64_t gk_randint64(unsigned* state);
 uint32_t gk_randint32(unsigned* state);
+int my_rand_r(unsigned *state);
 
 
 /*-------------------------------------------------------------

@@ -24,6 +24,17 @@ GK_MKRANDOM(gk_z,   size_t, ssize_t)
 
 
 /*************************************************************************/
+/*! Define function rand_r, which may not exist on certain machines */
+/*************************************************************************/
+int my_rand_r(unsigned *state) {
+  int32_t result = ((*state * 1103515245) + 12345) & 0x7fffffff;
+  *state = result;
+  return (int)result;
+}
+
+
+
+/*************************************************************************/
 /*! GKlib's built in random number generator for portability across 
     different architectures */
 /*************************************************************************/
@@ -117,8 +128,8 @@ uint64_t gk_randint64(unsigned* state)
 
   return x & 0x7FFFFFFFFFFFFFFF;
 #else
-uint64_t piece_1 = ((uint64_t) rand_r(state)) << 32;
-uint64_t piece_2 = ((uint64_t) rand_r(state));
+uint64_t piece_1 = ((uint64_t) my_rand_r(state)) << 32;
+uint64_t piece_2 = ((uint64_t) my_rand_r(state));
   return (uint64_t)(piece_1 | piece_2);
 #endif
 }
@@ -129,7 +140,7 @@ uint32_t gk_randint32(unsigned* state)
 #ifdef USE_GKRAND
   return (uint32_t)(gk_randint64() & 0x7FFFFFFF);
 #else
-  return (uint32_t)rand_r(state);
+  return (uint32_t)my_rand_r(state);
 #endif
 }
 
