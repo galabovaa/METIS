@@ -27,9 +27,10 @@ GK_MKRANDOM(gk_z,   size_t, ssize_t)
 /*! Define function rand_r, which may not exist on certain machines */
 /*************************************************************************/
 int my_rand_r(unsigned *state) {
-  int32_t result = ((*state * 1103515245) + 12345) & 0x7fffffff;
+  // Linear congruential generator, with values from wikipedia
+  int result = ((*state * 1103515245) + 12345) & 0x7fffffff;
   *state = result;
-  return (int)result;
+  return result;
 }
 
 

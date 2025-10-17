@@ -10,6 +10,7 @@
 #ifndef _METIS_H_
 #define _METIS_H_ 
 
+// Communicate to user that Metis API has one extra argument
 #define METIS_THREAD_SAFE
 
 /****************************************************************************
