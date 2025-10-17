@@ -21,32 +21,32 @@
 
 
 FRENAME(
-    METIS_PartGraphRecursive, 
+    METIS_PartGraphRecursive_ts, 
     (idx_t *nvtxs, idx_t *ncon, idx_t *xadj, idx_t *adjncy, idx_t *vwgt, 
      idx_t *vsize, idx_t *adjwgt, idx_t *nparts, real_t *tpwgts, 
      real_t *ubvec, idx_t *options, idx_t *edgecut, idx_t *part, unsigned* rng_state),
     (nvtxs, ncon, xadj, adjncy, vwgt, 
      vsize, adjwgt, nparts, tpwgts, 
      ubvec, options, edgecut, part, rng_state),
-    METIS_PARTGRAPHRECURSIVE, 
-    metis_partgraphrecursive, 
-    metis_partgraphrecursive_, 
-    metis_partgraphrecursive__
+    METIS_PARTGRAPHRECURSIVE_TS, 
+    metis_partgraphrecursive_ts, 
+    metis_partgraphrecursive_ts_, 
+    metis_partgraphrecursive_ts__
 ) 
     
 
 FRENAME(
-    METIS_PartGraphKway,
+    METIS_PartGraphKway_ts,
     (idx_t *nvtxs, idx_t *ncon, idx_t *xadj, idx_t *adjncy, idx_t *vwgt, 
      idx_t *vsize, idx_t *adjwgt, idx_t *nparts, real_t *tpwgts, 
      real_t *ubvec, idx_t *options, idx_t *edgecut, idx_t *part, unsigned* rng_state),
     (nvtxs, ncon, xadj, adjncy, vwgt, 
      vsize, adjwgt, nparts, tpwgts, 
      ubvec, options, edgecut, part, rng_state),
-    METIS_PARTGRAPHKWAY,
-    metis_partgraphkway,
-    metis_partgraphkway_,
-    metis_partgraphkway__
+    METIS_PARTGRAPHKWAY_TS,
+    metis_partgraphkway_ts,
+    metis_partgraphkway_ts_,
+    metis_partgraphkway_ts__
 )
 
 FRENAME(
@@ -74,40 +74,40 @@ FRENAME(
   
 
 FRENAME(
-  METIS_PartMeshNodal,
+  METIS_PartMeshNodal_ts,
   (idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, idx_t *vwgt, idx_t *vsize, 
    idx_t *nparts, real_t *tpwgts, idx_t *options, idx_t *objval, idx_t *epart, 
    idx_t *npart, unsigned* rng_state),
   (ne, nn, eptr, eind, vwgt, vsize, nparts, tpwgts, options, objval, epart, npart, rng_state),
-  METIS_PARTMESHNODAL,
-  metis_partmeshnodal,
-  metis_partmeshnodal_,
-  metis_partmeshnodal__
+  METIS_PARTMESHNODAL_TS,
+  metis_partmeshnodal_ts,
+  metis_partmeshnodal_ts_,
+  metis_partmeshnodal_ts__
 )
 
 
 FRENAME(
-  METIS_PartMeshDual,
+  METIS_PartMeshDual_ts,
   (idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, idx_t *vwgt, idx_t *vsize, 
    idx_t *ncommon, idx_t *nparts, real_t *tpwgts, idx_t *options, idx_t *objval, 
    idx_t *epart, idx_t *npart, unsigned* rng_state),
   (ne, nn, eptr, eind, vwgt, vsize, ncommon, nparts, tpwgts, options, objval, epart, npart, rng_state),
-  METIS_PARTMESHDUAL,
-  metis_partmeshdual,
-  metis_partmeshdual_,
-  metis_partmeshdual__
+  METIS_PARTMESHDUAL_TS,
+  metis_partmeshdual_ts,
+  metis_partmeshdual_ts_,
+  metis_partmeshdual_ts__
 )
 
 
 FRENAME(
-  METIS_NodeND,
+  METIS_NodeND_ts,
   (idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt, idx_t *options, idx_t *perm, 
    idx_t *iperm, unsigned* rng_state),
   (nvtxs, xadj, adjncy, vwgt, options, perm, iperm, rng_state),
-  METIS_NODEND,
-  metis_nodend,
-  metis_nodend_,
-  metis_nodend__
+  METIS_NODEND_TS,
+  metis_nodend_ts,
+  metis_nodend_ts_,
+  metis_nodend_ts__
 )
 
 

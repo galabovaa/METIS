@@ -19,7 +19,7 @@
 * This function partitions a finite element mesh by partitioning its nodal
 * graph using KMETIS and then assigning elements in a load balanced fashion.
 **************************************************************************/
-int METIS_PartMeshNodal(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
+int METIS_PartMeshNodal_ts(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
           idx_t *vwgt, idx_t *vsize, idx_t *nparts, real_t *tpwgts, 
           idx_t *options, idx_t *objval, idx_t *epart, idx_t *npart, unsigned* rng_state)
 {
@@ -53,10 +53,10 @@ int METIS_PartMeshNodal(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
 
   /* partition the graph */
   if (ptype == METIS_PTYPE_KWAY) 
-    rstatus = METIS_PartGraphKway(nn, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
+    rstatus = METIS_PartGraphKway_ts(nn, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
                   nparts, tpwgts, NULL, options, objval, npart, rng_state);
   else 
-    rstatus = METIS_PartGraphRecursive(nn, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
+    rstatus = METIS_PartGraphRecursive_ts(nn, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
                   nparts, tpwgts, NULL, options, objval, npart, rng_state);
 
   if (rstatus != METIS_OK)
@@ -87,7 +87,7 @@ SIGTHROW:
 * This function partitions a finite element mesh by partitioning its dual
 * graph using KMETIS and then assigning nodes in a load balanced fashion.
 **************************************************************************/
-int METIS_PartMeshDual(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
+int METIS_PartMeshDual_ts(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
           idx_t *vwgt, idx_t *vsize, idx_t *ncommon, idx_t *nparts, 
           real_t *tpwgts, idx_t *options, idx_t *objval, idx_t *epart, 
           idx_t *npart, unsigned* rng_state) 
@@ -123,10 +123,10 @@ int METIS_PartMeshDual(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
 
   /* partition the graph */
   if (ptype == METIS_PTYPE_KWAY) 
-    rstatus = METIS_PartGraphKway(ne, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
+    rstatus = METIS_PartGraphKway_ts(ne, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
                   nparts, tpwgts, NULL, options, objval, epart, rng_state);
   else 
-    rstatus = METIS_PartGraphRecursive(ne, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
+    rstatus = METIS_PartGraphRecursive_ts(ne, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
                   nparts, tpwgts, NULL, options, objval, epart,rng_state);
 
   if (rstatus != METIS_OK)
