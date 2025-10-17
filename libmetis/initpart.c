@@ -17,7 +17,7 @@
 /*! This function computes the initial bisection of the coarsest graph */
 /*************************************************************************/
 void Init2WayPartition(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, 
-         idx_t niparts) 
+         idx_t niparts,unsigned* rng_state) 
 {
   mdbglvl_et dbglvl;
 
@@ -32,22 +32,22 @@ void Init2WayPartition(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
   switch (ctrl->iptype) {
     case METIS_IPTYPE_RANDOM:
       if (graph->ncon == 1)
-        RandomBisection(ctrl, graph, ntpwgts, niparts);
+        RandomBisection(ctrl, graph, ntpwgts, niparts,rng_state);
       else
-        McRandomBisection(ctrl, graph, ntpwgts, niparts);
+        McRandomBisection(ctrl, graph, ntpwgts, niparts,rng_state);
       break;
 
     case METIS_IPTYPE_GROW:
       if (graph->nedges == 0)
         if (graph->ncon == 1)
-          RandomBisection(ctrl, graph, ntpwgts, niparts);
+          RandomBisection(ctrl, graph, ntpwgts, niparts,rng_state);
         else
-          McRandomBisection(ctrl, graph, ntpwgts, niparts);
+          McRandomBisection(ctrl, graph, ntpwgts, niparts,rng_state);
       else
         if (graph->ncon == 1)
-          GrowBisection(ctrl, graph, ntpwgts, niparts);
+          GrowBisection(ctrl, graph, ntpwgts, niparts,rng_state);
         else
-          McGrowBisection(ctrl, graph, ntpwgts, niparts);
+          McGrowBisection(ctrl, graph, ntpwgts, niparts,rng_state);
       break;
 
     default:
@@ -64,7 +64,7 @@ void Init2WayPartition(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 /*************************************************************************/
 /*! This function computes the initial separator of the coarsest graph */
 /*************************************************************************/
-void InitSeparator(ctrl_t *ctrl, graph_t *graph, idx_t niparts) 
+void InitSeparator(ctrl_t *ctrl, graph_t *graph, idx_t niparts,unsigned* rng_state) 
 {
   real_t ntpwgts[2] = {0.5, 0.5};
   mdbglvl_et dbglvl;
@@ -81,16 +81,16 @@ void InitSeparator(ctrl_t *ctrl, graph_t *graph, idx_t niparts)
   switch (ctrl->iptype) {
     case METIS_IPTYPE_EDGE:
       if (graph->nedges == 0)
-        RandomBisection(ctrl, graph, ntpwgts, niparts);
+        RandomBisection(ctrl, graph, ntpwgts, niparts,rng_state);
       else
-        GrowBisection(ctrl, graph, ntpwgts, niparts);
+        GrowBisection(ctrl, graph, ntpwgts, niparts,rng_state);
 
       Compute2WayPartitionParams(ctrl, graph);
-      ConstructSeparator(ctrl, graph);
+      ConstructSeparator(ctrl, graph, rng_state);
       break;
 
     case METIS_IPTYPE_NODE:
-      GrowBisectionNode(ctrl, graph, ntpwgts, niparts);
+      GrowBisectionNode(ctrl, graph, ntpwgts, niparts,rng_state);
       break;
 
     default:
@@ -112,7 +112,7 @@ void InitSeparator(ctrl_t *ctrl, graph_t *graph, idx_t niparts)
 */
 /*************************************************************************/
 void RandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, 
-         idx_t niparts)
+         idx_t niparts, unsigned* rng_state)
 {
   idx_t i, ii, j, k, nvtxs, pwgts[2], zeromaxpwgt, from, me, 
         bestcut=0, icut, mincut, inbfs;
@@ -139,7 +139,7 @@ void RandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     iset(nvtxs, 1, where);
 
     if (inbfs > 0) {
-      irandArrayPermute(nvtxs, perm, nvtxs/2, 1);
+      irandArrayPermute(nvtxs, perm, nvtxs/2, 1, rng_state);
       pwgts[1] = graph->tvwgt[0];
       pwgts[0] = 0;
 
@@ -159,10 +159,10 @@ void RandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     Compute2WayPartitionParams(ctrl, graph);
     /* printf("IPART: %3"PRIDX" [%5"PRIDX" %5"PRIDX"] [%5"PRIDX" %5"PRIDX"] %5"PRIDX"\n", graph->nvtxs, pwgts[0], pwgts[1], graph->pwgts[0], graph->pwgts[1], graph->mincut); */
 
-    Balance2Way(ctrl, graph, ntpwgts);
+    Balance2Way(ctrl, graph, ntpwgts, rng_state);
     /* printf("BPART: [%5"PRIDX" %5"PRIDX"] %5"PRIDX"\n", graph->pwgts[0], graph->pwgts[1], graph->mincut); */
 
-    FM_2WayRefine(ctrl, graph, ntpwgts, 4);
+    FM_2WayRefine(ctrl, graph, ntpwgts, 4, rng_state);
     /* printf("RPART: [%5"PRIDX" %5"PRIDX"] %5"PRIDX"\n", graph->pwgts[0], graph->pwgts[1], graph->mincut); */
 
     if (inbfs==0 || bestcut > graph->mincut) {
@@ -187,7 +187,7 @@ void RandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 */
 /*************************************************************************/
 void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, 
-         idx_t niparts)
+         idx_t niparts, unsigned* rng_state)
 {
   idx_t i, j, k, nvtxs, drain, nleft, first, last, 
         pwgts[2], oneminpwgt, onemaxpwgt, 
@@ -222,7 +222,7 @@ void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     pwgts[0] = 0;
 
 
-    queue[0] = irandInRange(nvtxs);
+    queue[0] = irandInRange(nvtxs,rng_state);
     touched[queue[0]] = 1;
     first = 0; 
     last  = 1;
@@ -235,7 +235,7 @@ void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
         if (nleft == 0 || drain)
           break;
 
-        k = irandInRange(nleft);
+        k = irandInRange(nleft,rng_state);
         for (i=0; i<nvtxs; i++) {
           if (touched[i] == 0) {
             if (k == 0)
@@ -276,9 +276,9 @@ void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 
     /* Check to see if we hit any bad limiting cases */
     if (pwgts[1] == 0) 
-      where[irandInRange(nvtxs)] = 1;
+      where[irandInRange(nvtxs,rng_state)] = 1;
     if (pwgts[0] == 0) 
-      where[irandInRange(nvtxs)] = 0;
+      where[irandInRange(nvtxs,rng_state)] = 0;
 
     /*************************************************************
     * Do some partition refinement 
@@ -289,13 +289,13 @@ void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
         graph->nvtxs, pwgts[0], pwgts[1], graph->pwgts[0], graph->pwgts[1], graph->mincut); 
     */
 
-    Balance2Way(ctrl, graph, ntpwgts);
+    Balance2Way(ctrl, graph, ntpwgts,rng_state);
     /*
     printf("BPART: [%5"PRIDX" %5"PRIDX"] %5"PRIDX"\n", graph->pwgts[0],
         graph->pwgts[1], graph->mincut); 
     */
 
-    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter);
+    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter,rng_state);
     /*
     printf("RPART: [%5"PRIDX" %5"PRIDX"] %5"PRIDX"\n", graph->pwgts[0], 
         graph->pwgts[1], graph->mincut);
@@ -323,7 +323,7 @@ void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 */
 /**************************************************************************/
 void McRandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, 
-         idx_t niparts)
+         idx_t niparts, unsigned* rng_state)
 {
   idx_t i, ii, j, k, nvtxs, ncon, from, bestcut=0, mincut, inbfs, qnum;
   idx_t *bestwhere, *where, *perm, *counts;
@@ -343,7 +343,7 @@ void McRandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
   counts    = iwspacemalloc(ctrl, ncon);
 
   for (inbfs=0; inbfs<2*niparts; inbfs++) {
-    irandArrayPermute(nvtxs, perm, nvtxs/2, 1);
+    irandArrayPermute(nvtxs, perm, nvtxs/2, 1, rng_state);
     iset(ncon, 0, counts);
 
     /* partition by spliting the queues randomly */
@@ -355,11 +355,11 @@ void McRandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 
     Compute2WayPartitionParams(ctrl, graph);
 
-    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter);
-    Balance2Way(ctrl, graph, ntpwgts);
-    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter);
-    Balance2Way(ctrl, graph, ntpwgts);
-    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter);
+    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter,rng_state);
+    Balance2Way(ctrl, graph, ntpwgts,rng_state);
+    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter,rng_state);
+    Balance2Way(ctrl, graph, ntpwgts,rng_state);
+    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter,rng_state);
 
     if (inbfs == 0 || bestcut >= graph->mincut) {
       bestcut = graph->mincut;
@@ -383,7 +383,7 @@ void McRandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 */
 /*************************************************************************/
 void McGrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, 
-         idx_t niparts)
+         idx_t niparts, unsigned* rng_state)
 {
   idx_t i, j, k, nvtxs, ncon, from, bestcut=0, mincut, inbfs;
   idx_t *bestwhere, *where;
@@ -399,14 +399,14 @@ void McGrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 
   for (inbfs=0; inbfs<2*niparts; inbfs++) {
     iset(nvtxs, 1, where);
-    where[irandInRange(nvtxs)] = 0;
+    where[irandInRange(nvtxs,rng_state)] = 0;
 
     Compute2WayPartitionParams(ctrl, graph);
 
-    Balance2Way(ctrl, graph, ntpwgts);
-    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter);
-    Balance2Way(ctrl, graph, ntpwgts);
-    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter);
+    Balance2Way(ctrl, graph, ntpwgts,rng_state);
+    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter,rng_state);
+    Balance2Way(ctrl, graph, ntpwgts,rng_state);
+    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter,rng_state);
 
     if (inbfs == 0 || bestcut >= graph->mincut) {
       bestcut = graph->mincut;
@@ -431,7 +431,7 @@ void McGrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 */
 /**************************************************************************/
 void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, 
-         idx_t niparts)
+         idx_t niparts, unsigned* rng_state)
 {
   idx_t i, j, k, nvtxs, drain, nleft, first, last, pwgts[2], oneminpwgt, 
         onemaxpwgt, from, me, bestcut=0, icut, mincut, inbfs;
@@ -473,7 +473,7 @@ void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     pwgts[1] = graph->tvwgt[0];
     pwgts[0] = 0;
 
-    queue[0] = irandInRange(nvtxs);
+    queue[0] = irandInRange(nvtxs,rng_state);
     touched[queue[0]] = 1;
     first = 0; last = 1;
     nleft = nvtxs-1;
@@ -485,7 +485,7 @@ void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
         if (nleft == 0 || drain)
           break;
   
-        k = irandInRange(nleft);
+        k = irandInRange(nleft,rng_state);
         for (i=0; i<nvtxs; i++) { /* select the kth untouched vertex */
           if (touched[i] == 0) {
             if (k == 0)
@@ -528,8 +528,8 @@ void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     * Do some partition refinement 
     **************************************************************/
     Compute2WayPartitionParams(ctrl, graph);
-    Balance2Way(ctrl, graph, ntpwgts);
-    FM_2WayRefine(ctrl, graph, ntpwgts, 4);
+    Balance2Way(ctrl, graph, ntpwgts,rng_state);
+    FM_2WayRefine(ctrl, graph, ntpwgts, 4,rng_state);
 
     /* Construct and refine the vertex separator */
     for (i=0; i<graph->nbnd; i++) {
@@ -539,8 +539,8 @@ void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     }
 
     Compute2WayNodePartitionParams(ctrl, graph); 
-    FM_2WayNodeRefine2Sided(ctrl, graph, 1);
-    FM_2WayNodeRefine1Sided(ctrl, graph, 4);
+    FM_2WayNodeRefine2Sided(ctrl, graph, 1, rng_state);
+    FM_2WayNodeRefine1Sided(ctrl, graph, 4, rng_state);
 
     /*
     printf("ISep: [%"PRIDX" %"PRIDX" %"PRIDX" %"PRIDX"] %"PRIDX"\n", 
@@ -568,7 +568,7 @@ void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 */
 /**************************************************************************/
 void GrowBisectionNode2(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, 
-         idx_t niparts)
+         idx_t niparts, unsigned* rng_state)
 {
   idx_t i, j, k, nvtxs, bestcut=0, mincut, inbfs;
   idx_t *xadj, *where, *bndind, *bestwhere;
@@ -595,11 +595,11 @@ void GrowBisectionNode2(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
   for (inbfs=0; inbfs<niparts; inbfs++) {
     iset(nvtxs, 1, where);
     if (inbfs > 0)
-      where[irandInRange(nvtxs)] = 0;
+      where[irandInRange(nvtxs,rng_state)] = 0;
 
     Compute2WayPartitionParams(ctrl, graph);
-    General2WayBalance(ctrl, graph, ntpwgts);
-    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter);
+    General2WayBalance(ctrl, graph, ntpwgts,rng_state);
+    FM_2WayRefine(ctrl, graph, ntpwgts, ctrl->niter,rng_state);
 
     /* Construct and refine the vertex separator */
     for (i=0; i<graph->nbnd; i++) {
@@ -609,7 +609,7 @@ void GrowBisectionNode2(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     }
 
     Compute2WayNodePartitionParams(ctrl, graph); 
-    FM_2WayNodeRefine2Sided(ctrl, graph, 4);
+    FM_2WayNodeRefine2Sided(ctrl, graph, 4, rng_state);
 
     /*
     printf("ISep: [%"PRIDX" %"PRIDX" %"PRIDX" %"PRIDX"] %"PRIDX"\n", 

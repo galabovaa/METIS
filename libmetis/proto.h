@@ -18,10 +18,10 @@
 /* auxapi.c */
 
 /* balance.c */
-void Balance2Way(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts);
-void Bnd2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts);
-void General2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts);
-void McGeneral2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts);
+void Balance2Way(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, unsigned* rng_state);
+void Bnd2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,unsigned* rng_state);
+void General2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,unsigned* rng_state);
+void McGeneral2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,unsigned* rng_state);
 
 
 /* bucketsort.c */
@@ -37,10 +37,10 @@ graph_t *FixGraph(graph_t *graph);
 
 
 /* coarsen.c */
-graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph);
-graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels);
-idx_t Match_RM(ctrl_t *ctrl, graph_t *graph);
-idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph);
+graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state);
+graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels, unsigned* rng_state);
+idx_t Match_RM(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state);
+idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state);
 idx_t Match_2Hop(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
           idx_t cnvtxs, size_t nunmatched);
 idx_t Match_2HopAny(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
@@ -95,9 +95,9 @@ void CheckKWayVolPartitionParams(ctrl_t *ctrl, graph_t *graph);
 
 
 /* fm.c */
-void FM_2WayRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter);
-void FM_2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter);
-void FM_Mc2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter);
+void FM_2WayRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter, unsigned* rng_state);
+void FM_2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter, unsigned* rng_state);
+void FM_Mc2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter, unsigned* rng_state);
 void SelectQueue(graph_t *graph, real_t *pijbm, real_t *ubfactors, rpq_t **queues, 
          idx_t *from, idx_t *cnum);
 void Print2WayRefineStats(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, 
@@ -129,32 +129,32 @@ void FreeGraph(graph_t **graph);
 
 
 /* initpart.c */
-void Init2WayPartition(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts);
-void InitSeparator(ctrl_t *ctrl, graph_t *graph, idx_t niparts);
-void RandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts);
-void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts);
-void McRandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts);
-void McGrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts);
-void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts);
-void GrowBisectionNode2(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts);
+void Init2WayPartition(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts, unsigned* rng_state);
+void InitSeparator(ctrl_t *ctrl, graph_t *graph, idx_t niparts, unsigned* rng_state);
+void RandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts,unsigned* rng_state);
+void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts,unsigned* rng_state);
+void McRandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts,unsigned* rng_state);
+void McGrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts,unsigned* rng_state);
+void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts,unsigned* rng_state);
+void GrowBisectionNode2(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niparts,unsigned* rng_state);
 
 
 /* kmetis.c */
-idx_t MlevelKWayPartitioning(ctrl_t *ctrl, graph_t *graph, idx_t *part);
-void InitKWayPartitioning(ctrl_t *ctrl, graph_t *graph);
+idx_t MlevelKWayPartitioning(ctrl_t *ctrl, graph_t *graph, idx_t *part, unsigned* rng_state);
+void InitKWayPartitioning(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state);
 
 
 /* kwayfm.c */
 void Greedy_KWayOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter, 
-         real_t ffactor, idx_t omode);
+         real_t ffactor, idx_t omode, unsigned* rng_state);
 void Greedy_KWayCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter, 
-         real_t ffactor, idx_t omode);
+         real_t ffactor, idx_t omode, unsigned* rng_state);
 void Greedy_KWayVolOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter, 
-         real_t ffactor, idx_t omode);
+         real_t ffactor, idx_t omode, unsigned* rng_state);
 void Greedy_McKWayCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter, 
-         real_t ffactor, idx_t omode);
+         real_t ffactor, idx_t omode, unsigned* rng_state);
 void Greedy_McKWayVolOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter, 
-         real_t ffactor, idx_t omode);
+         real_t ffactor, idx_t omode, unsigned* rng_state);
 idx_t IsArticulationNode(idx_t i, idx_t *xadj, idx_t *adjncy, idx_t *where,
           idx_t *bfslvl, idx_t *bfsind, idx_t *bfsmrk);
 void KWayVolUpdate(ctrl_t *ctrl, graph_t *graph, idx_t v, idx_t from,
@@ -164,7 +164,7 @@ void KWayVolUpdate(ctrl_t *ctrl, graph_t *graph, idx_t v, idx_t from,
 
 
 /* kwayrefine.c */
-void RefineKWay(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph);
+void RefineKWay(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, unsigned* rng_state);
 void AllocateKWayPartitionMemory(ctrl_t *ctrl, graph_t *graph);
 void ComputeKWayPartitionParams(ctrl_t *ctrl, graph_t *graph);
 void ProjectKWayPartition(ctrl_t *ctrl, graph_t *graph);
@@ -245,16 +245,16 @@ void mmdupd(idx_t, idx_t, idx_t *, idx_t *, idx_t, idx_t *, idx_t *, idx_t *, id
 
 /* ometis.c */
 void MlevelNestedDissection(ctrl_t *ctrl, graph_t *graph, idx_t *order,
-         idx_t lastvtx);
+         idx_t lastvtx, unsigned* rng_state);
 void MlevelNestedDissectionCC(ctrl_t *ctrl, graph_t *graph, idx_t *order,
-         idx_t lastvtx);
-void MlevelNodeBisectionMultiple(ctrl_t *ctrl, graph_t *graph);
-void MlevelNodeBisectionL2(ctrl_t *ctrl, graph_t *graph, idx_t niparts);
-void MlevelNodeBisectionL1(ctrl_t *ctrl, graph_t *graph, idx_t niparts);
+         idx_t lastvtx, unsigned* rng_state);
+void MlevelNodeBisectionMultiple(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state);
+void MlevelNodeBisectionL2(ctrl_t *ctrl, graph_t *graph, idx_t niparts, unsigned* rng_state);
+void MlevelNodeBisectionL1(ctrl_t *ctrl, graph_t *graph, idx_t niparts, unsigned* rng_state);
 void SplitGraphOrder(ctrl_t *ctrl, graph_t *graph, graph_t **r_lgraph, 
          graph_t **r_rgraph);
 graph_t **SplitGraphOrderCC(ctrl_t *ctrl, graph_t *graph, idx_t ncmps,
-              idx_t *cptr, idx_t *cind);
+              idx_t *cptr, idx_t *cind, unsigned* rng_state);
 void MMDOrder(ctrl_t *ctrl, graph_t *graph, idx_t *order, idx_t lastvtx);
 
 
@@ -270,40 +270,40 @@ void FreeCtrl(ctrl_t **r_ctrl);
 
 /* parmetis.c */
 void MlevelNestedDissectionP(ctrl_t *ctrl, graph_t *graph, idx_t *order,
-         idx_t lastvtx, idx_t npes, idx_t cpos, idx_t *sizes);
+         idx_t lastvtx, idx_t npes, idx_t cpos, idx_t *sizes, unsigned* rng_state);
 void FM_2WayNodeRefine1SidedP(ctrl_t *ctrl, graph_t *graph, idx_t *hmarker, 
-         real_t ubfactor, idx_t npasses);
+         real_t ubfactor, idx_t npasses, unsigned* rng_state);
 void FM_2WayNodeRefine2SidedP(ctrl_t *ctrl, graph_t *graph, idx_t *hmarker, 
-         real_t ubfactor, idx_t npasses);
+         real_t ubfactor, idx_t npasses, unsigned* rng_state);
 
 
 /* pmetis.c */
 idx_t MlevelRecursiveBisection(ctrl_t *ctrl, graph_t *graph, idx_t nparts, 
-          idx_t *part, real_t *tpwgts, idx_t fpart);
-idx_t MultilevelBisect(ctrl_t *ctrl, graph_t *graph, real_t *tpwgts);
+          idx_t *part, real_t *tpwgts, idx_t fpart, unsigned* rng_state);
+idx_t MultilevelBisect(ctrl_t *ctrl, graph_t *graph, real_t *tpwgts, unsigned* rng_state);
 void SplitGraphPart(ctrl_t *ctrl, graph_t *graph, graph_t **r_lgraph, graph_t **r_rgraph);
 
 
 /* refine.c */
-void Refine2Way(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, real_t *rtpwgts);
+void Refine2Way(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, real_t *rtpwgts, unsigned* rng_state);
 void Allocate2WayPartitionMemory(ctrl_t *ctrl, graph_t *graph);
 void Compute2WayPartitionParams(ctrl_t *ctrl, graph_t *graph);
 void Project2WayPartition(ctrl_t *ctrl, graph_t *graph);
 
 
 /* separator.c */
-void ConstructSeparator(ctrl_t *ctrl, graph_t *graph);
-void ConstructMinCoverSeparator(ctrl_t *ctrl, graph_t *graph);
+void ConstructSeparator(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state);
+void ConstructMinCoverSeparator(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state);
 
 
 /* sfm.c */
-void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter);
-void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter);
-void FM_2WayNodeBalance(ctrl_t *ctrl, graph_t *graph);
+void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter, unsigned* rng_state);
+void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter, unsigned* rng_state);
+void FM_2WayNodeBalance(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state);
 
 
 /* srefine.c */
-void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph);
+void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, unsigned* rng_state);
 void Allocate2WayNodePartitionMemory(ctrl_t *ctrl, graph_t *graph);
 void Compute2WayNodePartitionParams(ctrl_t *ctrl, graph_t *graph);
 void Project2WayNodePartition(ctrl_t *ctrl, graph_t *graph);

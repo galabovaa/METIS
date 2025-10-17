@@ -26,7 +26,7 @@
 */
 /*************************************************************************/
 int METIS_NodeNDP(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-           idx_t npes, idx_t *options, idx_t *perm, idx_t *iperm, idx_t *sizes) 
+           idx_t npes, idx_t *options, idx_t *perm, idx_t *iperm, idx_t *sizes, unsigned* rng_state) 
 {
   idx_t i, ii, j, l, nnvtxs=0;
   graph_t *graph;
@@ -67,7 +67,7 @@ int METIS_NodeNDP(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
 
   /* do the nested dissection ordering  */
   iset(2*npes-1, 0, sizes);
-  MlevelNestedDissectionP(ctrl, graph, iperm, graph->nvtxs, npes, 0, sizes);
+  MlevelNestedDissectionP(ctrl, graph, iperm, graph->nvtxs, npes, 0, sizes, rng_state);
 
 
   /* Uncompress the ordering */
@@ -103,7 +103,7 @@ int METIS_NodeNDP(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
     that it also records separator sizes for the top log2(npes) levels */
 /**************************************************************************/
 void MlevelNestedDissectionP(ctrl_t *ctrl, graph_t *graph, idx_t *order, 
-         idx_t lastvtx, idx_t npes, idx_t cpos, idx_t *sizes)
+         idx_t lastvtx, idx_t npes, idx_t cpos, idx_t *sizes, unsigned* rng_state)
 {
   idx_t i, j, nvtxs, nbnd;
   idx_t *label, *bndind;
@@ -116,7 +116,7 @@ void MlevelNestedDissectionP(ctrl_t *ctrl, graph_t *graph, idx_t *order,
     return;
   }
 
-  MlevelNodeBisectionMultiple(ctrl, graph);
+  MlevelNodeBisectionMultiple(ctrl, graph, rng_state);
 
   IFSET(ctrl->dbglvl, METIS_DBG_SEPINFO, 
       printf("Nvtxs: %6"PRIDX", [%6"PRIDX" %6"PRIDX" %6"PRIDX"]\n", 
@@ -141,13 +141,13 @@ void MlevelNestedDissectionP(ctrl_t *ctrl, graph_t *graph, idx_t *order,
   FreeGraph(&graph);
 
   if ((lgraph->nvtxs > MMDSWITCH || 2*cpos+2 < npes-1) && lgraph->nedges > 0) 
-    MlevelNestedDissectionP(ctrl, lgraph, order, lastvtx-rgraph->nvtxs, npes, 2*cpos+2, sizes);
+    MlevelNestedDissectionP(ctrl, lgraph, order, lastvtx-rgraph->nvtxs, npes, 2*cpos+2, sizes, rng_state);
   else {
     MMDOrder(ctrl, lgraph, order, lastvtx-rgraph->nvtxs); 
     FreeGraph(&lgraph);
   }
   if ((rgraph->nvtxs > MMDSWITCH || 2*cpos+1 < npes-1) && rgraph->nedges > 0) 
-    MlevelNestedDissectionP(ctrl, rgraph, order, lastvtx, npes, 2*cpos+1, sizes);
+    MlevelNestedDissectionP(ctrl, rgraph, order, lastvtx, npes, 2*cpos+1, sizes,rng_state);
   else {
     MMDOrder(ctrl, rgraph, order, lastvtx); 
     FreeGraph(&rgraph);
@@ -159,7 +159,7 @@ void MlevelNestedDissectionP(ctrl_t *ctrl, graph_t *graph, idx_t *order,
 /*! This function bisects a graph by computing a vertex separator */
 /**************************************************************************/
 int METIS_ComputeVertexSeparator(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, 
-           idx_t *vwgt, idx_t *options, idx_t *r_sepsize, idx_t *part) 
+           idx_t *vwgt, idx_t *options, idx_t *r_sepsize, idx_t *part, unsigned* rng_state) 
 {
   idx_t i, j;
   graph_t *graph;
@@ -179,7 +179,7 @@ int METIS_ComputeVertexSeparator(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy,
    *============================================================*/ 
   ctrl->CoarsenTo = 100;
 
-  MlevelNodeBisectionMultiple(ctrl, graph);
+  MlevelNodeBisectionMultiple(ctrl, graph, rng_state);
 
   *r_sepsize = graph->pwgts[2];
   icopy(*nvtxs, graph->where, part);
@@ -197,7 +197,7 @@ int METIS_ComputeVertexSeparator(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy,
     of the nodes with an hmarker[] of 0. */
 /*************************************************************************/
 int METIS_NodeRefine(idx_t nvtxs, idx_t *xadj, idx_t *vwgt, idx_t *adjncy, 
-           idx_t *where, idx_t *hmarker, real_t ubfactor)
+           idx_t *where, idx_t *hmarker, real_t ubfactor,unsigned* rng_state)
 {
   graph_t *graph;
   ctrl_t *ctrl;
@@ -218,7 +218,7 @@ int METIS_NodeRefine(idx_t nvtxs, idx_t *xadj, idx_t *vwgt, idx_t *adjncy,
 
   Compute2WayNodePartitionParams(ctrl, graph);
 
-  FM_2WayNodeRefine1SidedP(ctrl, graph, hmarker, ubfactor, 10); 
+  FM_2WayNodeRefine1SidedP(ctrl, graph, hmarker, ubfactor, 10, rng_state); 
   /* FM_2WayNodeRefine2SidedP(ctrl, graph, hmarker, ubfactor, 10); */
 
   icopy(nvtxs, graph->where, where);
@@ -235,7 +235,7 @@ int METIS_NodeRefine(idx_t nvtxs, idx_t *xadj, idx_t *vwgt, idx_t *adjncy,
     only nodes whose hmarker[] == -1. It is used by Parmetis. */
 /*************************************************************************/
 void FM_2WayNodeRefine1SidedP(ctrl_t *ctrl, graph_t *graph, 
-          idx_t *hmarker, real_t ubfactor, idx_t npasses)
+          idx_t *hmarker, real_t ubfactor, idx_t npasses, unsigned* rng_state)
 {
   idx_t i, ii, j, k, jj, kk, nvtxs, nbnd, nswaps, nmind, nbad, qsize;
   idx_t *xadj, *vwgt, *adjncy, *where, *pwgts, *edegrees, *bndind, *bndptr;
@@ -288,7 +288,7 @@ void FM_2WayNodeRefine1SidedP(ctrl_t *ctrl, graph_t *graph,
     nbnd = graph->nbnd;
 
     /* use the swaps array in place of the traditional perm array to save memory */
-    irandArrayPermute(nbnd, swaps, nbnd, 1);
+    irandArrayPermute(nbnd, swaps, nbnd, 1, rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[swaps[ii]];
       ASSERT(where[i] == 2);
@@ -465,7 +465,7 @@ void FM_2WayNodeRefine1SidedP(ctrl_t *ctrl, graph_t *graph,
     moves only nodes whose hmarker[] == -1. It is used by Parmetis. */
 /*************************************************************************/
 void FM_2WayNodeRefine2SidedP(ctrl_t *ctrl, graph_t *graph, 
-          idx_t *hmarker, real_t ubfactor, idx_t npasses)
+          idx_t *hmarker, real_t ubfactor, idx_t npasses,unsigned* rng_state)
 {
   idx_t i, ii, j, k, jj, kk, nvtxs, nbnd, nswaps, nmind;
   idx_t *xadj, *vwgt, *adjncy, *where, *pwgts, *edegrees, *bndind, *bndptr;
@@ -513,7 +513,7 @@ void FM_2WayNodeRefine2SidedP(ctrl_t *ctrl, graph_t *graph,
     nbnd = graph->nbnd;
 
     /* use the swaps array in place of the traditional perm array to save memory */
-    irandArrayPermute(nbnd, swaps, nbnd, 1);
+    irandArrayPermute(nbnd, swaps, nbnd, 1, rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[swaps[ii]];
       ASSERT(where[i] == 2);

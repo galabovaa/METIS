@@ -192,12 +192,12 @@ extern "C" {
 METIS_API(int) METIS_PartGraphRecursive(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, 
                   idx_t *adjncy, idx_t *vwgt, idx_t *vsize, idx_t *adjwgt, 
                   idx_t *nparts, real_t *tpwgts, real_t *ubvec, idx_t *options, 
-                  idx_t *edgecut, idx_t *part);
+                  idx_t *edgecut, idx_t *part, unsigned* rng_state);
 
 METIS_API(int) METIS_PartGraphKway(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, 
                   idx_t *adjncy, idx_t *vwgt, idx_t *vsize, idx_t *adjwgt, 
                   idx_t *nparts, real_t *tpwgts, real_t *ubvec, idx_t *options, 
-                  idx_t *edgecut, idx_t *part);
+                  idx_t *edgecut, idx_t *part, unsigned* rng_state);
 
 METIS_API(int) METIS_MeshToDual(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
                   idx_t *ncommon, idx_t *numflag, idx_t **r_xadj, idx_t **r_adjncy);
@@ -207,15 +207,15 @@ METIS_API(int) METIS_MeshToNodal(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
 
 METIS_API(int) METIS_PartMeshNodal(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
                   idx_t *vwgt, idx_t *vsize, idx_t *nparts, real_t *tpwgts, 
-                  idx_t *options, idx_t *objval, idx_t *epart, idx_t *npart);
+                  idx_t *options, idx_t *objval, idx_t *epart, idx_t *npart, unsigned* rng_state);
 
 METIS_API(int) METIS_PartMeshDual(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
                   idx_t *vwgt, idx_t *vsize, idx_t *ncommon, idx_t *nparts, 
                   real_t *tpwgts, idx_t *options, idx_t *objval, idx_t *epart, 
-                  idx_t *npart);
+                  idx_t *npart, unsigned* rng_state);
 
 METIS_API(int) METIS_NodeND(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-                  idx_t *options, idx_t *perm, idx_t *iperm);
+                  idx_t *options, idx_t *perm, idx_t *iperm, unsigned* rng_state);
 
 METIS_API(int) METIS_Free(void *ptr);
 
@@ -226,13 +226,13 @@ METIS_API(int) METIS_SetDefaultOptions(idx_t *options);
 
 METIS_API(int) METIS_NodeNDP(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
                    idx_t npes, idx_t *options, idx_t *perm, idx_t *iperm, 
-                   idx_t *sizes);
+                   idx_t *sizes, unsigned* rng_state);
 
 METIS_API(int) METIS_ComputeVertexSeparator(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, 
-                   idx_t *vwgt, idx_t *options, idx_t *sepsize, idx_t *part);
+                   idx_t *vwgt, idx_t *options, idx_t *sepsize, idx_t *part, unsigned* rng_state);
 
 METIS_API(int) METIS_NodeRefine(idx_t nvtxs, idx_t *xadj, idx_t *vwgt, idx_t *adjncy,
-                   idx_t *where, idx_t *hmarker, real_t ubfactor);
+                   idx_t *where, idx_t *hmarker, real_t ubfactor, unsigned* rng_state);
 
 
 #ifdef __cplusplus

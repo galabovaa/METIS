@@ -14,7 +14,7 @@
 /*************************************************************************/
 /*! This function is the entry point of cut-based refinement */
 /*************************************************************************/
-void RefineKWay(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph)
+void RefineKWay(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, unsigned* rng_state)
 {
   idx_t i, nlevels, contig=ctrl->contig;
   graph_t *ptr;
@@ -36,10 +36,10 @@ void RefineKWay(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph)
     EliminateComponents(ctrl, graph);
 
     ComputeKWayBoundary(ctrl, graph, BNDTYPE_BALANCE);
-    Greedy_KWayOptimize(ctrl, graph, 5, 0, OMODE_BALANCE); 
+    Greedy_KWayOptimize(ctrl, graph, 5, 0, OMODE_BALANCE, rng_state); 
 
     ComputeKWayBoundary(ctrl, graph, BNDTYPE_REFINE);
-    Greedy_KWayOptimize(ctrl, graph, ctrl->niter, 0, OMODE_REFINE); 
+    Greedy_KWayOptimize(ctrl, graph, ctrl->niter, 0, OMODE_REFINE, rng_state); 
 
     ctrl->contig = 0;
   }
@@ -53,11 +53,11 @@ void RefineKWay(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph)
 
     if (2*i >= nlevels && !IsBalanced(ctrl, graph, .02)) {
       ComputeKWayBoundary(ctrl, graph, BNDTYPE_BALANCE);
-      Greedy_KWayOptimize(ctrl, graph, 1, 0, OMODE_BALANCE); 
+      Greedy_KWayOptimize(ctrl, graph, 1, 0, OMODE_BALANCE,rng_state); 
       ComputeKWayBoundary(ctrl, graph, BNDTYPE_REFINE);
     }
 
-    Greedy_KWayOptimize(ctrl, graph, ctrl->niter, 5.0, OMODE_REFINE); 
+    Greedy_KWayOptimize(ctrl, graph, ctrl->niter, 5.0, OMODE_REFINE,rng_state); 
 
     IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->RefTmr));
 
@@ -69,10 +69,10 @@ void RefineKWay(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph)
         if (!IsBalanced(ctrl, graph, .02)) {
           ctrl->contig = 1;
           ComputeKWayBoundary(ctrl, graph, BNDTYPE_BALANCE);
-          Greedy_KWayOptimize(ctrl, graph, 5, 0, OMODE_BALANCE); 
+          Greedy_KWayOptimize(ctrl, graph, 5, 0, OMODE_BALANCE,rng_state); 
   
           ComputeKWayBoundary(ctrl, graph, BNDTYPE_REFINE);
-          Greedy_KWayOptimize(ctrl, graph, ctrl->niter, 0, OMODE_REFINE); 
+          Greedy_KWayOptimize(ctrl, graph, ctrl->niter, 0, OMODE_REFINE,rng_state); 
           ctrl->contig = 0;
         }
       }
@@ -97,10 +97,10 @@ void RefineKWay(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph)
 
   if (!IsBalanced(ctrl, graph, 0.0)) {
     ComputeKWayBoundary(ctrl, graph, BNDTYPE_BALANCE);
-    Greedy_KWayOptimize(ctrl, graph, 10, 0, OMODE_BALANCE); 
+    Greedy_KWayOptimize(ctrl, graph, 10, 0, OMODE_BALANCE,rng_state); 
 
     ComputeKWayBoundary(ctrl, graph, BNDTYPE_REFINE);
-    Greedy_KWayOptimize(ctrl, graph, ctrl->niter, 0, OMODE_REFINE); 
+    Greedy_KWayOptimize(ctrl, graph, ctrl->niter, 0, OMODE_REFINE,rng_state); 
   }
 
   if (ctrl->contig) 

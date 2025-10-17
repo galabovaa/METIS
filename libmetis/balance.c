@@ -13,7 +13,7 @@
 /*************************************************************************
 * This function is the entry poidx_t of the bisection balancing algorithms.
 **************************************************************************/
-void Balance2Way(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
+void Balance2Way(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,unsigned* rng_state)
 {
   if (ComputeLoadImbalanceDiff(graph, 2, ctrl->pijbm, ctrl->ubfactors) <= 0) 
     return;
@@ -24,12 +24,12 @@ void Balance2Way(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
       return;
 
     if (graph->nbnd > 0)
-      Bnd2WayBalance(ctrl, graph, ntpwgts);
+      Bnd2WayBalance(ctrl, graph, ntpwgts,rng_state);
     else
-      General2WayBalance(ctrl, graph, ntpwgts);
+      General2WayBalance(ctrl, graph, ntpwgts,rng_state);
   }
   else {
-    McGeneral2WayBalance(ctrl, graph, ntpwgts);
+    McGeneral2WayBalance(ctrl, graph, ntpwgts,rng_state);
   }
 }
 
@@ -38,7 +38,7 @@ void Balance2Way(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
 * This function balances two partitions by moving boundary nodes
 * from the domain that is overweight to the one that is underweight.
 **************************************************************************/
-void Bnd2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
+void Bnd2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, unsigned* rng_state)
 {
   idx_t i, ii, j, k, kwgt, nvtxs, nbnd, nswaps, from, to, pass, me, tmp;
   idx_t *xadj, *vwgt, *adjncy, *adjwgt, *where, *id, *ed, *bndptr, *bndind, *pwgts;
@@ -85,7 +85,7 @@ void Bnd2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
 
   /* Insert the boundary nodes of the proper partition whose size is OK in the priority queue */
   nbnd = graph->nbnd;
-  irandArrayPermute(nbnd, perm, nbnd/5, 1);
+  irandArrayPermute(nbnd, perm, nbnd/5, 1,rng_state);
   for (ii=0; ii<nbnd; ii++) {
     i = perm[ii];
     ASSERT(ed[bndind[i]] > 0 || id[bndind[i]] == 0);
@@ -166,7 +166,7 @@ void Bnd2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
 * It moves vertices from the domain that is overweight to the one that 
 * is underweight.
 **************************************************************************/
-void General2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
+void General2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, unsigned* rng_state)
 {
   idx_t i, ii, j, k, kwgt, nvtxs, nbnd, nswaps, from, to, pass, me, tmp;
   idx_t *xadj, *vwgt, *adjncy, *adjwgt, *where, *id, *ed, *bndptr, *bndind, *pwgts;
@@ -211,7 +211,7 @@ void General2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
   ASSERT(CheckBnd(graph));
 
   /* Insert the nodes of the proper partition whose size is OK in the priority queue */
-  irandArrayPermute(nvtxs, perm, nvtxs/5, 1);
+  irandArrayPermute(nvtxs, perm, nvtxs/5, 1,rng_state);
   for (ii=0; ii<nvtxs; ii++) {
     i = perm[ii];
     if (where[i] == from && vwgt[i] <= mindiff)
@@ -278,7 +278,7 @@ void General2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
 /*************************************************************************
 * This function performs an edge-based FM refinement
 **************************************************************************/
-void McGeneral2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
+void McGeneral2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,unsigned* rng_state)
 {
   idx_t i, ii, j, k, l, kwgt, nvtxs, ncon, nbnd, nswaps, from, to, pass, 
         me, limit, tmp, cnum;
@@ -371,7 +371,7 @@ void McGeneral2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
 
   /* Insert all nodes in the priority queues */
   nbnd = graph->nbnd;
-  irandArrayPermute(nvtxs, perm, nvtxs/10, 1);
+  irandArrayPermute(nvtxs, perm, nvtxs/10, 1,rng_state);
   for (ii=0; ii<nvtxs; ii++) {
     i = perm[ii];
     rpqInsert(queues[2*qnum[i]+where[i]], i, ed[i]-id[i]);

@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
   idx_t objval;
   params_t *params;
   int status=0;
+  unsigned rng_state=0;
 
   params = parse_cmdline(argc, argv);
 
@@ -68,13 +69,13 @@ int main(int argc, char *argv[])
     case METIS_GTYPE_DUAL:
       status = METIS_PartMeshDual(&mesh->ne, &mesh->nn, mesh->eptr, mesh->eind, 
                    mesh->ewgt, NULL, &params->ncommon, &params->nparts, 
-                   params->tpwgts, options, &objval, epart, npart);
+                   params->tpwgts, options, &objval, epart, npart, &rng_state);
       break;
 
     case METIS_GTYPE_NODAL:
       status = METIS_PartMeshNodal(&mesh->ne, &mesh->nn, mesh->eptr, mesh->eind, 
                    NULL, NULL, &params->nparts, params->tpwgts, options, &objval, 
-                   epart, npart);
+                   epart, npart, &rng_state);
       break;
   }
 

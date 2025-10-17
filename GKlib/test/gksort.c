@@ -18,11 +18,12 @@ void test_isort()
 {
   gk_idx_t i;
   int array[N];
+  unsigned rng_state = 0;
 
   /* test the increasing sort */
   printf("Testing iisort...\n");
   for (i=0; i<N; i++)
-    array[i] = RandomInRange(123432);
+    array[i] = RandomInRange(123432,&rng_state);
 
   gk_isorti(N, array);
 
@@ -35,7 +36,7 @@ void test_isort()
   /* test the decreasing sort */
   printf("Testing disort...\n");
   for (i=0; i<N; i++)
-    array[i] = RandomInRange(123432);
+    array[i] = RandomInRange(123432,&rng_state);
 
   gk_isortd(N, array);
 
@@ -54,11 +55,12 @@ void test_fsort()
 {
   gk_idx_t i;
   float array[N];
+  unsigned rng_state = 0;
 
   /* test the increasing sort */
   printf("Testing ifsort...\n");
   for (i=0; i<N; i++)
-    array[i] = RandomInRange(123432)/(1.0+RandomInRange(645323));
+    array[i] = RandomInRange(123432,&rng_state)/(1.0+RandomInRange(645323,&rng_state));
 
   gk_fsorti(N, array);
 
@@ -71,7 +73,7 @@ void test_fsort()
   /* test the decreasing sort */
   printf("Testing dfsort...\n");
   for (i=0; i<N; i++)
-    array[i] = RandomInRange(123432)/(1.0+RandomInRange(645323));
+    array[i] = RandomInRange(123432,&rng_state)/(1.0+RandomInRange(645323,&rng_state));
 
   gk_fsortd(N, array);
 
@@ -90,11 +92,12 @@ void test_idxsort()
 {
   gk_idx_t i;
   gk_idx_t array[N];
+  unsigned rng_state = 0;
 
   /* test the increasing sort */
   printf("Testing idxsorti...\n");
   for (i=0; i<N; i++)
-    array[i] = RandomInRange(123432);
+    array[i] = RandomInRange(123432,&rng_state);
 
   gk_idxsorti(N, array);
 
@@ -107,7 +110,7 @@ void test_idxsort()
   /* test the decreasing sort */
   printf("Testing idxsortd...\n");
   for (i=0; i<N; i++)
-    array[i] = RandomInRange(123432);
+    array[i] = RandomInRange(123432,&rng_state);
 
   gk_idxsortd(N, array);
 
@@ -127,11 +130,12 @@ void test_ikvsort()
 {
   gk_idx_t i;
   gk_ikv_t array[N];
+  unsigned rng_state = 0;
 
   /* test the increasing sort */
   printf("Testing ikvsorti...\n");
   for (i=0; i<N; i++) {
-    array[i].key = RandomInRange(123432);
+    array[i].key = RandomInRange(123432,&rng_state);
     array[i].val = i;
   }
 
@@ -146,7 +150,7 @@ void test_ikvsort()
   /* test the decreasing sort */
   printf("Testing ikvsortd...\n");
   for (i=0; i<N; i++) {
-    array[i].key = RandomInRange(123432);
+    array[i].key = RandomInRange(123432,&rng_state);
     array[i].val = i;
   }
 
@@ -168,11 +172,12 @@ void test_fkvsort()
 {
   gk_idx_t i;
   gk_fkv_t array[N];
+  unsigned rng_state = 0;
 
   /* test the increasing sort */
   printf("Testing fkvsorti...\n");
   for (i=0; i<N; i++) {
-    array[i].key = RandomInRange(123432)/(1.0+RandomInRange(645323));
+    array[i].key = RandomInRange(123432,&rng_state)/(1.0+RandomInRange(645323,&rng_state));
     array[i].val = i;
   }
 
@@ -187,7 +192,7 @@ void test_fkvsort()
   /* test the decreasing sort */
   printf("Testing fkvsortd...\n");
   for (i=0; i<N; i++) {
-    array[i].key = RandomInRange(123432)/(1.0+RandomInRange(645323));
+    array[i].key = RandomInRange(123432,&rng_state)/(1.0+RandomInRange(645323,&rng_state));
     array[i].val = i;
   }
 
@@ -208,11 +213,12 @@ void test_dkvsort()
 {
   gk_idx_t i;
   gk_dkv_t array[N];
+  unsigned rng_state=0;
 
   /* test the increasing sort */
   printf("Testing dkvsorti...\n");
   for (i=0; i<N; i++) {
-    array[i].key = RandomInRange(123432)/(1.0+RandomInRange(645323));
+    array[i].key = RandomInRange(123432,&rng_state)/(1.0+RandomInRange(645323,&rng_state));
     array[i].val = i;
   }
 
@@ -227,7 +233,7 @@ void test_dkvsort()
   /* test the decreasing sort */
   printf("Testing dkvsortd...\n");
   for (i=0; i<N; i++) {
-    array[i].key = RandomInRange(123432)/(1.0+RandomInRange(645323));
+    array[i].key = RandomInRange(123432,&rng_state)/(1.0+RandomInRange(645323,&rng_state));
     array[i].val = i;
   }
 
@@ -249,11 +255,12 @@ void test_skvsort()
   gk_idx_t i;
   gk_skv_t array[N];
   char line[256];
+  unsigned rng_state = 0;
 
   /* test the increasing sort */
   printf("Testing skvsorti...\n");
   for (i=0; i<N; i++) {
-    sprintf(line, "%d", RandomInRange(123432));
+    sprintf(line, "%d", RandomInRange(123432,&rng_state));
     array[i].key = gk_strdup(line);
     array[i].val = i;
   }
@@ -269,7 +276,7 @@ void test_skvsort()
   /* test the decreasing sort */
   printf("Testing skvsortd...\n");
   for (i=0; i<N; i++) {
-    sprintf(line, "%d", RandomInRange(123432));
+    sprintf(line, "%d", RandomInRange(123432,&rng_state));
     array[i].key = gk_strdup(line);
     array[i].val = i;
   }
@@ -292,11 +299,12 @@ void test_idxkvsort()
 {
   gk_idx_t i;
   gk_idxkv_t array[N];
+  unsigned rng_state = 0;
 
   /* test the increasing sort */
   printf("Testing idxkvsorti...\n");
   for (i=0; i<N; i++) {
-    array[i].key = RandomInRange(123432);
+    array[i].key = RandomInRange(123432,&rng_state);
     array[i].val = i;
   }
 
@@ -313,7 +321,7 @@ void test_idxkvsort()
   /* test the decreasing sort */
   printf("Testing idxkvsortd...\n");
   for (i=0; i<N; i++) {
-    array[i].key = RandomInRange(123432);
+    array[i].key = RandomInRange(123432,&rng_state);
     array[i].val = i;
   }
 

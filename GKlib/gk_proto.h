@@ -139,7 +139,7 @@ void PrintBackTrace();
 /*-------------------------------------------------------------
  * util.c
  *-------------------------------------------------------------*/
-void  gk_RandomPermute(size_t, int *, int);
+void  gk_RandomPermute(size_t, int *, int, unsigned*);
 void  gk_array2csr(size_t n, size_t range, int *array, int *ptr, int *ind);
 int   gk_log2(int);
 int   gk_ispow2(int);
@@ -261,8 +261,8 @@ GK_MKRANDOM_PROTO(gk_d,   size_t, double)
 GK_MKRANDOM_PROTO(gk_idx, size_t, gk_idx_t)
 GK_MKRANDOM_PROTO(gk_z,   size_t, ssize_t)
 void gk_randinit(uint64_t);
-uint64_t gk_randint64(void);
-uint32_t gk_randint32(void);
+uint64_t gk_randint64(unsigned* state);
+uint32_t gk_randint32(unsigned* state);
 
 
 /*-------------------------------------------------------------

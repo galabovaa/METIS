@@ -106,6 +106,7 @@ int main(int argc, char *argv[])
   params_t *params;
   gk_csr_t *mat;
   FILE *fpout;
+  unsigned rng_state = 0;
  
   /* get command-line options */
   params = parse_cmdline(argc, argv);
@@ -127,7 +128,7 @@ int main(int argc, char *argv[])
     /* generate the random restart vectors */
     for (j=0; j<params->ntvs; j++) {
       for (i=0; i<mat->nrows; i++)
-        prs[j][i] = RandomInRange(931);
+        prs[j][i] = RandomInRange(931,&rng_state);
       gk_fscale(mat->nrows, 1.0/gk_fsum(mat->nrows, prs[j], 1), prs[j], 1);
 
       niter = gk_rw_PageRank(mat, params->lamda, params->eps, params->niter, prs[j]);

@@ -18,7 +18,7 @@
 /*************************************************************************/
 /*! This function performs a node-based FM refinement */
 /**************************************************************************/
-void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
+void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter,unsigned* rng_state)
 {
   idx_t i, ii, j, k, jj, kk, nvtxs, nbnd, nswaps, nmind;
   idx_t *xadj, *vwgt, *adjncy, *where, *pwgts, *edegrees, *bndind, *bndptr;
@@ -68,7 +68,7 @@ void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
     nbnd = graph->nbnd;
 
     /* use the swaps array in place of the traditional perm array to save memory */
-    irandArrayPermute(nbnd, swaps, nbnd, 1);
+    irandArrayPermute(nbnd, swaps, nbnd, 1,rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[swaps[ii]];
       ASSERT(where[i] == 2);
@@ -260,7 +260,7 @@ void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
     is allowed; hence, it is one-sided. 
 */
 /**************************************************************************/
-void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
+void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter,unsigned* rng_state)
 {
   idx_t i, ii, j, k, jj, kk, nvtxs, nbnd, nswaps, nmind, iend;
   idx_t *xadj, *vwgt, *adjncy, *where, *pwgts, *edegrees, *bndind, *bndptr;
@@ -309,7 +309,7 @@ void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
     nbnd = graph->nbnd;
 
     /* use the swaps array in place of the traditional perm array to save memory */
-    irandArrayPermute(nbnd, swaps, nbnd, 1);
+    irandArrayPermute(nbnd, swaps, nbnd, 1,rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[swaps[ii]];
       ASSERT(where[i] == 2);
@@ -473,7 +473,7 @@ void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
 /*! This function balances the left/right partitions of a separator 
     tri-section */
 /*************************************************************************/
-void FM_2WayNodeBalance(ctrl_t *ctrl, graph_t *graph)
+void FM_2WayNodeBalance(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
 {
   idx_t i, ii, j, k, jj, kk, nvtxs, nbnd, nswaps, gain;
   idx_t badmaxpwgt, higain, oldgain, pass, to, other;
@@ -516,7 +516,7 @@ void FM_2WayNodeBalance(ctrl_t *ctrl, graph_t *graph)
     printf("Partitions: [%6"PRIDX" %6"PRIDX"] Nv-Nb[%6"PRIDX" %6"PRIDX"]. ISep: %6"PRIDX" [B]\n", pwgts[0], pwgts[1], graph->nvtxs, graph->nbnd, graph->mincut));
 
   nbnd = graph->nbnd;
-  irandArrayPermute(nbnd, perm, nbnd, 1);
+  irandArrayPermute(nbnd, perm, nbnd, 1,rng_state);
   for (ii=0; ii<nbnd; ii++) {
     i = bndind[perm[ii]];
     ASSERT(where[i] == 2);

@@ -20,7 +20,7 @@
     It does not perform any refinement on graph, but it starts by first
     projecting it to the next level finer graph and proceeds from there. */
 /*************************************************************************/
-void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph)
+void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, unsigned* rng_state)
 {
 
   IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->UncoarsenTmr));
@@ -37,16 +37,16 @@ void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph)
       IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->ProjectTmr));
 
       IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->RefTmr));
-      FM_2WayNodeBalance(ctrl, graph); 
+      FM_2WayNodeBalance(ctrl, graph, rng_state); 
 
       ASSERT(CheckNodePartitionParams(graph));
 
       switch (ctrl->rtype) {
         case METIS_RTYPE_SEP2SIDED:
-          FM_2WayNodeRefine2Sided(ctrl, graph, ctrl->niter); 
+          FM_2WayNodeRefine2Sided(ctrl, graph, ctrl->niter, rng_state); 
           break;
         case METIS_RTYPE_SEP1SIDED:
-          FM_2WayNodeRefine1Sided(ctrl, graph, ctrl->niter); 
+          FM_2WayNodeRefine1Sided(ctrl, graph, ctrl->niter, rng_state); 
           break;
         default:
           gk_errexit(SIGERR, "Unknown rtype of %d\n", ctrl->rtype);

@@ -81,7 +81,7 @@ void gk_randinit(uint64_t seed)
 
 
 /* generates a random number on [0, 2^64-1]-interval */
-uint64_t gk_randint64(void)
+uint64_t gk_randint64(unsigned* state)
 {
 #ifdef USE_GKRAND
   int i;
@@ -117,17 +117,19 @@ uint64_t gk_randint64(void)
 
   return x & 0x7FFFFFFFFFFFFFFF;
 #else
-  return (uint64_t)(((uint64_t) rand()) << 32 | ((uint64_t) rand()));
+uint64_t piece_1 = ((uint64_t) rand_r(state)) << 32;
+uint64_t piece_2 = ((uint64_t) rand_r(state));
+  return (uint64_t)(piece_1 | piece_2);
 #endif
 }
 
 /* generates a random number on [0, 2^32-1]-interval */
-uint32_t gk_randint32(void)
+uint32_t gk_randint32(unsigned* state)
 {
 #ifdef USE_GKRAND
   return (uint32_t)(gk_randint64() & 0x7FFFFFFF);
 #else
-  return (uint32_t)rand();
+  return (uint32_t)rand_r(state);
 #endif
 }
 

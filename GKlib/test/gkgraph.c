@@ -100,6 +100,8 @@ int main(int argc, char *argv[])
   params_t *params;
   gk_graph_t *graph, *pgraph;
   int32_t *perm;
+
+  unsigned rng_state = 0;
  
   /* get command-line options */
   params = parse_cmdline(argc, argv);
@@ -117,7 +119,7 @@ int main(int argc, char *argv[])
   /* compute the BFS ordering and re-order the graph */
   //for (i=0; i<params->niter; i++) {
   for (i=0; i<1; i++) {
-    v = RandomInRange(graph->nvtxs);
+    v = RandomInRange(graph->nvtxs,&rng_state);
     gk_graph_ComputeBFSOrdering(graph, v, &perm, NULL);
     printf("BFS from %8d. Compactness: %le\n", 
         (int) v, compute_compactness(params, graph, perm));

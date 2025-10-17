@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
   idx_t objval;
   params_t *params;
   int status=0;
+  unsigned rng_state = 0;
 
   params = parse_cmdline(argc, argv);
 
@@ -94,14 +95,14 @@ int main(int argc, char *argv[])
       status = METIS_PartGraphRecursive(&graph->nvtxs, &graph->ncon, graph->xadj, 
                    graph->adjncy, graph->vwgt, graph->vsize, graph->adjwgt, 
                    &params->nparts, params->tpwgts, params->ubvec, options, 
-                   &objval, part);
+                   &objval, part, &rng_state);
       break;
 
     case METIS_PTYPE_KWAY:
       status = METIS_PartGraphKway(&graph->nvtxs, &graph->ncon, graph->xadj, 
                    graph->adjncy, graph->vwgt, graph->vsize, graph->adjwgt, 
                    &params->nparts, params->tpwgts, params->ubvec, options, 
-                   &objval, part);
+                   &objval, part, &rng_state);
       break;
 
   }
