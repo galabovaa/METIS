@@ -6,6 +6,10 @@ file(GLOB metis_sources *.c)
 add_library(metis ${METIS_LIBRARY_TYPE} ${GKlib_sources} ${metis_sources})
 set_target_properties(metis PROPERTIES OUTPUT_NAME "${BINARY_NAME}")
 
+target_compile_definitions(metis
+    PUBLIC HIGHS_METIS_THREAD_SAFE
+)
+
 if(UNIX)
   target_link_libraries(metis m)
 endif()
