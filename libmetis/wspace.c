@@ -36,44 +36,6 @@ void AllocateWorkSpace(ctrl_t *ctrl, graph_t *graph)
   ctrl->nbrpoolcpos = 0;
 }
 
-
-/*************************************************************************/
-/*! This function allocates refinement-specific memory for the workspace */
-/*************************************************************************/
-void AllocateRefinementWorkSpace(ctrl_t *ctrl, idx_t nbrpoolsize)
-{
-  ctrl->nbrpoolsize     = nbrpoolsize;
-  ctrl->nbrpoolcpos     = 0;
-  ctrl->nbrpoolreallocs = 0;
-
-  switch (ctrl->objtype) {
-    case METIS_OBJTYPE_CUT:
-      ctrl->cnbrpool = (cnbr_t *)gk_malloc(ctrl->nbrpoolsize*sizeof(cnbr_t), 
-                             "AllocateRefinementWorkSpace: cnbrpool");
-      break;
-
-    case METIS_OBJTYPE_VOL:
-      ctrl->vnbrpool = (vnbr_t *)gk_malloc(ctrl->nbrpoolsize*sizeof(vnbr_t), 
-                             "AllocateRefinementWorkSpace: vnbrpool");
-      break;
-
-    default:
-      gk_errexit(SIGERR, "Unknown objtype of %d\n", ctrl->objtype);
-  }
-
-
-  /* Allocate the memory for the sparse subdomain graph */
-  if (ctrl->minconn) {
-    ctrl->pvec1   = imalloc(ctrl->nparts+1, "AllocateRefinementWorkSpace: pvec1");
-    ctrl->pvec2   = imalloc(ctrl->nparts+1, "AllocateRefinementWorkSpace: pvec2");
-    ctrl->maxnads = ismalloc(ctrl->nparts, INIT_MAXNAD, "AllocateRefinementWorkSpace: maxnads");
-    ctrl->nads    = imalloc(ctrl->nparts, "AllocateRefinementWorkSpace: nads");
-    ctrl->adids   = iAllocMatrix(ctrl->nparts, INIT_MAXNAD, 0, "AllocateRefinementWorkSpace: adids");
-    ctrl->adwgts  = iAllocMatrix(ctrl->nparts, INIT_MAXNAD, 0, "AllocateRefinementWorkSpace: adwgts");
-  }
-}
-
-
 /*************************************************************************/
 /*! This function frees the workspace */
 /*************************************************************************/
@@ -155,60 +117,3 @@ ikv_t *ikvwspacemalloc(ctrl_t *ctrl, idx_t n)
 {
   return (ikv_t *)wspacemalloc(ctrl, n*sizeof(ikv_t));
 }
-
-
-/*************************************************************************/
-/*! This function resets the cnbrpool */
-/*************************************************************************/
-void cnbrpoolReset(ctrl_t *ctrl)
-{
-  ctrl->nbrpoolcpos = 0;
-}
-
-
-/*************************************************************************/
-/*! This function gets the next free index from cnbrpool */
-/*************************************************************************/
-idx_t cnbrpoolGetNext(ctrl_t *ctrl, idx_t nnbrs)
-{
-  ctrl->nbrpoolcpos += nnbrs;
-
-  if (ctrl->nbrpoolcpos > ctrl->nbrpoolsize) {
-    ctrl->nbrpoolsize += gk_max(10*nnbrs, ctrl->nbrpoolsize/2);
-
-    ctrl->cnbrpool = (cnbr_t *)gk_realloc(ctrl->cnbrpool,  
-                          ctrl->nbrpoolsize*sizeof(cnbr_t), "cnbrpoolGet: cnbrpool");
-    ctrl->nbrpoolreallocs++;
-  }
-
-  return ctrl->nbrpoolcpos - nnbrs;
-}
-
-
-/*************************************************************************/
-/*! This function resets the vnbrpool */
-/*************************************************************************/
-void vnbrpoolReset(ctrl_t *ctrl)
-{
-  ctrl->nbrpoolcpos = 0;
-}
-
-
-/*************************************************************************/
-/*! This function gets the next free index from vnbrpool */
-/*************************************************************************/
-idx_t vnbrpoolGetNext(ctrl_t *ctrl, idx_t nnbrs)
-{
-  ctrl->nbrpoolcpos += nnbrs;
-
-  if (ctrl->nbrpoolcpos > ctrl->nbrpoolsize) {
-    ctrl->nbrpoolsize += gk_max(10*nnbrs, ctrl->nbrpoolsize/2);
-
-    ctrl->vnbrpool = (vnbr_t *)gk_realloc(ctrl->vnbrpool,  
-                          ctrl->nbrpoolsize*sizeof(vnbr_t), "vnbrpoolGet: vnbrpool");
-    ctrl->nbrpoolreallocs++;
-  }
-
-  return ctrl->nbrpoolcpos - nnbrs;
-}
-

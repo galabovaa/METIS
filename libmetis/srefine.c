@@ -23,7 +23,7 @@
 void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, unsigned* rng_state)
 {
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->UncoarsenTmr));
+
 
   if (graph == orggraph) {
     Compute2WayNodePartitionParams(ctrl, graph);
@@ -32,14 +32,14 @@ void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, unsigned* r
     do {
       graph = graph->finer;
 
-      IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->ProjectTmr));
-      Project2WayNodePartition(ctrl, graph);
-      IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->ProjectTmr));
 
-      IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->RefTmr));
+      Project2WayNodePartition(ctrl, graph);
+
+
+
       FM_2WayNodeBalance(ctrl, graph, rng_state); 
 
-      ASSERT(CheckNodePartitionParams(graph));
+      
 
       switch (ctrl->rtype) {
         case METIS_RTYPE_SEP2SIDED:
@@ -51,12 +51,12 @@ void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, unsigned* r
         default:
           gk_errexit(SIGERR, "Unknown rtype of %d\n", ctrl->rtype);
       }
-      IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->RefTmr));
+
 
     } while (graph != orggraph);
   }
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->UncoarsenTmr));
+
 }
 
 
@@ -108,7 +108,7 @@ void Compute2WayNodePartitionParams(ctrl_t *ctrl, graph_t *graph)
     me = where[i];
     pwgts[me] += vwgt[i];
 
-    ASSERT(me >=0 && me <= 2);
+    
 
     if (me == 2) { /* If it is on the separator do some computations */
       BNDInsert(nbnd, bndind, bndptr, i);
@@ -124,7 +124,7 @@ void Compute2WayNodePartitionParams(ctrl_t *ctrl, graph_t *graph)
     }
   }
 
-  ASSERT(CheckNodeBnd(graph, nbnd));
+  
 
   graph->mincut = pwgts[2];
   graph->nbnd   = nbnd;
@@ -152,8 +152,6 @@ void Project2WayNodePartition(ctrl_t *ctrl, graph_t *graph)
   /* Project the partition */
   for (i=0; i<nvtxs; i++) {
     where[i] = cwhere[cmap[i]];
-    ASSERTP(where[i] >= 0 && where[i] <= 2, ("%"PRIDX" %"PRIDX" %"PRIDX" %"PRIDX"\n", 
-          i, cmap[i], where[i], cwhere[cmap[i]]));
   }
 
   FreeGraph(&graph->coarser);

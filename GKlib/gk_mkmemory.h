@@ -71,31 +71,6 @@ TYPE *PRFX ## copy(size_t n, TYPE *a, TYPE *b)\
 /*************************************************************************/\
 /*! The macro for gk_?AllocMatrix()-class of routines */\
 /**************************************************************************/\
-TYPE **PRFX ## AllocMatrix(size_t ndim1, size_t ndim2, TYPE value, char *errmsg)\
-{\
-  gk_idx_t i, j;\
-  TYPE **matrix;\
-\
-  matrix = (TYPE **)gk_malloc(ndim1*sizeof(TYPE *), errmsg);\
-  if (matrix == NULL) \
-    return NULL;\
-\
-  for (i=0; i<ndim1; i++) { \
-    matrix[i] = PRFX ## smalloc(ndim2, value, errmsg);\
-    if (matrix[i] == NULL) { \
-      for (j=0; j<i; j++) \
-        gk_free((void **)&matrix[j], LTERM); \
-      return NULL; \
-    } \
-  }\
-\
-  return matrix;\
-}\
-\
-\
-/*************************************************************************/\
-/*! The macro for gk_?AllocMatrix()-class of routines */\
-/**************************************************************************/\
 void PRFX ## FreeMatrix(TYPE ***r_matrix, size_t ndim1, size_t ndim2)\
 {\
   gk_idx_t i;\
@@ -111,20 +86,6 @@ void PRFX ## FreeMatrix(TYPE ***r_matrix, size_t ndim1, size_t ndim2)\
 \
   gk_free((void **)r_matrix, LTERM);\
 }\
-\
-\
-/*************************************************************************/\
-/*! The macro for gk_?SetMatrix()-class of routines */\
-/**************************************************************************/\
-void PRFX ## SetMatrix(TYPE **matrix, size_t ndim1, size_t ndim2, TYPE value)\
-{\
-  gk_idx_t i, j;\
-\
-  for (i=0; i<ndim1; i++) {\
-    for (j=0; j<ndim2; j++)\
-      matrix[i][j] = value;\
-  }\
-}\
 
 
 #define GK_MKALLOC_PROTO(PRFX, TYPE)\
@@ -133,9 +94,7 @@ void PRFX ## SetMatrix(TYPE **matrix, size_t ndim1, size_t ndim2, TYPE value)\
   TYPE  *PRFX ## smalloc(size_t n, TYPE ival, char *msg);\
   TYPE  *PRFX ## set(size_t n, TYPE val, TYPE *x);\
   TYPE  *PRFX ## copy(size_t n, TYPE *a, TYPE *b);\
-  TYPE **PRFX ## AllocMatrix(size_t ndim1, size_t ndim2, TYPE value, char *errmsg);\
   void   PRFX ## FreeMatrix(TYPE ***r_matrix, size_t ndim1, size_t ndim2);\
-  void   PRFX ## SetMatrix(TYPE **matrix, size_t ndim1, size_t ndim2, TYPE value);\
 
 
 

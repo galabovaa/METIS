@@ -4,14 +4,11 @@ include(CheckIncludeFile)
 
 # Setup options.
 option(GDB "enable use of GDB" OFF)
-option(ASSERT "turn asserts on" OFF)
-option(ASSERT2 "additional assertions" OFF)
 option(DEBUG "add debugging support" OFF)
 option(GPROF "add gprof support" OFF)
 option(OPENMP "enable OpenMP support" OFF)
 option(PCRE "enable PCRE support" OFF)
 option(GKREGEX "enable GKREGEX support" OFF)
-option(GKRAND "enable GKRAND support" OFF)
 
 # Add compiler flags.
 if(MSVC)
@@ -66,15 +63,6 @@ if(GPROF)
   set(GKlib_COPTS "-pg")
 endif(GPROF)
 
-if(NOT ASSERT)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DNDEBUG")
-endif(NOT ASSERT)
-
-if(NOT ASSERT2)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DNDEBUG2")
-endif(NOT ASSERT2)
-
-
 # Add various options
 if(PCRE)
   set(GKlib_COPTIONS "${GKlib_COPTIONS} -D__WITHPCRE__")
@@ -83,10 +71,6 @@ endif(PCRE)
 if(GKREGEX)
   set(GKlib_COPTIONS "${GKlib_COPTIONS} -DUSE_GKREGEX")
 endif(GKREGEX)
-
-if(GKRAND)
-  set(GKlib_COPTIONS "${GKlib_COPTIONS} -DUSE_GKRAND")
-endif(GKRAND)
 
 
 # Check for features.

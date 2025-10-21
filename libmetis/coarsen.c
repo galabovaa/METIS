@@ -23,7 +23,7 @@ graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
 {
   idx_t i, eqewgts, level=0;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->CoarsenTmr));
+
 
   /* determine if the weights on the edges are all the same */
   for (eqewgts=1, i=1; i<graph->nedges; i++) {
@@ -64,14 +64,14 @@ graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
     eqewgts = 0;
     level++;
 
-    ASSERT(CheckGraph(graph, 0, 1));
+    
 
   } while (graph->nvtxs > ctrl->CoarsenTo && 
            graph->nvtxs < COARSEN_FRACTION*graph->finer->nvtxs && 
            graph->nedges > graph->nvtxs/2);
 
   IFSET(ctrl->dbglvl, METIS_DBG_COARSEN, PrintCGraphStats(ctrl, graph));
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->CoarsenTmr));
+
 
   return graph;
 }
@@ -86,7 +86,7 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels,unsigne
 {
   idx_t i, eqewgts, level;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->CoarsenTmr));
+
 
   /* determine if the weights on the edges are all the same */
   for (eqewgts=1, i=1; i<graph->nedges; i++) {
@@ -126,7 +126,7 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels,unsigne
     graph = graph->coarser;
     eqewgts = 0;
 
-    ASSERT(CheckGraph(graph, 0, 1));
+    
 
     if (graph->nvtxs < ctrl->CoarsenTo || 
         graph->nvtxs > COARSEN_FRACTION*graph->finer->nvtxs || 
@@ -135,7 +135,7 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels,unsigne
   } 
 
   IFSET(ctrl->dbglvl, METIS_DBG_COARSEN, PrintCGraphStats(ctrl, graph));
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->CoarsenTmr));
+
 
   return graph;
 }
@@ -155,7 +155,7 @@ idx_t Match_RM(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
 
   WCOREPUSH;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->MatchTmr));
+
 
   nvtxs  = graph->nvtxs;
   ncon   = graph->ncon;
@@ -257,7 +257,7 @@ idx_t Match_RM(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
     }
   }
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->MatchTmr));
+
 
   CreateCoarseGraph(ctrl, graph, cnvtxs, match);
 
@@ -283,7 +283,7 @@ idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
 
   WCOREPUSH;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->MatchTmr));
+
 
   nvtxs  = graph->nvtxs;
   ncon   = graph->ncon;
@@ -398,7 +398,7 @@ idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
     }
   }
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->MatchTmr));
+
 
   CreateCoarseGraph(ctrl, graph, cnvtxs, match);
 
@@ -442,7 +442,7 @@ idx_t Match_2HopAny(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
   idx_t *cmap;
   size_t nunmatched;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->Aux3Tmr));
+
 
   nvtxs  = graph->nvtxs;
   xadj   = graph->xadj;
@@ -498,7 +498,7 @@ idx_t Match_2HopAny(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
 
   /* IFSET(ctrl->dbglvl, METIS_DBG_COARSEN, printf("OUT: nunmatched: %zu\n", nunmatched)); */
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->Aux3Tmr));
+
 
   *r_nunmatched = nunmatched;
   return cnvtxs;
@@ -522,7 +522,7 @@ idx_t Match_2HopAll(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
   ikv_t *keys;
   size_t nunmatched, ncand;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->Aux3Tmr));
+
 
   nvtxs  = graph->nvtxs;
   xadj   = graph->xadj;
@@ -587,7 +587,7 @@ idx_t Match_2HopAll(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
 
   /*IFSET(ctrl->dbglvl, METIS_DBG_COARSEN, printf("OUT: ncand: %zu, nunmatched: %zu\n", ncand, nunmatched)); */
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->Aux3Tmr));
+
 
   *r_nunmatched = nunmatched;
   return cnvtxs;
@@ -649,7 +649,7 @@ void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
 
   WCOREPUSH;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->ContractTmr));
+
 
   ncon    = graph->ncon;
   vwgt    = graph->vwgt;
@@ -673,8 +673,8 @@ void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
     if ((u = match[v]) < v)
       continue;
 
-    ASSERT(cmap[v] == cnvtxs);
-    ASSERT(cmap[match[v]] == cnvtxs);
+    
+    
 
     if (ncon == 1)
       cvwgt[cnvtxs] = vwgt[v];
@@ -785,7 +785,7 @@ void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
 
   ReAdjustMemory(ctrl, graph, cgraph);
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->ContractTmr));
+
 
   WCOREPOP;
 }
@@ -810,7 +810,7 @@ void CreateCoarseGraphNoMask(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
 
   dovsize = (ctrl->objtype == METIS_OBJTYPE_VOL ? 1 : 0);
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->ContractTmr));
+
 
   nvtxs   = graph->nvtxs;
   ncon    = graph->ncon;
@@ -837,8 +837,8 @@ void CreateCoarseGraphNoMask(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
     if ((u = match[v]) < v)
       continue;
 
-    ASSERT(cmap[v] == cnvtxs);
-    ASSERT(cmap[match[v]] == cnvtxs);
+    
+    
 
     if (ncon == 1)
       cvwgt[cnvtxs] = vwgt[v];
@@ -889,7 +889,7 @@ void CreateCoarseGraphNoMask(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
 
       /* Remove the contracted adjacency weight */
       if ((j = htable[cnvtxs]) != -1) {
-        ASSERT(cadjncy[j] == cnvtxs);
+        
         cadjncy[j]        = cadjncy[--nedges];
         cadjwgt[j]        = cadjwgt[nedges];
         htable[cnvtxs] = -1;
@@ -915,175 +915,11 @@ void CreateCoarseGraphNoMask(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
 
   ReAdjustMemory(ctrl, graph, cgraph);
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->ContractTmr));
+
 
   WCOREPOP;
 }
 
-
-/*************************************************************************/
-/*! This function creates the coarser graph. It uses a simple hash-table 
-    for identifying the adjacent vertices that get collapsed to the same
-    node. The hash-table can have conflicts, which are handled via a
-    linear scan. It relies on the perm[] array to visit the vertices in
-    increasing cnvtxs order.
- */
-/*************************************************************************/
-void CreateCoarseGraphPerm(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs, 
-         idx_t *match, idx_t *perm)
-{
-  idx_t i, j, jj, k, kk, l, m, istart, iend, nvtxs, nedges, ncon, cnedges, 
-        v, u, mask, dovsize;
-  idx_t *xadj, *vwgt, *vsize, *adjncy, *adjwgt;
-  idx_t *cmap, *htable;
-  idx_t *cxadj, *cvwgt, *cvsize, *cadjncy, *cadjwgt;
-  graph_t *cgraph;
-
-  WCOREPUSH;
-
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->ContractTmr));
-
-  dovsize = (ctrl->objtype == METIS_OBJTYPE_VOL ? 1 : 0);
-
-  mask = HTLENGTH;
-
-  nvtxs   = graph->nvtxs;
-  ncon    = graph->ncon;
-  xadj    = graph->xadj;
-  vwgt    = graph->vwgt;
-  vsize   = graph->vsize;
-  adjncy  = graph->adjncy;
-  adjwgt  = graph->adjwgt;
-  cmap    = graph->cmap;
-
-  /* Initialize the coarser graph */
-  cgraph   = SetupCoarseGraph(graph, cnvtxs, dovsize);
-  cxadj    = cgraph->xadj;
-  cvwgt    = cgraph->vwgt;
-  cvsize   = cgraph->vsize;
-  cadjncy  = cgraph->adjncy;
-  cadjwgt  = cgraph->adjwgt;
-
-  htable = iset(mask+1, -1, iwspacemalloc(ctrl, mask+1)); 
-
-  cxadj[0] = cnvtxs = cnedges = 0;
-  for (i=0; i<nvtxs; i++) {
-    v = perm[i];
-    if (cmap[v] != cnvtxs) 
-      continue;
-
-    u = match[v];
-    if (ncon == 1)
-      cvwgt[cnvtxs] = vwgt[v];
-    else
-      icopy(ncon, vwgt+v*ncon, cvwgt+cnvtxs*ncon);
-
-    if (dovsize)
-      cvsize[cnvtxs] = vsize[v];
-
-    nedges = 0;
-
-    istart = xadj[v];
-    iend = xadj[v+1];
-    for (j=istart; j<iend; j++) {
-      k  = cmap[adjncy[j]];
-      kk = k&mask;
-      if ((m = htable[kk]) == -1) {
-        cadjncy[nedges] = k;
-        cadjwgt[nedges] = adjwgt[j];
-        htable[kk] = nedges++;
-      }
-      else if (cadjncy[m] == k) {
-        cadjwgt[m] += adjwgt[j];
-      }
-      else {
-        for (jj=0; jj<nedges; jj++) {
-          if (cadjncy[jj] == k) {
-            cadjwgt[jj] += adjwgt[j];
-            break;
-          }
-        }
-        if (jj == nedges) {
-          cadjncy[nedges] = k;
-          cadjwgt[nedges++] = adjwgt[j];
-        }
-      }
-    }
-
-    if (v != u) { 
-      if (ncon == 1)
-        cvwgt[cnvtxs] += vwgt[u];
-      else
-        iaxpy(ncon, 1, vwgt+u*ncon, 1, cvwgt+cnvtxs*ncon, 1);
-
-      if (dovsize)
-        cvsize[cnvtxs] += vsize[u];
-
-      istart = xadj[u];
-      iend = xadj[u+1];
-      for (j=istart; j<iend; j++) {
-        k  = cmap[adjncy[j]];
-        kk = k&mask;
-        if ((m = htable[kk]) == -1) {
-          cadjncy[nedges] = k;
-          cadjwgt[nedges] = adjwgt[j];
-          htable[kk] = nedges++;
-        }
-        else if (cadjncy[m] == k) {
-          cadjwgt[m] += adjwgt[j];
-        }
-        else {
-          for (jj=0; jj<nedges; jj++) {
-            if (cadjncy[jj] == k) {
-              cadjwgt[jj] += adjwgt[j];
-              break;
-            }
-          }
-          if (jj == nedges) {
-            cadjncy[nedges] = k;
-            cadjwgt[nedges++] = adjwgt[j];
-          }
-        }
-      }
-
-      /* Remove the contracted adjacency weight */
-      jj = htable[cnvtxs&mask];
-      if (jj >= 0 && cadjncy[jj] != cnvtxs) {
-        for (jj=0; jj<nedges; jj++) {
-          if (cadjncy[jj] == cnvtxs) 
-            break;
-        }
-      }
-      if (jj >= 0 && cadjncy[jj] == cnvtxs) { /* This 2nd check is needed for non-adjacent matchings */
-        cadjncy[jj] = cadjncy[--nedges];
-        cadjwgt[jj] = cadjwgt[nedges];
-      }
-    }
-
-    for (j=0; j<nedges; j++)
-      htable[cadjncy[j]&mask] = -1;  /* Zero out the htable */
-    htable[cnvtxs&mask] = -1;
-
-    cnedges += nedges;
-    cxadj[++cnvtxs] = cnedges;
-    cadjncy += nedges;
-    cadjwgt += nedges;
-  }
-
-  cgraph->nedges = cnedges;
-
-  for (i=0; i<ncon; i++) {
-    cgraph->tvwgt[i]    = isum(cgraph->nvtxs, cgraph->vwgt+i, ncon);
-    cgraph->invtvwgt[i] = 1.0/(cgraph->tvwgt[i] > 0 ? cgraph->tvwgt[i] : 1);
-  }
-
-
-  ReAdjustMemory(ctrl, graph, cgraph);
-
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->ContractTmr));
-
-  WCOREPOP;
-}
 
 
 /*************************************************************************/

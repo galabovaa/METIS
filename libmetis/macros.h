@@ -45,14 +45,12 @@
 **************************************************************************/
 #define ListInsert(n, lind, lptr, i) \
    do { \
-     ASSERT(lptr[i] == -1); \
      lind[n] = i; \
      lptr[i] = (n)++;\
    } while(0) 
 
 #define ListDelete(n, lind, lptr, i) \
    do { \
-     ASSERT(lptr[i] != -1); \
      lind[lptr[i]] = lind[--(n)]; \
      lptr[lind[n]] = lptr[i]; \
      lptr[i] = -1; \
@@ -110,7 +108,6 @@
        myrinfo->inbr  = cnbrpoolGetNext(ctrl, adjlen+1); \
        myrinfo->nnbrs = 0; \
      } \
-     ASSERT(CheckRInfo(ctrl, myrinfo)); \
      \
      mynbrs = ctrl->cnbrpool + myrinfo->inbr; \
      \
@@ -166,7 +163,6 @@
        } \
      } \
      \
-     ASSERT(CheckRInfo(ctrl, myrinfo));\
    } while(0) 
 
 

@@ -22,7 +22,6 @@
 
 
 #include <metis.h>
-#include <rename.h>
 #include <gklib_defs.h>
 
 #include <defs.h>

@@ -10,15 +10,6 @@
 #ifndef _LIBMETIS_GKLIB_H_
 #define _LIBMETIS_GKLIB_H_
 
-#include "gklib_rename.h"
-
-/*************************************************************************/
-/*! Stores a weighted edge */
-/*************************************************************************/
-typedef struct {
-  idx_t u, v, w;               /*!< Edge (u,v) with weight w */
-} uvw_t;
-
 /*************************************************************************
 * Define various data structure using GKlib's templates.
 **************************************************************************/
@@ -38,16 +29,6 @@ GK_MKALLOC_PROTO(rkv, rkv_t)
 GK_MKPQUEUE_PROTO(ipq, ipq_t, idx_t, idx_t)
 GK_MKPQUEUE_PROTO(rpq, rpq_t, real_t, idx_t)
 GK_MKRANDOM_PROTO(i, idx_t, idx_t)
-GK_MKARRAY2CSR_PROTO(i, idx_t)
-void isorti(size_t n, idx_t *base);
-void isortd(size_t n, idx_t *base);
-void rsorti(size_t n, real_t *base);
-void rsortd(size_t n, real_t *base);
 void ikvsorti(size_t n, ikv_t *base);
-void ikvsortii(size_t n, ikv_t *base);
-void ikvsortd(size_t n, ikv_t *base);
-void rkvsorti(size_t n, rkv_t *base);
-void rkvsortd(size_t n, rkv_t *base);
-void uvwsorti(size_t n, uvw_t *base);
 
 #endif

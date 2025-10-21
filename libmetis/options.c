@@ -120,8 +120,6 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
      than required as balance multipliers for 2 parts is sufficient. */
   ctrl->pijbm = rmalloc(nparts*ncon, "SetupCtrl: ctrl->pijbm");
 
-  InitRandom(ctrl->seed);
-
   IFSET(ctrl->dbglvl, METIS_DBG_INFO, PrintCtrl(ctrl));
 
   if (!CheckParams(ctrl)) {
@@ -130,20 +128,6 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   }
   else {
     return ctrl;
-  }
-}
-
-
-/*************************************************************************/
-/*! Computes the per-partition/constraint balance multipliers */
-/*************************************************************************/
-void SetupKWayBalMultipliers(ctrl_t *ctrl, graph_t *graph)
-{
-  idx_t i, j;
-
-  for (i=0; i<ctrl->nparts; i++) {
-    for (j=0; j<graph->ncon; j++)
-      ctrl->pijbm[i*graph->ncon+j] = graph->invtvwgt[j]/ctrl->tpwgts[i*graph->ncon+j];
   }
 }
 
