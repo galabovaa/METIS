@@ -26,37 +26,9 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
 
   switch (optype) {
     case METIS_OP_PMETIS:
-      ctrl->objtype = GETOPTION(options, METIS_OPTION_OBJTYPE, METIS_OBJTYPE_CUT);
-      ctrl->rtype   = METIS_RTYPE_FM;
-      ctrl->ncuts   = GETOPTION(options, METIS_OPTION_NCUTS,   1);
-      ctrl->niter   = GETOPTION(options, METIS_OPTION_NITER,   10);
-
-      if (ncon == 1) {
-        ctrl->iptype    = GETOPTION(options, METIS_OPTION_IPTYPE,  METIS_IPTYPE_GROW);
-        ctrl->ufactor   = GETOPTION(options, METIS_OPTION_UFACTOR, PMETIS_DEFAULT_UFACTOR);
-        ctrl->CoarsenTo = 20;
-      }
-      else {
-        ctrl->iptype    = GETOPTION(options, METIS_OPTION_IPTYPE,  METIS_IPTYPE_RANDOM);
-        ctrl->ufactor   = GETOPTION(options, METIS_OPTION_UFACTOR, MCPMETIS_DEFAULT_UFACTOR);
-        ctrl->CoarsenTo = 100;
-      }
-
       break;
-
-
     case METIS_OP_KMETIS:
-      ctrl->objtype = GETOPTION(options, METIS_OPTION_OBJTYPE, METIS_OBJTYPE_CUT);
-      ctrl->iptype  = METIS_IPTYPE_METISRB;
-      ctrl->rtype   = METIS_RTYPE_GREEDY;
-      ctrl->ncuts   = GETOPTION(options, METIS_OPTION_NCUTS,   1);
-      ctrl->niter   = GETOPTION(options, METIS_OPTION_NITER,   10);
-      ctrl->ufactor = GETOPTION(options, METIS_OPTION_UFACTOR, KMETIS_DEFAULT_UFACTOR);
-      ctrl->minconn = GETOPTION(options, METIS_OPTION_MINCONN, 0);
-      ctrl->contig  = GETOPTION(options, METIS_OPTION_CONTIG,  0);
       break;
-
-
     case METIS_OP_OMETIS:
       ctrl->objtype  = GETOPTION(options, METIS_OPTION_OBJTYPE,  METIS_OBJTYPE_NODE);
       ctrl->rtype    = GETOPTION(options, METIS_OPTION_RTYPE,    METIS_RTYPE_SEP1SIDED);
@@ -80,7 +52,7 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   ctrl->no2hop  = GETOPTION(options, METIS_OPTION_NO2HOP, 0);
   ctrl->seed    = GETOPTION(options, METIS_OPTION_SEED, -1);
   ctrl->dbglvl  = GETOPTION(options, METIS_OPTION_DBGLVL, 0);
-  ctrl->numflag = GETOPTION(options, METIS_OPTION_NUMBERING, 0);
+
 
   /* set non-option information */
   ctrl->optype  = optype;
@@ -89,23 +61,7 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   ctrl->maxvwgt = ismalloc(ncon, 0);
 
   /* setup the target partition weights */
-  if (ctrl->optype != METIS_OP_OMETIS) {
-    ctrl->tpwgts = rmalloc(nparts*ncon);
-    if (tpwgts) {
-      rcopy(nparts*ncon, tpwgts, ctrl->tpwgts);
-    }
-    else {
-      for (i=0; i<nparts; i++) {
-        for (j=0; j<ncon; j++)
-          ctrl->tpwgts[i*ncon+j] = 1.0/nparts;
-      }
-    }
-  }
-  else {  /* METIS_OP_OMETIS */
-    /* this is required to allow the pijbm to be defined properly for
-       the edge-based refinement during initial partitioning */
-    ctrl->tpwgts = rsmalloc(2, .5);
-  }
+  ctrl->tpwgts = rsmalloc(2, .5);
 
 
   /* setup the ubfactors */
@@ -276,151 +232,9 @@ int CheckParams(ctrl_t *ctrl)
 
   switch (ctrl->optype) {
     case METIS_OP_PMETIS:
-      if (ctrl->objtype != METIS_OBJTYPE_CUT) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect objective type.\n"));
-        return 0;
-      }
-      if (ctrl->ctype != METIS_CTYPE_RM && ctrl->ctype != METIS_CTYPE_SHEM) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect coarsening scheme.\n"));
-        return 0;
-      }
-      if (ctrl->iptype != METIS_IPTYPE_GROW && ctrl->iptype != METIS_IPTYPE_RANDOM) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect initial partitioning scheme.\n"));
-        return 0;
-      }
-      if (ctrl->rtype != METIS_RTYPE_FM) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect refinement scheme.\n"));
-        return 0;
-      }
-      if (ctrl->ncuts <= 0) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect ncuts.\n"));
-        return 0;
-      }
-      if (ctrl->niter <= 0) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect niter.\n"));
-        return 0;
-      }
-      if (ctrl->ufactor <= 0) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect ufactor.\n"));
-        return 0;
-      }
-      if (ctrl->numflag != 0 && ctrl->numflag != 1) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect numflag.\n"));
-        return 0;
-      }
-      if (ctrl->nparts <= 0) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect nparts.\n"));
-        return 0;
-      }
-      if (ctrl->ncon <= 0) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect ncon.\n"));
-        return 0;
-      }
-
-      for (i=0; i<ctrl->ncon; i++) {
-        sum = rsum(ctrl->nparts, ctrl->tpwgts+i, ctrl->ncon);
-        if (sum < 0.99 || sum > 1.01) {
-          IFSET(dbglvl, METIS_DBG_INFO, 
-              printf("Input Error: Incorrect sum of %"PRREAL" for tpwgts for constraint %"PRIDX".\n", sum, i));
-          return 0;
-        }
-      }
-      for (i=0; i<ctrl->ncon; i++) {
-        for (j=0; j<ctrl->nparts; j++) {
-          if (ctrl->tpwgts[j*ctrl->ncon+i] <= 0.0) {
-            IFSET(dbglvl, METIS_DBG_INFO, 
-                printf("Input Error: Incorrect tpwgts for partition %"PRIDX" and constraint %"PRIDX".\n", j, i));
-            return 0;
-          }
-        }
-      }
-
-      for (i=0; i<ctrl->ncon; i++) {
-        if (ctrl->ubfactors[i] <= 1.0) {
-          IFSET(dbglvl, METIS_DBG_INFO, 
-              printf("Input Error: Incorrect ubfactor for constraint %"PRIDX".\n", i));
-          return 0;
-        }
-      }
-
       break;
 
     case METIS_OP_KMETIS:
-      if (ctrl->objtype != METIS_OBJTYPE_CUT && ctrl->objtype != METIS_OBJTYPE_VOL) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect objective type.\n"));
-        return 0;
-      }
-      if (ctrl->ctype != METIS_CTYPE_RM && ctrl->ctype != METIS_CTYPE_SHEM) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect coarsening scheme.\n"));
-        return 0;
-      }
-      if (ctrl->iptype != METIS_IPTYPE_METISRB) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect initial partitioning scheme.\n"));
-        return 0;
-      }
-      if (ctrl->rtype != METIS_RTYPE_GREEDY) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect refinement scheme.\n"));
-        return 0;
-      }
-      if (ctrl->ncuts <= 0) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect ncuts.\n"));
-        return 0;
-      }
-      if (ctrl->niter <= 0) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect niter.\n"));
-        return 0;
-      }
-      if (ctrl->ufactor <= 0) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect ufactor.\n"));
-        return 0;
-      }
-      if (ctrl->numflag != 0 && ctrl->numflag != 1) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect numflag.\n"));
-        return 0;
-      }
-      if (ctrl->nparts <= 0) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect nparts.\n"));
-        return 0;
-      }
-      if (ctrl->ncon <= 0) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect ncon.\n"));
-        return 0;
-      }
-      if (ctrl->contig != 0 && ctrl->contig != 1) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect contig.\n"));
-        return 0;
-      }
-      if (ctrl->minconn != 0 && ctrl->minconn != 1) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect minconn.\n"));
-        return 0;
-      }
-
-      for (i=0; i<ctrl->ncon; i++) {
-        sum = rsum(ctrl->nparts, ctrl->tpwgts+i, ctrl->ncon);
-        if (sum < 0.99 || sum > 1.01) {
-          IFSET(dbglvl, METIS_DBG_INFO, 
-              printf("Input Error: Incorrect sum of %"PRREAL" for tpwgts for constraint %"PRIDX".\n", sum, i));
-          return 0;
-        }
-      }
-      for (i=0; i<ctrl->ncon; i++) {
-        for (j=0; j<ctrl->nparts; j++) {
-          if (ctrl->tpwgts[j*ctrl->ncon+i] <= 0.0) {
-            IFSET(dbglvl, METIS_DBG_INFO, 
-                printf("Input Error: Incorrect tpwgts for partition %"PRIDX" and constraint %"PRIDX".\n", j, i));
-            return 0;
-          }
-        }
-      }
-
-      for (i=0; i<ctrl->ncon; i++) {
-        if (ctrl->ubfactors[i] <= 1.0) {
-          IFSET(dbglvl, METIS_DBG_INFO, 
-              printf("Input Error: Incorrect ubfactor for constraint %"PRIDX".\n", i));
-          return 0;
-        }
-      }
-
       break;
 
 
@@ -452,10 +266,6 @@ int CheckParams(ctrl_t *ctrl)
       }
       if (ctrl->ufactor <= 0) {
         IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect ufactor.\n"));
-        return 0;
-      }
-      if (ctrl->numflag != 0 && ctrl->numflag != 1) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect numflag.\n"));
         return 0;
       }
       if (ctrl->nparts != 3) {

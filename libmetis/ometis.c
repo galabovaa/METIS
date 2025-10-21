@@ -29,8 +29,6 @@
     \param vwgt is an array of size nvtxs storing the weight of each 
            vertex. If vwgt is NULL, then the vertices are considered 
            to have unit weight.
-    \param numflag is either 0 or 1 indicating that the numbering of 
-           the vertices starts from 0 or 1, respectively.
     \param options is an array of size METIS_NOPTIONS used to pass 
            various options impacting the of the algorithm. A NULL
            value indicates use of default options.
@@ -43,26 +41,17 @@
 int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
           idx_t *options, idx_t *perm, idx_t *iperm, unsigned* rng_state) 
 {
-  int sigrval=0, renumber=0;
+  int sigrval=0;
   idx_t i, ii, j, l, nnvtxs=0;
   graph_t *graph=NULL;
   ctrl_t *ctrl;
   idx_t *cptr, *cind, *piperm;
-  int numflag = 0;
 
   /* set up the run time parameters */
   ctrl = SetupCtrl(METIS_OP_OMETIS, options, 1, 3, NULL, NULL);
   if (!ctrl) {
     return METIS_ERROR_INPUT;
   }
-
-  /* if required, change the numbering to 0 */
-  if (ctrl->numflag == 1) {
-    Change2CNumbering(*nvtxs, xadj, adjncy);
-    renumber = 1;
-  }
-
-
 
   /* prune the dense columns */
   if (ctrl->pfactor > 0.0) { 
@@ -143,14 +132,8 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
   for (i=0; i<*nvtxs; i++)
     perm[iperm[i]] = i;
 
-
-
   /* clean up */
   FreeCtrl(&ctrl);
-
-  /* if required, change the numbering back to 1 */
-  if (renumber)
-    Change2FNumberingOrder(*nvtxs, xadj, adjncy, perm, iperm);
 
   return metis_rcode(sigrval);
 }

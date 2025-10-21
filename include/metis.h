@@ -227,7 +227,6 @@ typedef enum {
 
 /*! Options codes (i.e., options[]) */
 typedef enum {
-  METIS_OPTION_PTYPE,
   METIS_OPTION_OBJTYPE,
   METIS_OPTION_CTYPE,
   METIS_OPTION_IPTYPE,
@@ -244,30 +243,7 @@ typedef enum {
   METIS_OPTION_PFACTOR,
   METIS_OPTION_NSEPS,
   METIS_OPTION_UFACTOR,
-  METIS_OPTION_NUMBERING,
-
-  /* Used for command-line parameter purposes */
-  METIS_OPTION_HELP,
-  METIS_OPTION_TPWGTS,
-  METIS_OPTION_NCOMMON,
-  METIS_OPTION_NOOUTPUT,
-  METIS_OPTION_BALANCE,
-  METIS_OPTION_GTYPE,
-  METIS_OPTION_UBVEC
 } moptions_et;
-
-
-/*! Partitioning Schemes */
-typedef enum {
-  METIS_PTYPE_RB, 
-  METIS_PTYPE_KWAY                
-} mptype_et;
-
-/*! Graph types for meshes */
-typedef enum {
-  METIS_GTYPE_DUAL,
-  METIS_GTYPE_NODAL               
-} mgtype_et;
 
 /*! Coarsening Schemes */
 typedef enum {

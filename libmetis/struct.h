@@ -14,59 +14,6 @@
 #ifndef _LIBMETIS_STRUCT_H_
 #define _LIBMETIS_STRUCT_H_
 
-
-
-/*************************************************************************/
-/*! This data structure stores cut-based k-way refinement info about an
-    adjacent subdomain for a given vertex. */
-/*************************************************************************/
-typedef struct cnbr_t {
-  idx_t pid;            /*!< The partition ID */
-  idx_t ed;             /*!< The sum of the weights of the adjacent edges
-                             that are incident on pid */
-} cnbr_t;
-
-
-/*************************************************************************/
-/*! The following data structure stores holds information on degrees for k-way
-    partition */
-/*************************************************************************/
-typedef struct ckrinfo_t {
- idx_t id;              /*!< The internal degree of a vertex (sum of weights) */
- idx_t ed;            	/*!< The total external degree of a vertex */
- idx_t nnbrs;          	/*!< The number of neighboring subdomains */
- idx_t inbr;            /*!< The index in the cnbr_t array where the nnbrs list 
-                             of neighbors is stored */
-} ckrinfo_t;
-
-
-/*************************************************************************/
-/*! This data structure stores volume-based k-way refinement info about an
-    adjacent subdomain for a given vertex. */
-/*************************************************************************/
-typedef struct vnbr_t {
-  idx_t pid;            /*!< The partition ID */
-  idx_t ned;            /*!< The number of the adjacent edges
-                             that are incident on pid */
-  idx_t gv;             /*!< The gain in volume achieved by moving the
-                             vertex to pid */
-} vnbr_t;
-
-
-/*************************************************************************/
-/*! The following data structure holds information on degrees for k-way
-    vol-based partition */
-/*************************************************************************/
-typedef struct vkrinfo_t {
- idx_t nid;             /*!< The internal degree of a vertex (count of edges) */
- idx_t ned;            	/*!< The total external degree of a vertex (count of edges) */
- idx_t gv;            	/*!< The volume gain of moving that vertex */
- idx_t nnbrs;          	/*!< The number of neighboring subdomains */
- idx_t inbr;            /*!< The index in the vnbr_t array where the nnbrs list 
-                             of neighbors is stored */
-} vkrinfo_t;
-
-
 /*************************************************************************/
 /*! The following data structure holds information on degrees for k-way
     partition */
@@ -109,28 +56,11 @@ typedef struct graph_t {
   /* Bisection refinement parameters */
   idx_t *id, *ed;
 
-  /* K-way refinement parameters */
-  ckrinfo_t *ckrinfo;   /*!< The per-vertex cut-based refinement info */
-  vkrinfo_t *vkrinfo;   /*!< The per-vertex volume-based refinement info */
-
   /* Node refinement information */
   nrinfo_t *nrinfo;
 
   struct graph_t *coarser, *finer;
 } graph_t;
-
-
-/*************************************************************************/
-/*! This data structure holds a mesh */
-/*************************************************************************/
-typedef struct mesh_t {
-  idx_t ne, nn;	        /*!< The # of elements and nodes in the mesh */
-  idx_t ncon;           /*!< The number of element balancing constraints (element weights) */
-
-  idx_t *eptr, *eind;   /*!< The CSR-structure storing the nodes in the elements */
-  idx_t *ewgt;          /*!< The weights of the elements */
-} mesh_t;
-
 
 
 /*************************************************************************/
@@ -156,7 +86,6 @@ typedef struct ctrl_t {
   idx_t seed;                   /* The seed for the random number generator */
   idx_t ncuts;                  /* The number of different partitionings to compute */
   idx_t niter;                  /* The number of iterations during each refinement */
-  idx_t numflag;                /* The user-supplied numflag for the graph */
   idx_t *maxvwgt;		/* The maximum allowed weight for a vertex */
 
   idx_t ncon;                   /*!< The number of balancing constraints */
@@ -175,18 +104,6 @@ typedef struct ctrl_t {
   /* Workspace information */
   gk_mcore_t *mcore;    /*!< The persistent memory core for within function 
                              mallocs/frees */
-
-  /* These are for use by the k-way refinement routines */
-  size_t nbrpoolsize;      /*!< The number of {c,v}nbr_t entries that have been allocated */
-  size_t nbrpoolcpos;      /*!< The position of the first free entry in the array */
-  size_t nbrpoolreallocs;  /*!< The number of times the pool was resized */
-
-  cnbr_t *cnbrpool;     /*!< The pool of cnbr_t entries to be used during refinement.
-                             The size and current position of the pool is controlled
-                             by nnbrs & cnbrs */
-  vnbr_t *vnbrpool;     /*!< The pool of vnbr_t entries to be used during refinement.
-                             The size and current position of the pool is controlled
-                             by nnbrs & cnbrs */
 
   /* The subdomain graph, in sparse format  */ 
   idx_t *maxnads;               /* The maximum allocated number of adjacent domains */

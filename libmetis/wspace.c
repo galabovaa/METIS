@@ -31,9 +31,6 @@ void AllocateWorkSpace(ctrl_t *ctrl, graph_t *graph)
   }
   /*coresize = 0;*/
   ctrl->mcore = gk_mcoreCreate(coresize);
-
-  ctrl->nbrpoolsize = 0;
-  ctrl->nbrpoolcpos = 0;
 }
 
 /*************************************************************************/
@@ -42,18 +39,6 @@ void AllocateWorkSpace(ctrl_t *ctrl, graph_t *graph)
 void FreeWorkSpace(ctrl_t *ctrl)
 {
   gk_mcoreDestroy(&ctrl->mcore, ctrl->dbglvl&METIS_DBG_INFO);
-
-  IFSET(ctrl->dbglvl, METIS_DBG_INFO,
-      printf(" nbrpool statistics\n" 
-             "        nbrpoolsize: %12zu   nbrpoolcpos: %12zu\n"
-             "    nbrpoolreallocs: %12zu\n\n",
-             ctrl->nbrpoolsize,  ctrl->nbrpoolcpos, 
-             ctrl->nbrpoolreallocs));
-
-  gk_free((void **)&ctrl->cnbrpool);
-  gk_free((void **)&ctrl->vnbrpool);
-  ctrl->nbrpoolsize = 0;
-  ctrl->nbrpoolcpos = 0;
 
   if (ctrl->minconn) {
     iFreeMatrix(&(ctrl->adids),  ctrl->nparts, INIT_MAXNAD);
