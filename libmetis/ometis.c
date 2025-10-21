@@ -50,11 +50,6 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
   idx_t *cptr, *cind, *piperm;
   int numflag = 0;
 
-  /* set up malloc cleaning code and signal catchers */
-  if (!gk_malloc_init()) 
-    return METIS_ERROR_MEMORY;
-
-
   /* set up the run time parameters */
   ctrl = SetupCtrl(METIS_OP_OMETIS, options, 1, 3, NULL, NULL);
   if (!ctrl) {
@@ -155,8 +150,6 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
   /* if required, change the numbering back to 1 */
   if (renumber)
     Change2FNumberingOrder(*nvtxs, xadj, adjncy, perm, iperm);
-
-  gk_malloc_cleanup(0);
 
   return metis_rcode(sigrval);
 }
