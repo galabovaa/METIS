@@ -35,7 +35,7 @@ void FPRFX ## Init(PQT *queue, size_t maxnodes)\
   queue->nnodes = 0;\
   queue->maxnodes = maxnodes;\
 \
-  queue->heap    = KVMALLOC(maxnodes, "gk_PQInit: heap");\
+  queue->heap    = KVMALLOC(maxnodes);\
   queue->locator = (gk_idx_t*)malloc(maxnodes*sizeof(gk_idx_t));\
   for(size_t i=0; i<maxnodes; ++i)\
     queue->locator[i] = -1;\

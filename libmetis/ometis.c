@@ -66,7 +66,7 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
 
   /* prune the dense columns */
   if (ctrl->pfactor > 0.0) { 
-    piperm = imalloc(*nvtxs, "OMETIS: piperm");
+    piperm = imalloc(*nvtxs);
 
     graph = PruneGraph(ctrl, *nvtxs, xadj, adjncy, vwgt, piperm, ctrl->pfactor);
     if (graph == NULL) {
@@ -83,8 +83,8 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
   /* compress the graph; note that compression only happens if not prunning 
      has taken place. */
   if (ctrl->compress) { 
-    cptr = imalloc(*nvtxs+1, "OMETIS: cptr");
-    cind = imalloc(*nvtxs, "OMETIS: cind");
+    cptr = imalloc(*nvtxs+1);
+    cind = imalloc(*nvtxs);
 
     graph = CompressGraph(ctrl, *nvtxs, xadj, adjncy, vwgt, cptr, cind);
     if (graph == NULL) {

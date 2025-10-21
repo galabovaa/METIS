@@ -29,7 +29,7 @@ idx_t FindSepInducedComponents(ctrl_t *ctrl, graph_t *graph, idx_t *cptr,
   adjncy = graph->adjncy;
   where  = graph->where;
 
-  touched = ismalloc(nvtxs, 0, "IsConnected: queue");
+  touched = ismalloc(nvtxs, 0);
 
   for (i=0; i<graph->nbnd; i++)
     touched[graph->bndind[i]] = 1;

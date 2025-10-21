@@ -86,11 +86,11 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   ctrl->optype  = optype;
   ctrl->ncon    = ncon;
   ctrl->nparts  = nparts;
-  ctrl->maxvwgt = ismalloc(ncon, 0, "SetupCtrl: maxvwgt");
+  ctrl->maxvwgt = ismalloc(ncon, 0);
 
   /* setup the target partition weights */
   if (ctrl->optype != METIS_OP_OMETIS) {
-    ctrl->tpwgts = rmalloc(nparts*ncon, "SetupCtrl: ctrl->tpwgts");
+    ctrl->tpwgts = rmalloc(nparts*ncon);
     if (tpwgts) {
       rcopy(nparts*ncon, tpwgts, ctrl->tpwgts);
     }
@@ -104,12 +104,12 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   else {  /* METIS_OP_OMETIS */
     /* this is required to allow the pijbm to be defined properly for
        the edge-based refinement during initial partitioning */
-    ctrl->tpwgts = rsmalloc(2, .5,  "SetupCtrl: ctrl->tpwgts");
+    ctrl->tpwgts = rsmalloc(2, .5);
   }
 
 
   /* setup the ubfactors */
-  ctrl->ubfactors = rsmalloc(ctrl->ncon, I2RUBFACTOR(ctrl->ufactor), "SetupCtrl: ubfactors");
+  ctrl->ubfactors = rsmalloc(ctrl->ncon, I2RUBFACTOR(ctrl->ufactor));
   if (ubvec)
     rcopy(ctrl->ncon, ubvec, ctrl->ubfactors);
   for (i=0; i<ctrl->ncon; i++)
@@ -118,7 +118,7 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   /* Allocate memory for balance multipliers. 
      Note that for PMETIS/OMETIS routines the memory allocated is more 
      than required as balance multipliers for 2 parts is sufficient. */
-  ctrl->pijbm = rmalloc(nparts*ncon, "SetupCtrl: ctrl->pijbm");
+  ctrl->pijbm = rmalloc(nparts*ncon);
 
   IFSET(ctrl->dbglvl, METIS_DBG_INFO, PrintCtrl(ctrl));
 

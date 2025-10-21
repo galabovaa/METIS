@@ -43,7 +43,7 @@ graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
     /* allocate memory for cmap, if it has not already been done due to
        multiple cuts */
     if (graph->cmap == NULL)
-      graph->cmap = imalloc(graph->nvtxs, "CoarsenGraph: graph->cmap");
+      graph->cmap = imalloc(graph->nvtxs);
 
     /* determine which matching scheme you will use */
     switch (ctrl->ctype) {
@@ -106,7 +106,7 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels,unsigne
     /* allocate memory for cmap, if it has not already been done due to
        multiple cuts */
     if (graph->cmap == NULL)
-      graph->cmap = imalloc(graph->nvtxs, "CoarsenGraph: graph->cmap");
+      graph->cmap = imalloc(graph->nvtxs);
 
     /* determine which matching scheme you will use */
     switch (ctrl->ctype) {
@@ -940,15 +940,15 @@ graph_t *SetupCoarseGraph(graph_t *graph, idx_t cnvtxs, idx_t dovsize)
 
 
   /* Allocate memory for the coarser graph */
-  cgraph->xadj     = imalloc(cnvtxs+1, "SetupCoarseGraph: xadj");
-  cgraph->adjncy   = imalloc(graph->nedges,   "SetupCoarseGraph: adjncy");
-  cgraph->adjwgt   = imalloc(graph->nedges,   "SetupCoarseGraph: adjwgt");
-  cgraph->vwgt     = imalloc(cgraph->ncon*cnvtxs, "SetupCoarseGraph: vwgt");
-  cgraph->tvwgt    = imalloc(cgraph->ncon, "SetupCoarseGraph: tvwgt");
-  cgraph->invtvwgt = rmalloc(cgraph->ncon, "SetupCoarseGraph: invtvwgt");
+  cgraph->xadj     = imalloc(cnvtxs+1);
+  cgraph->adjncy   = imalloc(graph->nedges);
+  cgraph->adjwgt   = imalloc(graph->nedges);
+  cgraph->vwgt     = imalloc(cgraph->ncon*cnvtxs);
+  cgraph->tvwgt    = imalloc(cgraph->ncon);
+  cgraph->invtvwgt = rmalloc(cgraph->ncon);
 
   if (dovsize)
-    cgraph->vsize = imalloc(cnvtxs,   "SetupCoarseGraph: vsize");
+    cgraph->vsize = imalloc(cnvtxs);
 
   return cgraph;
 }
@@ -962,7 +962,7 @@ graph_t *SetupCoarseGraph(graph_t *graph, idx_t cnvtxs, idx_t dovsize)
 void ReAdjustMemory(ctrl_t *ctrl, graph_t *graph, graph_t *cgraph) 
 {
   if (cgraph->nedges > 10000 && cgraph->nedges < 0.9*graph->nedges) {
-    cgraph->adjncy = irealloc(cgraph->adjncy, cgraph->nedges, "ReAdjustMemory: adjncy");
-    cgraph->adjwgt = irealloc(cgraph->adjwgt, cgraph->nedges, "ReAdjustMemory: adjwgt");
+    cgraph->adjncy = irealloc(cgraph->adjncy, cgraph->nedges);
+    cgraph->adjwgt = irealloc(cgraph->adjwgt, cgraph->nedges);
   }
 }

@@ -299,12 +299,12 @@ void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 
 
   /* Allocate refinement memory. Allocate sufficient memory for both edge and node */
-  graph->pwgts  = imalloc(3, "GrowBisectionNode: pwgts");
-  graph->where  = imalloc(nvtxs, "GrowBisectionNode: where");
-  graph->bndptr = imalloc(nvtxs, "GrowBisectionNode: bndptr");
-  graph->bndind = imalloc(nvtxs, "GrowBisectionNode: bndind");
-  graph->id     = imalloc(nvtxs, "GrowBisectionNode: id");
-  graph->ed     = imalloc(nvtxs, "GrowBisectionNode: ed");
+  graph->pwgts  = imalloc(3);
+  graph->where  = imalloc(nvtxs);
+  graph->bndptr = imalloc(nvtxs);
+  graph->bndind = imalloc(nvtxs);
+  graph->id     = imalloc(nvtxs);
+  graph->ed     = imalloc(nvtxs);
   graph->nrinfo = (nrinfo_t *)malloc(nvtxs*sizeof(nrinfo_t));
   
   where  = graph->where;
