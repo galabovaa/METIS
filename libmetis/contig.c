@@ -76,7 +76,7 @@ idx_t FindSepInducedComponents(ctrl_t *ctrl, graph_t *graph, idx_t *cptr,
   }
   cptr[++ncmps] = first;
 
-  gk_free((void **)&touched, LTERM);
+  gk_free((void **)&touched);
 
   return ncmps;
 }

@@ -10,9 +10,6 @@
 #ifndef _GK_DEFS_H_
 #define _GK_DEFS_H_
 
-
-#define LTERM                   (void **) 0     /* List terminator for GKfree() */
-
 /* mopt_t types */
 #define GK_MOPT_MARK            1
 #define GK_MOPT_CORE            2

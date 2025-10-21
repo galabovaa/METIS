@@ -73,7 +73,7 @@ void Allocate2WayNodePartitionMemory(ctrl_t *ctrl, graph_t *graph)
   graph->where  = imalloc(nvtxs, "Allocate2WayNodePartitionMemory: where");
   graph->bndptr = imalloc(nvtxs, "Allocate2WayNodePartitionMemory: bndptr");
   graph->bndind = imalloc(nvtxs, "Allocate2WayNodePartitionMemory: bndind");
-  graph->nrinfo = (nrinfo_t *)gk_malloc(nvtxs*sizeof(nrinfo_t), "Allocate2WayNodePartitionMemory: nrinfo");
+  graph->nrinfo = (nrinfo_t *)malloc(nvtxs*sizeof(nrinfo_t));
 }
 
 

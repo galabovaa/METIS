@@ -50,7 +50,8 @@ void FreeWorkSpace(ctrl_t *ctrl)
              ctrl->nbrpoolsize,  ctrl->nbrpoolcpos, 
              ctrl->nbrpoolreallocs));
 
-  gk_free((void **)&ctrl->cnbrpool, &ctrl->vnbrpool, LTERM);
+  gk_free((void **)&ctrl->cnbrpool);
+  gk_free((void **)&ctrl->vnbrpool);
   ctrl->nbrpoolsize = 0;
   ctrl->nbrpoolcpos = 0;
 
@@ -58,8 +59,10 @@ void FreeWorkSpace(ctrl_t *ctrl)
     iFreeMatrix(&(ctrl->adids),  ctrl->nparts, INIT_MAXNAD);
     iFreeMatrix(&(ctrl->adwgts), ctrl->nparts, INIT_MAXNAD);
 
-    gk_free((void **)&ctrl->pvec1, &ctrl->pvec2, 
-        &ctrl->maxnads, &ctrl->nads, LTERM);
+    gk_free((void **)&ctrl->pvec1);
+    gk_free((void **)&ctrl->pvec2);
+    gk_free((void **)&ctrl->maxnads);
+    gk_free((void **)&ctrl->nads);
   }
 }
 

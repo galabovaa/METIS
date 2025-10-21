@@ -17,11 +17,7 @@ extern "C" {
 /*-------------------------------------------------------------
  * memory.c
  *-------------------------------------------------------------*/
-GK_MKALLOC_PROTO(gk_idx, gk_idx_t)
-
-void  *gk_malloc(size_t nbytes, char *msg);
-void  *gk_realloc(void *oldptr, size_t nbytes, char *msg);
-void   gk_free(void **ptr1,...);
+void   gk_free(void **ptr1);
 
 /*-------------------------------------------------------------
  * error.c

@@ -19,18 +19,18 @@ gk_mcore_t *gk_mcoreCreate(size_t coresize)
 {
   gk_mcore_t *mcore;
 
-  mcore = (gk_mcore_t *)gk_malloc(sizeof(gk_mcore_t), "gk_mcoreCreate: mcore");
+  mcore = (gk_mcore_t *)malloc(sizeof(gk_mcore_t));
   memset(mcore, 0, sizeof(gk_mcore_t));
 
   mcore->coresize = coresize;
   mcore->corecpos = 0;
 
-  mcore->core = (coresize == 0 ? NULL : gk_malloc(mcore->coresize, "gk_mcoreCreate: core"));
+  mcore->core = (coresize == 0 ? NULL : malloc(mcore->coresize));
 
   /* allocate the memory for keeping track of malloc ops */
   mcore->nmops = 2048;
   mcore->cmop  = 0;
-  mcore->mops  = (gk_mop_t *)gk_malloc(mcore->nmops*sizeof(gk_mop_t), "gk_mcoreCreate: mcore->mops");
+  mcore->mops  = (gk_mop_t *)malloc(mcore->nmops*sizeof(gk_mop_t));
 
   return mcore;
 }
@@ -65,7 +65,9 @@ void gk_mcoreDestroy(gk_mcore_t **r_mcore, int showstats)
            mcore->cur_callocs,  mcore->cur_hallocs, mcore->cmop);
   }
 
-  gk_free((void **)&mcore->core, &mcore->mops, &mcore, LTERM);
+  gk_free((void **)&mcore->core);
+  gk_free((void **)&mcore->mops);
+  gk_free((void **)&mcore);
 
   *r_mcore = NULL;
 }
@@ -91,7 +93,7 @@ void *gk_mcoreMalloc(gk_mcore_t *mcore, size_t nbytes)
   }
   else {
     /* service this request from the heap */
-    ptr = gk_malloc(nbytes, "gk_mcoremalloc: ptr");
+    ptr = malloc(nbytes);
 
     gk_mcoreAdd(mcore, GK_MOPT_HEAP, nbytes, ptr);
   }
@@ -139,7 +141,7 @@ void gk_mcorePop(gk_mcore_t *mcore)
         break;
 
       case GK_MOPT_HEAP: /* heap free */
-        gk_free((void **)&mcore->mops[mcore->cmop].ptr, LTERM);
+        gk_free((void **)&mcore->mops[mcore->cmop].ptr);
         mcore->cur_hallocs -= mcore->mops[mcore->cmop].nbytes;
         break;
 

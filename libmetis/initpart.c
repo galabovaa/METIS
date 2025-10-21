@@ -305,7 +305,7 @@ void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
   graph->bndind = imalloc(nvtxs, "GrowBisectionNode: bndind");
   graph->id     = imalloc(nvtxs, "GrowBisectionNode: id");
   graph->ed     = imalloc(nvtxs, "GrowBisectionNode: ed");
-  graph->nrinfo = (nrinfo_t *)gk_malloc(nvtxs*sizeof(nrinfo_t), "GrowBisectionNode: nrinfo");
+  graph->nrinfo = (nrinfo_t *)malloc(nvtxs*sizeof(nrinfo_t));
   
   where  = graph->where;
   bndind = graph->bndind;

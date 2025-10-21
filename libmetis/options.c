@@ -20,7 +20,7 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   idx_t i, j;
   ctrl_t *ctrl;
 
-  ctrl = (ctrl_t *)gk_malloc(sizeof(ctrl_t), "SetupCtrl: ctrl");
+  ctrl = (ctrl_t *)malloc(sizeof(ctrl_t));
   
   memset((void *)ctrl, 0, sizeof(ctrl_t));
 
@@ -507,8 +507,11 @@ void FreeCtrl(ctrl_t **r_ctrl)
 
   FreeWorkSpace(ctrl);
 
-  gk_free((void **)&ctrl->tpwgts, &ctrl->pijbm, 
-          &ctrl->ubfactors, &ctrl->maxvwgt, &ctrl, LTERM);
+  gk_free((void **)&ctrl->tpwgts);
+  gk_free((void **)&ctrl->pijbm);
+  gk_free((void **)&ctrl->ubfactors);
+  gk_free((void **)&ctrl->maxvwgt);
+  gk_free((void **)&ctrl);
 
   *r_ctrl = NULL;
 }

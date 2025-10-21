@@ -20,7 +20,7 @@ PQT *FPRFX ## Create(size_t maxnodes)\
 {\
   PQT *queue; \
 \
-  queue = (PQT *)gk_malloc(sizeof(PQT), "gk_pqCreate: queue");\
+  queue = (PQT *)malloc(sizeof(PQT));\
   FPRFX ## Init(queue, maxnodes);\
 \
   return queue;\
@@ -36,7 +36,9 @@ void FPRFX ## Init(PQT *queue, size_t maxnodes)\
   queue->maxnodes = maxnodes;\
 \
   queue->heap    = KVMALLOC(maxnodes, "gk_PQInit: heap");\
-  queue->locator = gk_idxsmalloc(maxnodes, -1, "gk_PQInit: locator");\
+  queue->locator = (gk_idx_t*)malloc(maxnodes*sizeof(gk_idx_t));\
+  for(size_t i=0; i<maxnodes; ++i)\
+    queue->locator[i] = -1;\
 }\
 \
 \
@@ -61,7 +63,8 @@ void FPRFX ## Reset(PQT *queue)\
 void FPRFX ## Free(PQT *queue)\
 {\
   if (queue == NULL) return;\
-  gk_free((void **)&queue->heap, &queue->locator, LTERM);\
+  gk_free((void **)&queue->heap);\
+  gk_free((void **)&queue->locator);\
   queue->maxnodes = 0;\
 }\
 \
@@ -74,7 +77,7 @@ void FPRFX ## Destroy(PQT *queue)\
 {\
   if (queue == NULL) return;\
   FPRFX ## Free(queue);\
-  gk_free((void **)&queue, LTERM);\
+  gk_free((void **)&queue);\
 }\
 \
 \

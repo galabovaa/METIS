@@ -17,7 +17,7 @@
 /**************************************************************************/\
 TYPE *PRFX ## malloc(size_t n, char *msg)\
 {\
-  return (TYPE *)gk_malloc(sizeof(TYPE)*n, msg);\
+  return (TYPE *)malloc(sizeof(TYPE)*n);\
 }\
 \
 \
@@ -26,7 +26,7 @@ TYPE *PRFX ## malloc(size_t n, char *msg)\
 /**************************************************************************/\
 TYPE *PRFX ## realloc(TYPE *ptr, size_t n, char *msg)\
 {\
-  return (TYPE *)gk_realloc((void *)ptr, sizeof(TYPE)*n, msg);\
+  return (TYPE *)realloc((void *)ptr, sizeof(TYPE)*n);\
 }\
 \
 \
@@ -37,7 +37,7 @@ TYPE *PRFX ## smalloc(size_t n, TYPE ival, char *msg)\
 {\
   TYPE *ptr;\
 \
-  ptr = (TYPE *)gk_malloc(sizeof(TYPE)*n, msg);\
+  ptr = (TYPE *)malloc(sizeof(TYPE)*n);\
   if (ptr == NULL) \
     return NULL; \
 \
@@ -82,9 +82,9 @@ void PRFX ## FreeMatrix(TYPE ***r_matrix, size_t ndim1, size_t ndim2)\
   matrix = *r_matrix;\
 \
   for (i=0; i<ndim1; i++) \
-    gk_free((void **)&(matrix[i]), LTERM);\
+    gk_free((void **)&(matrix[i]));\
 \
-  gk_free((void **)r_matrix, LTERM);\
+  gk_free((void **)r_matrix);\
 }\
 
 

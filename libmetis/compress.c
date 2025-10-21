@@ -132,7 +132,9 @@ graph_t *CompressGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t *xadj, idx_t *adjncy,
     SetupGraph_label(graph);
   }
 
-  gk_free((void **)&keys, &map, &mark, LTERM);
+  gk_free((void **)&keys);
+  gk_free((void **)&map);
+  gk_free((void **)&mark);
 
   return graph;
 
@@ -214,7 +216,7 @@ graph_t *PruneGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t *xadj, idx_t *adjncy,
   }
 
 
-  gk_free((void **)&perm, LTERM);
+  gk_free((void **)&perm);
 
   return graph;
 }

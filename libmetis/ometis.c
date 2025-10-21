@@ -71,7 +71,7 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
     graph = PruneGraph(ctrl, *nvtxs, xadj, adjncy, vwgt, piperm, ctrl->pfactor);
     if (graph == NULL) {
       /* if there was no prunning, cleanup the pfactor */
-      gk_free((void **)&piperm, LTERM);
+      gk_free((void **)&piperm);
       ctrl->pfactor = 0.0;
     }
     else {
@@ -89,7 +89,7 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
     graph = CompressGraph(ctrl, *nvtxs, xadj, adjncy, vwgt, cptr, cind);
     if (graph == NULL) {
       /* if there was no compression, cleanup the compress flag */
-      gk_free((void **)&cptr, &cind, LTERM);
+      gk_free((void **)&cind);
       ctrl->compress = 0; 
     }
     else {
@@ -124,7 +124,7 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
     for (i=nnvtxs; i<*nvtxs; i++)
       iperm[piperm[i]] = i;
 
-    gk_free((void **)&piperm, LTERM);
+    gk_free((void **)&piperm);
   }
   else if (ctrl->compress) { /* Uncompress the ordering */
     /* construct perm from iperm */
@@ -136,7 +136,8 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
         iperm[cind[j]] = l++;
     }
 
-    gk_free((void **)&cptr, &cind, LTERM);
+    gk_free((void **)&cptr);
+    gk_free((void **)&cind);
   }
 
   for (i=0; i<*nvtxs; i++)
@@ -272,7 +273,7 @@ void MlevelNestedDissectionCC(ctrl_t *ctrl, graph_t *graph, idx_t *order,
     rnvtxs += snvtxs;
   }
 
-  gk_free((void **)&sgraphs, LTERM);
+  gk_free((void **)&sgraphs);
 }
 
 
@@ -566,7 +567,7 @@ graph_t **SplitGraphOrderCC(ctrl_t *ctrl, graph_t *graph, idx_t ncmps,
 
   rename = iwspacemalloc(ctrl, nvtxs);
   
-  sgraphs = (graph_t **)gk_malloc(sizeof(graph_t *)*ncmps, "SplitGraphOrderCC: sgraphs");
+  sgraphs = (graph_t **)malloc(sizeof(graph_t *)*ncmps);
 
   /* Go and split the graph a component at a time */
   for (iii=0; iii<ncmps; iii++) {
