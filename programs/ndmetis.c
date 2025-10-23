@@ -26,7 +26,6 @@ int main(int argc, char *argv[])
   idx_t *perm, *iperm;
   params_t *params;
   int status=0;
-  unsigned rng_state = 0;
 
   params = parse_cmdline(argc, argv);
 
@@ -76,7 +75,7 @@ int main(int argc, char *argv[])
   gk_startcputimer(params->parttimer);
 
   status = METIS_NodeND_ts(&graph->nvtxs, graph->xadj, graph->adjncy, graph->vwgt, 
-               options, perm, iperm, rng_state);
+               options, perm, iperm);
 
   gk_stopcputimer(params->parttimer);
   if (gk_GetCurMemoryUsed() != 0)
