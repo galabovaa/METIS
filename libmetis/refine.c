@@ -14,7 +14,7 @@
 /*************************************************************************/
 /*! This function is the entry point of refinement */
 /*************************************************************************/
-void Refine2Way(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, real_t *tpwgts, unsigned* rng_state)
+void Refine2Way(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, real_t *tpwgts)
 {
 
   IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->UncoarsenTmr));
@@ -27,9 +27,9 @@ void Refine2Way(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph, real_t *tpwgts,
 
     IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->RefTmr));
 
-    Balance2Way(ctrl, graph, tpwgts, rng_state);
+    Balance2Way(ctrl, graph, tpwgts);
 
-    FM_2WayRefine(ctrl, graph, tpwgts, ctrl->niter, rng_state); 
+    FM_2WayRefine(ctrl, graph, tpwgts, ctrl->niter); 
 
     IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->RefTmr));
 

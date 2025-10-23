@@ -26,10 +26,10 @@ GK_MKRANDOM(gk_z,   size_t, ssize_t)
 /*************************************************************************/
 /*! Define function rand_r, which may not exist on certain machines */
 /*************************************************************************/
-int my_rand_r(unsigned *state) {
+int my_rand_r(unsigned *rng_state) {
   // Linear congruential generator, with values from wikipedia
-  int result = ((*state * 1103515245) + 12345) & 0x7fffffff;
-  *state = result;
+  int result = ((*rng_state * 1103515245) + 12345) & 0x7fffffff;
+  *rng_state = result;
   return result;
 }
 
@@ -93,7 +93,7 @@ void gk_randinit(uint64_t seed)
 
 
 /* generates a random number on [0, 2^64-1]-interval */
-uint64_t gk_randint64(unsigned* state)
+uint64_t gk_randint64(unsigned *rng_state)
 {
 #ifdef USE_GKRAND
   int i;
@@ -129,19 +129,19 @@ uint64_t gk_randint64(unsigned* state)
 
   return x & 0x7FFFFFFFFFFFFFFF;
 #else
-uint64_t piece_1 = ((uint64_t) my_rand_r(state)) << 32;
-uint64_t piece_2 = ((uint64_t) my_rand_r(state));
+uint64_t piece_1 = ((uint64_t) my_rand_r(rng_state)) << 32;
+uint64_t piece_2 = ((uint64_t) my_rand_r(rng_state));
   return (uint64_t)(piece_1 | piece_2);
 #endif
 }
 
 /* generates a random number on [0, 2^32-1]-interval */
-uint32_t gk_randint32(unsigned* state)
+uint32_t gk_randint32(unsigned *rng_state)
 {
 #ifdef USE_GKRAND
   return (uint32_t)(gk_randint64() & 0x7FFFFFFF);
 #else
-  return (uint32_t)my_rand_r(state);
+  return (uint32_t)my_rand_r(rng_state);
 #endif
 }
 

@@ -33,21 +33,21 @@ void FPRFX ## srand(RNGT seed) \
 /*************************************************************************/\
 /*! Returns a random number */ \
 /**************************************************************************/\
-RNGT FPRFX ## rand(unsigned* state) \
+RNGT FPRFX ## rand(unsigned *rng_state) \
 {\
   if (sizeof(RNGT) <= sizeof(int32_t)) \
-    return (RNGT)gk_randint32(state); \
+    return (RNGT)gk_randint32(rng_state); \
   else \
-    return (RNGT)gk_randint64(state); \
+    return (RNGT)gk_randint64(rng_state); \
 }\
 \
 \
 /*************************************************************************/\
 /*! Returns a random number between [0, max) */ \
 /**************************************************************************/\
-RNGT FPRFX ## randInRange(RNGT max, unsigned* state) \
+RNGT FPRFX ## randInRange(RNGT max, unsigned *rng_state) \
 {\
-  return (RNGT)((FPRFX ## rand(state))%max); \
+  return (RNGT)((FPRFX ## rand(rng_state))%max); \
 }\
 \
 \
@@ -56,7 +56,7 @@ RNGT FPRFX ## randInRange(RNGT max, unsigned* state) \
     flag == 1, p[i] = i prior to permutation, \
     flag == 0, p[] is not initialized. */\
 /**************************************************************************/\
-void FPRFX ## randArrayPermute(RNGT n, VALT *p, RNGT nshuffles, int flag, unsigned* state)\
+void FPRFX ## randArrayPermute(RNGT n, VALT *p, RNGT nshuffles, int flag, unsigned *rng_state)\
 {\
   RNGT i, u, v;\
   VALT tmp;\
@@ -68,15 +68,15 @@ void FPRFX ## randArrayPermute(RNGT n, VALT *p, RNGT nshuffles, int flag, unsign
 \
   if (n < 10) {\
     for (i=0; i<n; i++) {\
-      v = FPRFX ## randInRange(n,state);\
-      u = FPRFX ## randInRange(n,state);\
+      v = FPRFX ## randInRange(n, rng_state);\
+      u = FPRFX ## randInRange(n, rng_state);\
       gk_SWAP(p[v], p[u], tmp);\
     }\
   }\
   else {\
     for (i=0; i<nshuffles; i++) {\
-      v = FPRFX ## randInRange(n-3,state);\
-      u = FPRFX ## randInRange(n-3,state);\
+      v = FPRFX ## randInRange(n-3,rng_state);\
+      u = FPRFX ## randInRange(n-3,rng_state);\
       /*gk_SWAP(p[v+0], p[u+0], tmp);*/\
       /*gk_SWAP(p[v+1], p[u+1], tmp);*/\
       /*gk_SWAP(p[v+2], p[u+2], tmp);*/\
@@ -95,7 +95,7 @@ void FPRFX ## randArrayPermute(RNGT n, VALT *p, RNGT nshuffles, int flag, unsign
     flag == 1, p[i] = i prior to permutation, \
     flag == 0, p[] is not initialized. */\
 /**************************************************************************/\
-void FPRFX ## randArrayPermuteFine(RNGT n, VALT *p, int flag,unsigned* state)\
+void FPRFX ## randArrayPermuteFine(RNGT n, VALT *p, int flag, unsigned *rng_state)\
 {\
   RNGT i, v;\
   VALT tmp;\
@@ -106,7 +106,7 @@ void FPRFX ## randArrayPermuteFine(RNGT n, VALT *p, int flag,unsigned* state)\
   }\
 \
   for (i=0; i<n; i++) {\
-    v = FPRFX ## randInRange(n,state);\
+    v = FPRFX ## randInRange(n, rng_state);\
     gk_SWAP(p[i], p[v], tmp);\
   }\
 }\
@@ -114,10 +114,10 @@ void FPRFX ## randArrayPermuteFine(RNGT n, VALT *p, int flag,unsigned* state)\
 
 #define GK_MKRANDOM_PROTO(FPRFX, RNGT, VALT)\
   void FPRFX ## srand(RNGT seed); \
-  RNGT FPRFX ## rand(unsigned* state); \
-  RNGT FPRFX ## randInRange(RNGT max,unsigned* state); \
-  void FPRFX ## randArrayPermute(RNGT n, VALT *p, RNGT nshuffles, int flag,unsigned* state);\
-  void FPRFX ## randArrayPermuteFine(RNGT n, VALT *p, int flag,unsigned* state);\
+  RNGT FPRFX ## rand(unsigned *rng_state); \
+  RNGT FPRFX ## randInRange(RNGT max, unsigned *rng_state); \
+  void FPRFX ## randArrayPermute(RNGT n, VALT *p, RNGT nshuffles, int flag, unsigned *rng_state);\
+  void FPRFX ## randArrayPermuteFine(RNGT n, VALT *p, int flag, unsigned *rng_state);\
 
 
 #endif

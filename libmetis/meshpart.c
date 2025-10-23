@@ -21,7 +21,7 @@
 **************************************************************************/
 int METIS_PartMeshNodal_ts(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
           idx_t *vwgt, idx_t *vsize, idx_t *nparts, real_t *tpwgts, 
-          idx_t *options, idx_t *objval, idx_t *epart, idx_t *npart, unsigned* rng_state)
+          idx_t *options, idx_t *objval, idx_t *epart, idx_t *npart)
 {
   int sigrval=0, renumber=0, ptype;
   idx_t *xadj=NULL, *adjncy=NULL;
@@ -54,10 +54,10 @@ int METIS_PartMeshNodal_ts(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
   /* partition the graph */
   if (ptype == METIS_PTYPE_KWAY) 
     rstatus = METIS_PartGraphKway_ts(nn, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-                  nparts, tpwgts, NULL, options, objval, npart, rng_state);
+                  nparts, tpwgts, NULL, options, objval, npart);
   else 
     rstatus = METIS_PartGraphRecursive_ts(nn, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-                  nparts, tpwgts, NULL, options, objval, npart, rng_state);
+                  nparts, tpwgts, NULL, options, objval, npart);
 
   if (rstatus != METIS_OK)
     raise(SIGERR);
@@ -90,7 +90,7 @@ SIGTHROW:
 int METIS_PartMeshDual_ts(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
           idx_t *vwgt, idx_t *vsize, idx_t *ncommon, idx_t *nparts, 
           real_t *tpwgts, idx_t *options, idx_t *objval, idx_t *epart, 
-          idx_t *npart, unsigned* rng_state) 
+          idx_t *npart) 
 {
   int sigrval=0, renumber=0, ptype;
   idx_t i, j;
@@ -124,10 +124,10 @@ int METIS_PartMeshDual_ts(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
   /* partition the graph */
   if (ptype == METIS_PTYPE_KWAY) 
     rstatus = METIS_PartGraphKway_ts(ne, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-                  nparts, tpwgts, NULL, options, objval, epart, rng_state);
+                  nparts, tpwgts, NULL, options, objval, epart);
   else 
     rstatus = METIS_PartGraphRecursive_ts(ne, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-                  nparts, tpwgts, NULL, options, objval, epart,rng_state);
+                  nparts, tpwgts, NULL, options, objval, epart);
 
   if (rstatus != METIS_OK)
     raise(SIGERR);

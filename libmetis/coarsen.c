@@ -19,7 +19,7 @@
     It implements the coarsening phase of the multilevel paradigm. 
  */
 /*************************************************************************/
-graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
+graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph)
 {
   idx_t i, eqewgts, level=0;
 
@@ -48,13 +48,13 @@ graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
     /* determine which matching scheme you will use */
     switch (ctrl->ctype) {
       case METIS_CTYPE_RM:
-        Match_RM(ctrl, graph,rng_state);
+        Match_RM(ctrl, graph);
         break;
       case METIS_CTYPE_SHEM:
         if (eqewgts || graph->nedges == 0)
-          Match_RM(ctrl, graph,rng_state);
+          Match_RM(ctrl, graph);
         else
-          Match_SHEM(ctrl, graph,rng_state);
+          Match_SHEM(ctrl, graph);
         break;
       default:
         gk_errexit(SIGERR, "Unknown ctype: %d\n", ctrl->ctype);
@@ -82,7 +82,7 @@ graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
     graphs, where nlevels is an input parameter.
  */
 /*************************************************************************/
-graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels,unsigned* rng_state)
+graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels)
 {
   idx_t i, eqewgts, level;
 
@@ -111,13 +111,13 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels,unsigne
     /* determine which matching scheme you will use */
     switch (ctrl->ctype) {
       case METIS_CTYPE_RM:
-        Match_RM(ctrl, graph,rng_state);
+        Match_RM(ctrl, graph);
         break;
       case METIS_CTYPE_SHEM:
         if (eqewgts || graph->nedges == 0)
-          Match_RM(ctrl, graph,rng_state);
+          Match_RM(ctrl, graph);
         else
-          Match_SHEM(ctrl, graph,rng_state);
+          Match_SHEM(ctrl, graph);
         break;
       default:
         gk_errexit(SIGERR, "Unknown ctype: %d\n", ctrl->ctype);
@@ -146,7 +146,7 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels,unsigne
     unmatched adjacent vertices. 
  */
 /**************************************************************************/
-idx_t Match_RM(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
+idx_t Match_RM(ctrl_t *ctrl, graph_t *graph)
 {
   idx_t i, pi, ii, j, jj, jjinc, k, nvtxs, ncon, cnvtxs, maxidx, last_unmatched;
   idx_t *xadj, *vwgt, *adjncy, *adjwgt, *maxvwgt;
@@ -170,7 +170,7 @@ idx_t Match_RM(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
   match = iset(nvtxs, UNMATCHED, iwspacemalloc(ctrl, nvtxs));
   perm  = iwspacemalloc(ctrl, nvtxs);
 
-  irandArrayPermute(nvtxs, perm, nvtxs/8, 1,rng_state);
+  irandArrayPermute(nvtxs, perm, nvtxs/8, 1, &ctrl->rng_state);
 
   for (cnvtxs=0, last_unmatched=0, pi=0; pi<nvtxs; pi++) {
     i = perm[pi];
@@ -273,7 +273,7 @@ idx_t Match_RM(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
     given a chance to match with something. 
  */
 /**************************************************************************/
-idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
+idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph)
 {
   idx_t i, pi, ii, j, jj, jjinc, k, nvtxs, ncon, cnvtxs, maxidx, maxwgt, 
         last_unmatched, avgdegree;
@@ -300,7 +300,7 @@ idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph,unsigned* rng_state)
   tperm   = iwspacemalloc(ctrl, nvtxs);
   degrees = iwspacemalloc(ctrl, nvtxs);
 
-  irandArrayPermute(nvtxs, tperm, nvtxs/8, 1,rng_state);
+  irandArrayPermute(nvtxs, tperm, nvtxs/8, 1, &ctrl->rng_state);
 
   avgdegree = 0.7*(xadj[nvtxs]/nvtxs);
   for (i=0; i<nvtxs; i++) 

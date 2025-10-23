@@ -18,21 +18,21 @@
    constraints. */
 /*************************************************************************/
 void Greedy_KWayOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter, 
-         real_t ffactor, idx_t omode,unsigned* rng_state)
+         real_t ffactor, idx_t omode)
 {
   switch (ctrl->objtype) {
     case METIS_OBJTYPE_CUT:
       if (graph->ncon == 1)
-        Greedy_KWayCutOptimize(ctrl, graph, niter, ffactor, omode, rng_state);
+        Greedy_KWayCutOptimize(ctrl, graph, niter, ffactor, omode);
       else
-        Greedy_McKWayCutOptimize(ctrl, graph, niter, ffactor, omode, rng_state);
+        Greedy_McKWayCutOptimize(ctrl, graph, niter, ffactor, omode);
       break;
 
     case METIS_OBJTYPE_VOL:
       if (graph->ncon == 1)
-        Greedy_KWayVolOptimize(ctrl, graph, niter, ffactor, omode, rng_state);
+        Greedy_KWayVolOptimize(ctrl, graph, niter, ffactor, omode);
       else
-        Greedy_McKWayVolOptimize(ctrl, graph, niter, ffactor, omode, rng_state);
+        Greedy_McKWayVolOptimize(ctrl, graph, niter, ffactor, omode);
       break;
 
     default:
@@ -58,7 +58,7 @@ void Greedy_KWayOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
 */
 /**************************************************************************/
 void Greedy_KWayCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter, 
-         real_t ffactor, idx_t omode, unsigned* rng_state)
+         real_t ffactor, idx_t omode)
 {
   /* Common variables to all types of kway-refinement/balancing routines */
   idx_t i, ii, iii, j, k, l, pass, nvtxs, nparts, gain; 
@@ -174,7 +174,7 @@ void Greedy_KWayCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
       maxndoms = imax(nparts, nads);
 
     /* Insert the boundary vertices in the priority queue */
-    irandArrayPermute(nbnd, perm, nbnd/4, 1, rng_state);
+    irandArrayPermute(nbnd, perm, nbnd/4, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[perm[ii]];
       rgain = (graph->ckrinfo[i].nnbrs > 0 ? 
@@ -368,7 +368,7 @@ void Greedy_KWayCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
 */
 /**************************************************************************/
 void Greedy_KWayVolOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter, 
-         real_t ffactor, idx_t omode, unsigned* rng_state)
+         real_t ffactor, idx_t omode)
 {
   /* Common variables to all types of kway-refinement/balancing routines */
   idx_t i, ii, iii, j, k, l, pass, nvtxs, nparts, gain; 
@@ -487,7 +487,7 @@ void Greedy_KWayVolOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
       maxndoms = imax(nparts, nads);
 
     /* Insert the boundary vertices in the priority queue */
-    irandArrayPermute(graph->nbnd, perm, graph->nbnd/4, 1,rng_state);
+    irandArrayPermute(graph->nbnd, perm, graph->nbnd/4, 1, &ctrl->rng_state);
     for (ii=0; ii<graph->nbnd; ii++) {
       i = bndind[perm[ii]];
       ipqInsert(queue, i, graph->vkrinfo[i].gv);
@@ -682,7 +682,7 @@ void Greedy_KWayVolOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
 */
 /**************************************************************************/
 void Greedy_McKWayCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter, 
-         real_t ffactor, idx_t omode, unsigned* rng_state)
+         real_t ffactor, idx_t omode)
 {
   /* Common variables to all types of kway-refinement/balancing routines */
   idx_t i, ii, iii, j, k, l, pass, nvtxs, ncon, nparts, gain; 
@@ -816,7 +816,7 @@ void Greedy_McKWayCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
       maxndoms = imax(nparts, nads);
 
     /* Insert the boundary vertices in the priority queue */
-    irandArrayPermute(nbnd, perm, nbnd/4, 1,rng_state);
+    irandArrayPermute(nbnd, perm, nbnd/4, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[perm[ii]];
       rgain = (graph->ckrinfo[i].nnbrs > 0 ? 
@@ -1024,7 +1024,7 @@ void Greedy_McKWayCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
 */
 /**************************************************************************/
 void Greedy_McKWayVolOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter, 
-         real_t ffactor, idx_t omode, unsigned* rng_state)
+         real_t ffactor, idx_t omode)
 {
   /* Common variables to all types of kway-refinement/balancing routines */
   idx_t i, ii, iii, j, k, l, pass, nvtxs, ncon, nparts, gain; 
@@ -1160,7 +1160,7 @@ void Greedy_McKWayVolOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
       maxndoms = imax(nparts, nads);
 
     /* Insert the boundary vertices in the priority queue */
-    irandArrayPermute(graph->nbnd, perm, graph->nbnd/4, 1, rng_state);
+    irandArrayPermute(graph->nbnd, perm, graph->nbnd/4, 1, &ctrl->rng_state);
     for (ii=0; ii<graph->nbnd; ii++) {
       i = bndind[perm[ii]];
       ipqInsert(queue, i, graph->vkrinfo[i].gv);

@@ -41,7 +41,7 @@
 */
 /*************************************************************************/
 int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-          idx_t *options, idx_t *perm, idx_t *iperm, unsigned* rng_state) 
+          idx_t *options, idx_t *perm, idx_t *iperm) 
 {
   int sigrval=0, renumber=0;
   idx_t i, ii, j, l, nnvtxs=0;
@@ -124,9 +124,9 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
 
   /* do the nested dissection ordering  */
   if (ctrl->ccorder) 
-    MlevelNestedDissectionCC(ctrl, graph, iperm, graph->nvtxs, rng_state);
+    MlevelNestedDissectionCC(ctrl, graph, iperm, graph->nvtxs);
   else
-    MlevelNestedDissection(ctrl, graph, iperm, graph->nvtxs, rng_state);
+    MlevelNestedDissection(ctrl, graph, iperm, graph->nvtxs);
 
 
   if (ctrl->pfactor > 0.0) { /* Order any prunned vertices */
@@ -181,7 +181,7 @@ SIGTHROW:
  */
 /*************************************************************************/
 void MlevelNestedDissection(ctrl_t *ctrl, graph_t *graph, idx_t *order, 
-         idx_t lastvtx, unsigned* rng_state)
+         idx_t lastvtx)
 {
   idx_t i, j, nvtxs, nbnd;
   idx_t *label, *bndind;
@@ -189,7 +189,7 @@ void MlevelNestedDissection(ctrl_t *ctrl, graph_t *graph, idx_t *order,
 
   nvtxs = graph->nvtxs;
 
-  MlevelNodeBisectionMultiple(ctrl, graph, rng_state);
+  MlevelNodeBisectionMultiple(ctrl, graph);
 
   IFSET(ctrl->dbglvl, METIS_DBG_SEPINFO, 
       printf("Nvtxs: %6"PRIDX", [%6"PRIDX" %6"PRIDX" %6"PRIDX"]\n", 
@@ -211,13 +211,13 @@ void MlevelNestedDissection(ctrl_t *ctrl, graph_t *graph, idx_t *order,
   /* Recurse on lgraph first, as its lastvtx depends on rgraph->nvtxs, which
      will not be defined upon return from MlevelNestedDissection. */
   if (lgraph->nvtxs > MMDSWITCH && lgraph->nedges > 0) 
-    MlevelNestedDissection(ctrl, lgraph, order, lastvtx-rgraph->nvtxs, rng_state);
+    MlevelNestedDissection(ctrl, lgraph, order, lastvtx-rgraph->nvtxs);
   else {
     MMDOrder(ctrl, lgraph, order, lastvtx-rgraph->nvtxs); 
     FreeGraph(&lgraph);
   }
   if (rgraph->nvtxs > MMDSWITCH && rgraph->nedges > 0) 
-    MlevelNestedDissection(ctrl, rgraph, order, lastvtx, rng_state);
+    MlevelNestedDissection(ctrl, rgraph, order, lastvtx);
   else {
     MMDOrder(ctrl, rgraph, order, lastvtx); 
     FreeGraph(&rgraph);
@@ -234,7 +234,7 @@ void MlevelNestedDissection(ctrl_t *ctrl, graph_t *graph, idx_t *order,
 */
 /*************************************************************************/
 void MlevelNestedDissectionCC(ctrl_t *ctrl, graph_t *graph, idx_t *order, 
-         idx_t lastvtx,unsigned* rng_state)
+         idx_t lastvtx)
 {
   idx_t i, j, nvtxs, nbnd, ncmps, rnvtxs, snvtxs;
   idx_t *label, *bndind;
@@ -243,7 +243,7 @@ void MlevelNestedDissectionCC(ctrl_t *ctrl, graph_t *graph, idx_t *order,
 
   nvtxs = graph->nvtxs;
 
-  MlevelNodeBisectionMultiple(ctrl, graph,rng_state);
+  MlevelNodeBisectionMultiple(ctrl, graph);
 
   IFSET(ctrl->dbglvl, METIS_DBG_SEPINFO, 
       printf("Nvtxs: %6"PRIDX", [%6"PRIDX" %6"PRIDX" %6"PRIDX"]\n", 
@@ -266,7 +266,7 @@ void MlevelNestedDissectionCC(ctrl_t *ctrl, graph_t *graph, idx_t *order,
       printf("  Bisection resulted in %"PRIDX" connected components\n", ncmps);
   }
   
-  sgraphs = SplitGraphOrderCC(ctrl, graph, ncmps, cptr, cind, rng_state);
+  sgraphs = SplitGraphOrderCC(ctrl, graph, ncmps, cptr, cind);
 
   WCOREPOP;
 
@@ -280,7 +280,7 @@ void MlevelNestedDissectionCC(ctrl_t *ctrl, graph_t *graph, idx_t *order,
     snvtxs = sgraphs[i]->nvtxs;
 
     if (sgraphs[i]->nvtxs > MMDSWITCH && sgraphs[i]->nedges > 0) {
-      MlevelNestedDissectionCC(ctrl, sgraphs[i], order, lastvtx-rnvtxs, rng_state);
+      MlevelNestedDissectionCC(ctrl, sgraphs[i], order, lastvtx-rnvtxs);
     }
     else {
       MMDOrder(ctrl, sgraphs[i], order, lastvtx-rnvtxs);
@@ -297,14 +297,14 @@ void MlevelNestedDissectionCC(ctrl_t *ctrl, graph_t *graph, idx_t *order,
 /*! This function performs multilevel node bisection (i.e., tri-section).
     It performs multiple bisections and selects the best. */
 /*************************************************************************/
-void MlevelNodeBisectionMultiple(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state)
+void MlevelNodeBisectionMultiple(ctrl_t *ctrl, graph_t *graph)
 {
   idx_t i, mincut;
   idx_t *bestwhere;
 
   /* if the graph is small, just find a single vertex separator */
   if (ctrl->nseps == 1 || graph->nvtxs < (ctrl->compress ? 1000 : 2000)) {
-    MlevelNodeBisectionL2(ctrl, graph, LARGENIPARTS, rng_state);
+    MlevelNodeBisectionL2(ctrl, graph, LARGENIPARTS);
     return;
   }
 
@@ -314,7 +314,7 @@ void MlevelNodeBisectionMultiple(ctrl_t *ctrl, graph_t *graph, unsigned* rng_sta
 
   mincut = graph->tvwgt[0];
   for (i=0; i<ctrl->nseps; i++) {
-    MlevelNodeBisectionL2(ctrl, graph, LARGENIPARTS, rng_state);
+    MlevelNodeBisectionL2(ctrl, graph, LARGENIPARTS);
 
     if (i == 0 || graph->mincut < mincut) {
       mincut = graph->mincut;
@@ -342,7 +342,7 @@ void MlevelNodeBisectionMultiple(ctrl_t *ctrl, graph_t *graph, unsigned* rng_sta
 /*! This function performs multilevel node bisection (i.e., tri-section).
     It performs multiple bisections and selects the best. */
 /*************************************************************************/
-void MlevelNodeBisectionL2(ctrl_t *ctrl, graph_t *graph, idx_t niparts, unsigned* rng_state)
+void MlevelNodeBisectionL2(ctrl_t *ctrl, graph_t *graph, idx_t niparts)
 {
   idx_t i, mincut, nruns=5;
   graph_t *cgraph; 
@@ -350,7 +350,7 @@ void MlevelNodeBisectionL2(ctrl_t *ctrl, graph_t *graph, idx_t niparts, unsigned
 
   /* if the graph is small, just find a single vertex separator */
   if (graph->nvtxs < 5000) {
-    MlevelNodeBisectionL1(ctrl, graph, niparts, rng_state);
+    MlevelNodeBisectionL1(ctrl, graph, niparts);
     return;
   }
 
@@ -358,13 +358,13 @@ void MlevelNodeBisectionL2(ctrl_t *ctrl, graph_t *graph, idx_t niparts, unsigned
 
   ctrl->CoarsenTo = gk_max(100, graph->nvtxs/30);
 
-  cgraph = CoarsenGraphNlevels(ctrl, graph, 4, rng_state);
+  cgraph = CoarsenGraphNlevels(ctrl, graph, 4);
 
   bestwhere = iwspacemalloc(ctrl, cgraph->nvtxs);
 
   mincut = graph->tvwgt[0];
   for (i=0; i<nruns; i++) {
-    MlevelNodeBisectionL1(ctrl, cgraph, 0.7*niparts, rng_state);
+    MlevelNodeBisectionL1(ctrl, cgraph, 0.7*niparts);
 
     if (i == 0 || cgraph->mincut < mincut) {
       mincut = cgraph->mincut;
@@ -384,7 +384,7 @@ void MlevelNodeBisectionL2(ctrl_t *ctrl, graph_t *graph, idx_t niparts, unsigned
 
   WCOREPOP;
 
-  Refine2WayNode(ctrl, graph, cgraph, rng_state);
+  Refine2WayNode(ctrl, graph, cgraph);
 
 }
 
@@ -392,7 +392,7 @@ void MlevelNodeBisectionL2(ctrl_t *ctrl, graph_t *graph, idx_t niparts, unsigned
 /*************************************************************************/
 /*! The top-level routine of the actual multilevel node bisection */
 /*************************************************************************/
-void MlevelNodeBisectionL1(ctrl_t *ctrl, graph_t *graph, idx_t niparts, unsigned* rng_state)
+void MlevelNodeBisectionL1(ctrl_t *ctrl, graph_t *graph, idx_t niparts)
 {
   graph_t *cgraph;
 
@@ -402,13 +402,13 @@ void MlevelNodeBisectionL1(ctrl_t *ctrl, graph_t *graph, idx_t niparts, unsigned
   else if (ctrl->CoarsenTo < 40)
     ctrl->CoarsenTo = 40;
 
-  cgraph = CoarsenGraph(ctrl, graph, rng_state);
+  cgraph = CoarsenGraph(ctrl, graph);
 
   niparts = gk_max(1, (cgraph->nvtxs <= ctrl->CoarsenTo ? niparts/2: niparts));
   /*niparts = (cgraph->nvtxs <= ctrl->CoarsenTo ? SMALLNIPARTS : LARGENIPARTS);*/
-  InitSeparator(ctrl, cgraph, niparts,rng_state);
+  InitSeparator(ctrl, cgraph, niparts);
 
-  Refine2WayNode(ctrl, graph, cgraph, rng_state);
+  Refine2WayNode(ctrl, graph, cgraph);
 }
 
 
@@ -550,7 +550,7 @@ void SplitGraphOrder(ctrl_t *ctrl, graph_t *graph, graph_t **r_lgraph,
 */
 /*************************************************************************/
 graph_t **SplitGraphOrderCC(ctrl_t *ctrl, graph_t *graph, idx_t ncmps, 
-              idx_t *cptr, idx_t *cind, unsigned* rng_state)
+              idx_t *cptr, idx_t *cind)
 {
   idx_t i, ii, iii, j, k, l, istart, iend, mypart, nvtxs, snvtxs, snedges;
   idx_t *xadj, *vwgt, *adjncy, *adjwgt, *label, *where, *bndptr, *bndind;
@@ -587,7 +587,7 @@ graph_t **SplitGraphOrderCC(ctrl_t *ctrl, graph_t *graph, idx_t ncmps,
 
   /* Go and split the graph a component at a time */
   for (iii=0; iii<ncmps; iii++) {
-    irandArrayPermute(cptr[iii+1]-cptr[iii], cind+cptr[iii], cptr[iii+1]-cptr[iii], 0, rng_state);
+    irandArrayPermute(cptr[iii+1]-cptr[iii], cind+cptr[iii], cptr[iii+1]-cptr[iii], 0, &ctrl->rng_state);
     snvtxs = snedges = 0;
     for (j=cptr[iii]; j<cptr[iii+1]; j++) {
       i = cind[j];

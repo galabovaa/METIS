@@ -91,7 +91,7 @@
 int METIS_PartGraphRecursive_ts(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, 
           idx_t *adjncy, idx_t *vwgt, idx_t *vsize, idx_t *adjwgt, 
           idx_t *nparts, real_t *tpwgts, real_t *ubvec, idx_t *options, 
-          idx_t *objval, idx_t *part, unsigned* rng_state)
+          idx_t *objval, idx_t *part)
 {
   int sigrval=0, renumber=0;
   graph_t *graph;
@@ -130,7 +130,7 @@ int METIS_PartGraphRecursive_ts(idx_t *nvtxs, idx_t *ncon, idx_t *xadj,
   IFSET(ctrl->dbglvl, METIS_DBG_TIME, InitTimers(ctrl));
   IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->TotalTmr));
 
-  *objval = MlevelRecursiveBisection(ctrl, graph, *nparts, part, ctrl->tpwgts, 0, rng_state);
+  *objval = MlevelRecursiveBisection(ctrl, graph, *nparts, part, ctrl->tpwgts, 0);
 
   IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->TotalTmr));
   IFSET(ctrl->dbglvl, METIS_DBG_TIME, PrintTimers(ctrl));
@@ -155,7 +155,7 @@ SIGTHROW:
     routine. */
 /*************************************************************************/
 idx_t MlevelRecursiveBisection(ctrl_t *ctrl, graph_t *graph, idx_t nparts, 
-          idx_t *part, real_t *tpwgts, idx_t fpart, unsigned* rng_state)
+          idx_t *part, real_t *tpwgts, idx_t fpart)
 {
   idx_t i, j, nvtxs, ncon, objval;
   idx_t *label, *where;
@@ -180,7 +180,7 @@ idx_t MlevelRecursiveBisection(ctrl_t *ctrl, graph_t *graph, idx_t nparts,
   }
 
   /* perform the bisection */
-  objval = MultilevelBisect(ctrl, graph, tpwgts2, rng_state);
+  objval = MultilevelBisect(ctrl, graph, tpwgts2);
 
   WCOREPOP;
 
@@ -205,14 +205,14 @@ idx_t MlevelRecursiveBisection(ctrl_t *ctrl, graph_t *graph, idx_t nparts,
   /* Do the recursive call */
   if (nparts > 3) {
     objval += MlevelRecursiveBisection(ctrl, lgraph, (nparts>>1), part, 
-               tpwgts, fpart, rng_state);
+               tpwgts, fpart);
     objval += MlevelRecursiveBisection(ctrl, rgraph, nparts-(nparts>>1), part, 
-               tpwgts+(nparts>>1)*ncon, fpart+(nparts>>1), rng_state);
+               tpwgts+(nparts>>1)*ncon, fpart+(nparts>>1));
   }
   else if (nparts == 3) {
     FreeGraph(&lgraph);
     objval += MlevelRecursiveBisection(ctrl, rgraph, nparts-(nparts>>1), part, 
-               tpwgts+(nparts>>1)*ncon, fpart+(nparts>>1), rng_state);
+               tpwgts+(nparts>>1)*ncon, fpart+(nparts>>1));
   }
 
 
@@ -223,7 +223,7 @@ idx_t MlevelRecursiveBisection(ctrl_t *ctrl, graph_t *graph, idx_t nparts,
 /*************************************************************************/
 /*! This function performs a multilevel bisection */
 /*************************************************************************/
-idx_t MultilevelBisect(ctrl_t *ctrl, graph_t *graph, real_t *tpwgts,unsigned* rng_state)
+idx_t MultilevelBisect(ctrl_t *ctrl, graph_t *graph, real_t *tpwgts)
 {
   idx_t i, niparts, bestobj=0, curobj=0, *bestwhere=NULL;
   graph_t *cgraph;
@@ -237,12 +237,12 @@ idx_t MultilevelBisect(ctrl_t *ctrl, graph_t *graph, real_t *tpwgts,unsigned* rn
     bestwhere = iwspacemalloc(ctrl, graph->nvtxs);
 
   for (i=0; i<ctrl->ncuts; i++) {
-    cgraph = CoarsenGraph(ctrl, graph, rng_state);
+    cgraph = CoarsenGraph(ctrl, graph);
 
     niparts = (cgraph->nvtxs <= ctrl->CoarsenTo ? SMALLNIPARTS : LARGENIPARTS);
-    Init2WayPartition(ctrl, cgraph, tpwgts, niparts, rng_state);
+    Init2WayPartition(ctrl, cgraph, tpwgts, niparts);
 
-    Refine2Way(ctrl, graph, cgraph, tpwgts, rng_state);
+    Refine2Way(ctrl, graph, cgraph, tpwgts);
 
     curobj = graph->mincut;
     curbal = ComputeLoadImbalanceDiff(graph, 2, ctrl->pijbm, ctrl->ubfactors);

@@ -199,6 +199,8 @@ typedef struct ctrl_t {
   idx_t **adwgts;               /* The edge-weight to the adjacent domains */
   idx_t *pvec1, *pvec2;         /* Auxiliar nparts-size vectors for efficiency */
 
+  unsigned rng_state;
+
 } ctrl_t;
 
 

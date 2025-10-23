@@ -18,7 +18,7 @@
 * This function takes a bisection and constructs a minimum weight vertex 
 * separator out of it. It uses the node-based separator refinement for it.
 **************************************************************************/
-void ConstructSeparator(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state)
+void ConstructSeparator(ctrl_t *ctrl, graph_t *graph)
 {
   idx_t i, j, k, nvtxs, nbnd;
   idx_t *xadj, *where, *bndind;
@@ -52,8 +52,8 @@ void ConstructSeparator(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state)
 
   ASSERT(CheckNodePartitionParams(graph));
 
-  FM_2WayNodeRefine2Sided(ctrl, graph, 1, rng_state); 
-  FM_2WayNodeRefine1Sided(ctrl, graph, 4, rng_state); 
+  FM_2WayNodeRefine2Sided(ctrl, graph, 1); 
+  FM_2WayNodeRefine1Sided(ctrl, graph, 4); 
 
   ASSERT(IsSeparable(graph));
 
@@ -66,7 +66,7 @@ void ConstructSeparator(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state)
 * separator out of it. It uses an unweighted minimum-cover algorithm
 * followed by node-based separator refinement.
 **************************************************************************/
-void ConstructMinCoverSeparator(ctrl_t *ctrl, graph_t *graph, unsigned* rng_state)
+void ConstructMinCoverSeparator(ctrl_t *ctrl, graph_t *graph)
 {
   idx_t i, ii, j, jj, k, l, nvtxs, nbnd, bnvtxs[3], bnedges[2], csize;
   idx_t *xadj, *adjncy, *bxadj, *badjncy;
@@ -169,7 +169,7 @@ void ConstructMinCoverSeparator(ctrl_t *ctrl, graph_t *graph, unsigned* rng_stat
 
   ASSERT(CheckNodePartitionParams(graph));
 
-  FM_2WayNodeRefine1Sided(ctrl, graph, ctrl->niter, rng_state); 
+  FM_2WayNodeRefine1Sided(ctrl, graph, ctrl->niter); 
 
   ASSERT(IsSeparable(graph));
 }

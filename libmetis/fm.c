@@ -14,19 +14,19 @@
 /*************************************************************************
 * This function performs an edge-based FM refinement
 **************************************************************************/
-void FM_2WayRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter,unsigned* rng_state)
+void FM_2WayRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter)
 {
   if (graph->ncon == 1) 
-    FM_2WayCutRefine(ctrl, graph, ntpwgts, niter, rng_state);
+    FM_2WayCutRefine(ctrl, graph, ntpwgts, niter);
   else
-    FM_Mc2WayCutRefine(ctrl, graph, ntpwgts, niter, rng_state);
+    FM_Mc2WayCutRefine(ctrl, graph, ntpwgts, niter);
 }
 
 
 /*************************************************************************/
 /*! This function performs a cut-focused FM refinement */
 /*************************************************************************/
-void FM_2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter,unsigned* rng_state)
+void FM_2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter)
 {
   idx_t i, ii, j, k, kwgt, nvtxs, nbnd, nswaps, from, to, pass, me, limit, tmp;
   idx_t *xadj, *vwgt, *adjncy, *adjwgt, *where, *id, *ed, *bndptr, *bndind, *pwgts;
@@ -80,7 +80,7 @@ void FM_2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter
 
     /* Insert boundary nodes in the priority queues */
     nbnd = graph->nbnd;
-    irandArrayPermute(nbnd, perm, nbnd, 1,rng_state);
+    irandArrayPermute(nbnd, perm, nbnd, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = perm[ii];
       ASSERT(ed[bndind[i]] > 0 || id[bndind[i]] == 0);
@@ -204,7 +204,7 @@ void FM_2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter
 /*************************************************************************/
 /*! This function performs a cut-focused multi-constraint FM refinement */
 /*************************************************************************/
-void FM_Mc2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter,unsigned* rng_state)
+void FM_Mc2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter)
 {
   idx_t i, ii, j, k, l, kwgt, nvtxs, ncon, nbnd, nswaps, from, to, pass, 
         me, limit, tmp, cnum;
@@ -283,7 +283,7 @@ void FM_Mc2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t nit
 
     /* Insert boundary nodes in the priority queues */
     nbnd = graph->nbnd;
-    irandArrayPermute(nbnd, perm, nbnd/5, 1,rng_state);
+    irandArrayPermute(nbnd, perm, nbnd/5, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[perm[ii]];
       ASSERT(ed[i] > 0 || id[i] == 0);
