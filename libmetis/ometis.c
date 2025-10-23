@@ -78,6 +78,7 @@ int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
     graph = CompressGraph(ctrl, *nvtxs, xadj, adjncy, vwgt, cptr, cind);
     if (graph == NULL) {
       /* if there was no compression, cleanup the compress flag */
+      gk_free((void **)&cptr);
       gk_free((void **)&cind);
       ctrl->compress = 0; 
     }
