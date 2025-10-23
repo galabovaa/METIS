@@ -1,3 +1,14 @@
+diff --git a/.gitignore b/.gitignore
+index d163863..966b4f2 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1 +1,3 @@
+-build/
+\ No newline at end of file
++build/
++*.DS_Store
++.vscode
+\ No newline at end of file
 diff --git a/GKlib/gk_macros.h b/GKlib/gk_macros.h
 index d1e288b..ec83657 100644
 --- a/GKlib/gk_macros.h
@@ -439,74 +450,6 @@ index e75d68b..7133574 100644
      gk_SWAP(p[v], p[u], tmp);
    }
  }
-
-diff --git a/include/metis.h b/include/metis.h
-index 6cf6780..dace3ee 100644
---- a/include/metis.h
-+++ b/include/metis.h
-@@ -10,6 +10,9 @@
- #ifndef _METIS_H_
- #define _METIS_H_ 
- 
-+// Communicate to user that Metis API has one extra argument
-+#define METIS_THREAD_SAFE
-+
- /****************************************************************************
- * A set of defines that can be modified by the user
- *****************************************************************************/
-@@ -189,12 +192,12 @@ typedef __int64 int64_t;
- extern "C" {
- #endif
- 
--METIS_API(int) METIS_PartGraphRecursive(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, 
-+METIS_API(int) METIS_PartGraphRecursive_ts(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, 
-                   idx_t *adjncy, idx_t *vwgt, idx_t *vsize, idx_t *adjwgt, 
-                   idx_t *nparts, real_t *tpwgts, real_t *ubvec, idx_t *options, 
-                   idx_t *edgecut, idx_t *part);
- 
--METIS_API(int) METIS_PartGraphKway(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, 
-+METIS_API(int) METIS_PartGraphKway_ts(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, 
-                   idx_t *adjncy, idx_t *vwgt, idx_t *vsize, idx_t *adjwgt, 
-                   idx_t *nparts, real_t *tpwgts, real_t *ubvec, idx_t *options, 
-                   idx_t *edgecut, idx_t *part);
-@@ -205,16 +208,16 @@ METIS_API(int) METIS_MeshToDual(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
- METIS_API(int) METIS_MeshToNodal(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
-                   idx_t *numflag, idx_t **r_xadj, idx_t **r_adjncy);
- 
--METIS_API(int) METIS_PartMeshNodal(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
-+METIS_API(int) METIS_PartMeshNodal_ts(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
-                   idx_t *vwgt, idx_t *vsize, idx_t *nparts, real_t *tpwgts, 
-                   idx_t *options, idx_t *objval, idx_t *epart, idx_t *npart);
- 
--METIS_API(int) METIS_PartMeshDual(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
-+METIS_API(int) METIS_PartMeshDual_ts(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
-                   idx_t *vwgt, idx_t *vsize, idx_t *ncommon, idx_t *nparts, 
-                   real_t *tpwgts, idx_t *options, idx_t *objval, idx_t *epart, 
-                   idx_t *npart);
- 
--METIS_API(int) METIS_NodeND(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-+METIS_API(int) METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-                   idx_t *options, idx_t *perm, idx_t *iperm);
- 
- METIS_API(int) METIS_Free(void *ptr);
-@@ -224,14 +227,14 @@ METIS_API(int) METIS_SetDefaultOptions(idx_t *options);
- 
- /* These functions are used by ParMETIS */
- 
--METIS_API(int) METIS_NodeNDP(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-+METIS_API(int) METIS_NodeNDP_ts(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-                    idx_t npes, idx_t *options, idx_t *perm, idx_t *iperm, 
-                    idx_t *sizes);
- 
--METIS_API(int) METIS_ComputeVertexSeparator(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, 
-+METIS_API(int) METIS_ComputeVertexSeparator_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, 
-                    idx_t *vwgt, idx_t *options, idx_t *sepsize, idx_t *part);
- 
--METIS_API(int) METIS_NodeRefine(idx_t nvtxs, idx_t *xadj, idx_t *vwgt, idx_t *adjncy,
-+METIS_API(int) METIS_NodeRefine_ts(idx_t nvtxs, idx_t *xadj, idx_t *vwgt, idx_t *adjncy,
-                    idx_t *where, idx_t *hmarker, real_t ubfactor);
- 
- 
 diff --git a/libmetis/balance.c b/libmetis/balance.c
 index 3fb0e6e..8c9efcf 100644
 --- a/libmetis/balance.c
@@ -582,109 +525,6 @@ index 7f5ea6b..5a97665 100644
      for (ii=0; ii<nbnd; ii++) {
        i = bndind[perm[ii]];
        ASSERT(ed[i] > 0 || id[i] == 0);
-diff --git a/libmetis/frename.c b/libmetis/frename.c
-index 3d43c3a..dd354a1 100644
---- a/libmetis/frename.c
-+++ b/libmetis/frename.c
-@@ -21,32 +21,32 @@
- 
- 
- FRENAME(
--    METIS_PartGraphRecursive, 
-+    METIS_PartGraphRecursive_ts, 
-     (idx_t *nvtxs, idx_t *ncon, idx_t *xadj, idx_t *adjncy, idx_t *vwgt, 
-      idx_t *vsize, idx_t *adjwgt, idx_t *nparts, real_t *tpwgts, 
-      real_t *ubvec, idx_t *options, idx_t *edgecut, idx_t *part),
-     (nvtxs, ncon, xadj, adjncy, vwgt, 
-      vsize, adjwgt, nparts, tpwgts, 
-      ubvec, options, edgecut, part),
--    METIS_PARTGRAPHRECURSIVE, 
--    metis_partgraphrecursive, 
--    metis_partgraphrecursive_, 
--    metis_partgraphrecursive__
-+    METIS_PARTGRAPHRECURSIVE_TS, 
-+    metis_partgraphrecursive_ts, 
-+    metis_partgraphrecursive_ts_, 
-+    metis_partgraphrecursive_ts__
- ) 
-     
- 
- FRENAME(
--    METIS_PartGraphKway,
-+    METIS_PartGraphKway_ts,
-     (idx_t *nvtxs, idx_t *ncon, idx_t *xadj, idx_t *adjncy, idx_t *vwgt, 
-      idx_t *vsize, idx_t *adjwgt, idx_t *nparts, real_t *tpwgts, 
-      real_t *ubvec, idx_t *options, idx_t *edgecut, idx_t *part),
-     (nvtxs, ncon, xadj, adjncy, vwgt, 
-      vsize, adjwgt, nparts, tpwgts, 
-      ubvec, options, edgecut, part),
--    METIS_PARTGRAPHKWAY,
--    metis_partgraphkway,
--    metis_partgraphkway_,
--    metis_partgraphkway__
-+    METIS_PARTGRAPHKWAY_TS,
-+    metis_partgraphkway_ts,
-+    metis_partgraphkway_ts_,
-+    metis_partgraphkway_ts__
- )
- 
- FRENAME(
-@@ -74,40 +74,40 @@ FRENAME(
-   
- 
- FRENAME(
--  METIS_PartMeshNodal,
-+  METIS_PartMeshNodal_ts,
-   (idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, idx_t *vwgt, idx_t *vsize, 
-    idx_t *nparts, real_t *tpwgts, idx_t *options, idx_t *objval, idx_t *epart, 
-    idx_t *npart),
-   (ne, nn, eptr, eind, vwgt, vsize, nparts, tpwgts, options, objval, epart, npart),
--  METIS_PARTMESHNODAL,
--  metis_partmeshnodal,
--  metis_partmeshnodal_,
--  metis_partmeshnodal__
-+  METIS_PARTMESHNODAL_TS,
-+  metis_partmeshnodal_ts,
-+  metis_partmeshnodal_ts_,
-+  metis_partmeshnodal_ts__
- )
- 
- 
- FRENAME(
--  METIS_PartMeshDual,
-+  METIS_PartMeshDual_ts,
-   (idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, idx_t *vwgt, idx_t *vsize, 
-    idx_t *ncommon, idx_t *nparts, real_t *tpwgts, idx_t *options, idx_t *objval, 
-    idx_t *epart, idx_t *npart),
-   (ne, nn, eptr, eind, vwgt, vsize, ncommon, nparts, tpwgts, options, objval, epart, npart),
--  METIS_PARTMESHDUAL,
--  metis_partmeshdual,
--  metis_partmeshdual_,
--  metis_partmeshdual__
-+  METIS_PARTMESHDUAL_TS,
-+  metis_partmeshdual_ts,
-+  metis_partmeshdual_ts_,
-+  metis_partmeshdual_ts__
- )
- 
- 
- FRENAME(
--  METIS_NodeND,
-+  METIS_NodeND_ts,
-   (idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt, idx_t *options, idx_t *perm, 
-    idx_t *iperm),
-   (nvtxs, xadj, adjncy, vwgt, options, perm, iperm),
--  METIS_NODEND,
--  metis_nodend,
--  metis_nodend_,
--  metis_nodend__
-+  METIS_NODEND_TS,
-+  metis_nodend_ts,
-+  metis_nodend_ts_,
-+  metis_nodend_ts__
- )
- 
- 
 diff --git a/libmetis/initpart.c b/libmetis/initpart.c
 index 2f6c81b..c3535e8 100644
 --- a/libmetis/initpart.c
@@ -773,37 +613,6 @@ index 2f6c81b..c3535e8 100644
  
      Compute2WayPartitionParams(ctrl, graph);
      General2WayBalance(ctrl, graph, ntpwgts);
-diff --git a/libmetis/kmetis.c b/libmetis/kmetis.c
-index cb6d1af..978d27a 100644
---- a/libmetis/kmetis.c
-+++ b/libmetis/kmetis.c
-@@ -15,7 +15,7 @@
- /*************************************************************************/
- /*! This function is the entry point for MCKMETIS */
- /*************************************************************************/
--int METIS_PartGraphKway(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, idx_t *adjncy, 
-+int METIS_PartGraphKway_ts(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, idx_t *adjncy, 
-           idx_t *vwgt, idx_t *vsize, idx_t *adjwgt, idx_t *nparts, 
-           real_t *tpwgts, real_t *ubvec, idx_t *options, idx_t *objval, 
-           idx_t *part)
-@@ -191,7 +191,7 @@ void InitKWayPartitioning(ctrl_t *ctrl, graph_t *graph)
-     case METIS_OBJTYPE_CUT:
-     case METIS_OBJTYPE_VOL:
-       options[METIS_OPTION_NCUTS] = ctrl->nIparts;
--      status = METIS_PartGraphRecursive(&graph->nvtxs, &graph->ncon, 
-+      status = METIS_PartGraphRecursive_ts(&graph->nvtxs, &graph->ncon, 
-                    graph->xadj, graph->adjncy, graph->vwgt, graph->vsize, 
-                    graph->adjwgt, &ctrl->nparts, ctrl->tpwgts, ubvec, 
-                    options, &curobj, graph->where);
-@@ -208,7 +208,7 @@ void InitKWayPartitioning(ctrl_t *ctrl, graph_t *graph)
- 
-       ntrials = (ctrl->nIparts+1)/2;
-       for (i=0; i<ntrials; i++) {
--        status = METIS_PartGraphRecursive(&graph->nvtxs, &graph->ncon, 
-+        status = METIS_PartGraphRecursive_ts(&graph->nvtxs, &graph->ncon, 
-                      graph->xadj, graph->adjncy, graph->vwgt, graph->vsize, 
-                      graph->adjwgt, &ctrl->nparts, ctrl->tpwgts, ubvec, 
-                      options, &curobj, graph->where);
 diff --git a/libmetis/kwayfm.c b/libmetis/kwayfm.c
 index dedfd39..199bfac 100644
 --- a/libmetis/kwayfm.c
@@ -844,67 +653,10 @@ index dedfd39..199bfac 100644
      for (ii=0; ii<graph->nbnd; ii++) {
        i = bndind[perm[ii]];
        ipqInsert(queue, i, graph->vkrinfo[i].gv);
-diff --git a/libmetis/meshpart.c b/libmetis/meshpart.c
-index a66d106..6565a58 100644
---- a/libmetis/meshpart.c
-+++ b/libmetis/meshpart.c
-@@ -19,7 +19,7 @@
- * This function partitions a finite element mesh by partitioning its nodal
- * graph using KMETIS and then assigning elements in a load balanced fashion.
- **************************************************************************/
--int METIS_PartMeshNodal(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
-+int METIS_PartMeshNodal_ts(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
-           idx_t *vwgt, idx_t *vsize, idx_t *nparts, real_t *tpwgts, 
-           idx_t *options, idx_t *objval, idx_t *epart, idx_t *npart)
- {
-@@ -53,10 +53,10 @@ int METIS_PartMeshNodal(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
- 
-   /* partition the graph */
-   if (ptype == METIS_PTYPE_KWAY) 
--    rstatus = METIS_PartGraphKway(nn, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-+    rstatus = METIS_PartGraphKway_ts(nn, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-                   nparts, tpwgts, NULL, options, objval, npart);
-   else 
--    rstatus = METIS_PartGraphRecursive(nn, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-+    rstatus = METIS_PartGraphRecursive_ts(nn, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-                   nparts, tpwgts, NULL, options, objval, npart);
- 
-   if (rstatus != METIS_OK)
-@@ -87,7 +87,7 @@ SIGTHROW:
- * This function partitions a finite element mesh by partitioning its dual
- * graph using KMETIS and then assigning nodes in a load balanced fashion.
- **************************************************************************/
--int METIS_PartMeshDual(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
-+int METIS_PartMeshDual_ts(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind, 
-           idx_t *vwgt, idx_t *vsize, idx_t *ncommon, idx_t *nparts, 
-           real_t *tpwgts, idx_t *options, idx_t *objval, idx_t *epart, 
-           idx_t *npart) 
-@@ -123,10 +123,10 @@ int METIS_PartMeshDual(idx_t *ne, idx_t *nn, idx_t *eptr, idx_t *eind,
- 
-   /* partition the graph */
-   if (ptype == METIS_PTYPE_KWAY) 
--    rstatus = METIS_PartGraphKway(ne, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-+    rstatus = METIS_PartGraphKway_ts(ne, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-                   nparts, tpwgts, NULL, options, objval, epart);
-   else 
--    rstatus = METIS_PartGraphRecursive(ne, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-+    rstatus = METIS_PartGraphRecursive_ts(ne, &ncon, xadj, adjncy, vwgt, vsize, NULL, 
-                   nparts, tpwgts, NULL, options, objval, epart);
- 
-   if (rstatus != METIS_OK)
 diff --git a/libmetis/ometis.c b/libmetis/ometis.c
-index 51e3975..1a5de3f 100644
+index 51e3975..658cfc3 100644
 --- a/libmetis/ometis.c
 +++ b/libmetis/ometis.c
-@@ -40,7 +40,7 @@
-            the original and permuted matrices, then A[i] = A'[iperm[i]].
- */
- /*************************************************************************/
--int METIS_NodeND(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-+int METIS_NodeND_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-           idx_t *options, idx_t *perm, idx_t *iperm) 
- {
-   int sigrval=0, renumber=0;
 @@ -587,7 +587,7 @@ graph_t **SplitGraphOrderCC(ctrl_t *ctrl, graph_t *graph, idx_t ncmps,
  
    /* Go and split the graph a component at a time */
@@ -928,36 +680,9 @@ index 3bc1ac9..82cfb9f 100644
    if (ctrl->optype != METIS_OP_OMETIS) {
      ctrl->tpwgts = rmalloc(nparts*ncon, "SetupCtrl: ctrl->tpwgts");
 diff --git a/libmetis/parmetis.c b/libmetis/parmetis.c
-index 631d811..a146c99 100644
+index 631d811..2cab20d 100644
 --- a/libmetis/parmetis.c
 +++ b/libmetis/parmetis.c
-@@ -25,7 +25,7 @@
-       sizes array.
- */
- /*************************************************************************/
--int METIS_NodeNDP(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-+int METIS_NodeNDP_ts(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
-            idx_t npes, idx_t *options, idx_t *perm, idx_t *iperm, idx_t *sizes) 
- {
-   idx_t i, ii, j, l, nnvtxs=0;
-@@ -158,7 +158,7 @@ void MlevelNestedDissectionP(ctrl_t *ctrl, graph_t *graph, idx_t *order,
- /*************************************************************************/
- /*! This function bisects a graph by computing a vertex separator */
- /**************************************************************************/
--int METIS_ComputeVertexSeparator(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, 
-+int METIS_ComputeVertexSeparator_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, 
-            idx_t *vwgt, idx_t *options, idx_t *r_sepsize, idx_t *part) 
- {
-   idx_t i, j;
-@@ -196,7 +196,7 @@ int METIS_ComputeVertexSeparator(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy,
- /*! This function is the entry point of a node-based separator refinement
-     of the nodes with an hmarker[] of 0. */
- /*************************************************************************/
--int METIS_NodeRefine(idx_t nvtxs, idx_t *xadj, idx_t *vwgt, idx_t *adjncy, 
-+int METIS_NodeRefine_ts(idx_t nvtxs, idx_t *xadj, idx_t *vwgt, idx_t *adjncy, 
-            idx_t *where, idx_t *hmarker, real_t ubfactor)
- {
-   graph_t *graph;
 @@ -288,7 +288,7 @@ void FM_2WayNodeRefine1SidedP(ctrl_t *ctrl, graph_t *graph,
      nbnd = graph->nbnd;
  
@@ -976,19 +701,6 @@ index 631d811..a146c99 100644
      for (ii=0; ii<nbnd; ii++) {
        i = bndind[swaps[ii]];
        ASSERT(where[i] == 2);
-diff --git a/libmetis/pmetis.c b/libmetis/pmetis.c
-index d32e849..1fe871f 100644
---- a/libmetis/pmetis.c
-+++ b/libmetis/pmetis.c
-@@ -88,7 +88,7 @@
-            
- */
- /*************************************************************************/
--int METIS_PartGraphRecursive(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, 
-+int METIS_PartGraphRecursive_ts(idx_t *nvtxs, idx_t *ncon, idx_t *xadj, 
-           idx_t *adjncy, idx_t *vwgt, idx_t *vsize, idx_t *adjwgt, 
-           idx_t *nparts, real_t *tpwgts, real_t *ubvec, idx_t *options, 
-           idx_t *objval, idx_t *part)
 diff --git a/libmetis/sfm.c b/libmetis/sfm.c
 index d418173..392bde5 100644
 --- a/libmetis/sfm.c
@@ -1032,58 +744,5 @@ index 5fc8588..a78e731 100644
 +
  } ctrl_t;
  
+ 
 
-diff --git a/programs/gpmetis.c b/programs/gpmetis.c
-index ad119ff..f76dc4d 100644
---- a/programs/gpmetis.c
-+++ b/programs/gpmetis.c
-@@ -91,14 +91,14 @@ int main(int argc, char *argv[])
- 
-   switch (params->ptype) {
-     case METIS_PTYPE_RB:
--      status = METIS_PartGraphRecursive(&graph->nvtxs, &graph->ncon, graph->xadj, 
-+      status = METIS_PartGraphRecursive_ts(&graph->nvtxs, &graph->ncon, graph->xadj, 
-                    graph->adjncy, graph->vwgt, graph->vsize, graph->adjwgt, 
-                    &params->nparts, params->tpwgts, params->ubvec, options, 
-                    &objval, part);
-       break;
- 
-     case METIS_PTYPE_KWAY:
--      status = METIS_PartGraphKway(&graph->nvtxs, &graph->ncon, graph->xadj, 
-+      status = METIS_PartGraphKway_ts(&graph->nvtxs, &graph->ncon, graph->xadj, 
-                    graph->adjncy, graph->vwgt, graph->vsize, graph->adjwgt, 
-                    &params->nparts, params->tpwgts, params->ubvec, options, 
-                    &objval, part);
-diff --git a/programs/mpmetis.c b/programs/mpmetis.c
-index 00e5613..33abd39 100644
---- a/programs/mpmetis.c
-+++ b/programs/mpmetis.c
-@@ -66,13 +66,13 @@ int main(int argc, char *argv[])
- 
-   switch (params->gtype) {
-     case METIS_GTYPE_DUAL:
--      status = METIS_PartMeshDual(&mesh->ne, &mesh->nn, mesh->eptr, mesh->eind, 
-+      status = METIS_PartMeshDual_ts(&mesh->ne, &mesh->nn, mesh->eptr, mesh->eind, 
-                    mesh->ewgt, NULL, &params->ncommon, &params->nparts, 
-                    params->tpwgts, options, &objval, epart, npart);
-       break;
- 
-     case METIS_GTYPE_NODAL:
--      status = METIS_PartMeshNodal(&mesh->ne, &mesh->nn, mesh->eptr, mesh->eind, 
-+      status = METIS_PartMeshNodal_ts(&mesh->ne, &mesh->nn, mesh->eptr, mesh->eind, 
-                    NULL, NULL, &params->nparts, params->tpwgts, options, &objval, 
-                    epart, npart);
-       break;
-diff --git a/programs/ndmetis.c b/programs/ndmetis.c
-index 941c777..365774c 100644
---- a/programs/ndmetis.c
-+++ b/programs/ndmetis.c
-@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
-   gk_malloc_init();
-   gk_startcputimer(params->parttimer);
- 
--  status = METIS_NodeND(&graph->nvtxs, graph->xadj, graph->adjncy, graph->vwgt, 
-+  status = METIS_NodeND_ts(&graph->nvtxs, graph->xadj, graph->adjncy, graph->vwgt, 
-                options, perm, iperm);
- 
-   gk_stopcputimer(params->parttimer);
