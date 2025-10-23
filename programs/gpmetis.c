@@ -91,14 +91,14 @@ int main(int argc, char *argv[])
 
   switch (params->ptype) {
     case METIS_PTYPE_RB:
-      status = METIS_PartGraphRecursive_ts(&graph->nvtxs, &graph->ncon, graph->xadj, 
+      status = METIS_PartGraphRecursive(&graph->nvtxs, &graph->ncon, graph->xadj, 
                    graph->adjncy, graph->vwgt, graph->vsize, graph->adjwgt, 
                    &params->nparts, params->tpwgts, params->ubvec, options, 
                    &objval, part);
       break;
 
     case METIS_PTYPE_KWAY:
-      status = METIS_PartGraphKway_ts(&graph->nvtxs, &graph->ncon, graph->xadj, 
+      status = METIS_PartGraphKway(&graph->nvtxs, &graph->ncon, graph->xadj, 
                    graph->adjncy, graph->vwgt, graph->vsize, graph->adjwgt, 
                    &params->nparts, params->tpwgts, params->ubvec, options, 
                    &objval, part);

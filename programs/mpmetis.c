@@ -66,13 +66,13 @@ int main(int argc, char *argv[])
 
   switch (params->gtype) {
     case METIS_GTYPE_DUAL:
-      status = METIS_PartMeshDual_ts(&mesh->ne, &mesh->nn, mesh->eptr, mesh->eind, 
+      status = METIS_PartMeshDual(&mesh->ne, &mesh->nn, mesh->eptr, mesh->eind, 
                    mesh->ewgt, NULL, &params->ncommon, &params->nparts, 
                    params->tpwgts, options, &objval, epart, npart);
       break;
 
     case METIS_GTYPE_NODAL:
-      status = METIS_PartMeshNodal_ts(&mesh->ne, &mesh->nn, mesh->eptr, mesh->eind, 
+      status = METIS_PartMeshNodal(&mesh->ne, &mesh->nn, mesh->eptr, mesh->eind, 
                    NULL, NULL, &params->nparts, params->tpwgts, options, &objval, 
                    epart, npart);
       break;

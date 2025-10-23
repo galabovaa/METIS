@@ -25,7 +25,7 @@
       sizes array.
 */
 /*************************************************************************/
-int METIS_NodeNDP_ts(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
+int METIS_NodeNDP(idx_t nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
            idx_t npes, idx_t *options, idx_t *perm, idx_t *iperm, idx_t *sizes) 
 {
   idx_t i, ii, j, l, nnvtxs=0;
@@ -158,7 +158,7 @@ void MlevelNestedDissectionP(ctrl_t *ctrl, graph_t *graph, idx_t *order,
 /*************************************************************************/
 /*! This function bisects a graph by computing a vertex separator */
 /**************************************************************************/
-int METIS_ComputeVertexSeparator_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, 
+int METIS_ComputeVertexSeparator(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, 
            idx_t *vwgt, idx_t *options, idx_t *r_sepsize, idx_t *part) 
 {
   idx_t i, j;
@@ -196,7 +196,7 @@ int METIS_ComputeVertexSeparator_ts(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy,
 /*! This function is the entry point of a node-based separator refinement
     of the nodes with an hmarker[] of 0. */
 /*************************************************************************/
-int METIS_NodeRefine_ts(idx_t nvtxs, idx_t *xadj, idx_t *vwgt, idx_t *adjncy, 
+int METIS_NodeRefine(idx_t nvtxs, idx_t *xadj, idx_t *vwgt, idx_t *adjncy, 
            idx_t *where, idx_t *hmarker, real_t ubfactor)
 {
   graph_t *graph;

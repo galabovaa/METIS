@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
   gk_malloc_init();
   gk_startcputimer(params->parttimer);
 
-  status = METIS_NodeND_ts(&graph->nvtxs, graph->xadj, graph->adjncy, graph->vwgt, 
+  status = METIS_NodeND(&graph->nvtxs, graph->xadj, graph->adjncy, graph->vwgt, 
                options, perm, iperm);
 
   gk_stopcputimer(params->parttimer);
