@@ -1,0 +1,158 @@
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..d163863
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1 @@
++build/
+\ No newline at end of file
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 95bceac..2a5ed3f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,10 +1,10 @@
+-cmake_minimum_required(VERSION 2.8)
++cmake_minimum_required(VERSION 3.22)
+ project(METIS)
+ 
+ set(GKLIB_PATH "${CMAKE_SOURCE_DIR}/GKlib" CACHE PATH "path to GKlib")
+ set(SHARED FALSE CACHE BOOL "build a shared library")
+ 
+-if(MSVC)
++if(0)
+   set(METIS_INSTALL FALSE)
+ else()
+   set(METIS_INSTALL TRUE)
+@@ -24,4 +24,4 @@ include_directories(include)
+ # Recursively look for CMakeLists.txt in subdirs.
+ add_subdirectory("include")
+ add_subdirectory("libmetis")
+-add_subdirectory("programs")
++# add_subdirectory("programs")
+diff --git a/GKlib/GKlibSystem.cmake b/GKlib/GKlibSystem.cmake
+index 3fcc291..9ebb121 100644
+--- a/GKlib/GKlibSystem.cmake
++++ b/GKlib/GKlibSystem.cmake
+@@ -15,12 +15,12 @@ option(GKRAND "enable GKRAND support" OFF)
+ 
+ # Add compiler flags.
+ if(MSVC)
+-  set(GKlib_COPTS "/Ox")
++  # set(GKlib_COPTS "/Ox")
+   set(GKlib_COPTIONS "-DWIN32 -DMSC -D_CRT_SECURE_NO_DEPRECATE -DUSE_GKREGEX")
+ elseif(MINGW)
+   set(GKlib_COPTS "-DUSE_GKREGEX")
+ else()
+-  set(GKlib_COPTS "-O3")
++  # set(GKlib_COPTS "-O3")
+   set(GKlib_COPTIONS "-DLINUX -D_FILE_OFFSET_BITS=64")
+ endif(MSVC)
+ if(CYGWIN)
+diff --git a/GKlib/gk_arch.h b/GKlib/gk_arch.h
+index ce79b13..bba5b7c 100644
+--- a/GKlib/gk_arch.h
++++ b/GKlib/gk_arch.h
+@@ -62,12 +62,12 @@ typedef ptrdiff_t ssize_t;
+ 
+ #ifdef __MSC__
+ /* MSC does not have rint() function */
+-#define rint(x) ((int)((x)+0.5))  
++// #define rint(x) ((int)((x)+0.5))  
+ 
+ /* MSC does not have INFINITY defined */
+-#ifndef INFINITY
+-#define INFINITY FLT_MAX
+-#endif
++// #ifndef INFINITY
++// #define INFINITY FLT_MAX
++// #endif
+ #endif
+ 
+ #endif
+diff --git a/GKlib/ms_inttypes.h b/GKlib/ms_inttypes.h
+index e26204b..cd662f4 100644
+--- a/GKlib/ms_inttypes.h
++++ b/GKlib/ms_inttypes.h
+@@ -36,6 +36,9 @@
+ #ifndef _MSC_INTTYPES_H_ // [
+ #define _MSC_INTTYPES_H_
+ 
++#include <inttypes.h>
++#elif 0
++
+ #if _MSC_VER > 1000
+ #pragma once
+ #endif
+diff --git a/GKlib/ms_stdint.h b/GKlib/ms_stdint.h
+index 7e200dc..1b1fbcc 100644
+--- a/GKlib/ms_stdint.h
++++ b/GKlib/ms_stdint.h
+@@ -36,6 +36,9 @@
+ #ifndef _MSC_STDINT_H_ // [
+ #define _MSC_STDINT_H_
+ 
++#include <stdint.h>
++#elif 0
++
+ #if _MSC_VER > 1000
+ #pragma once
+ #endif
+diff --git a/include/metis.h b/include/metis.h
+index f92026d..6cf6780 100644
+--- a/include/metis.h
++++ b/include/metis.h
+@@ -73,10 +73,16 @@ typedef __int64 int64_t;
+ #define PRId64       "I64d"
+ #define SCNd32       "ld"
+ #define SCNd64       "I64d"
++
++#ifdef _WIN32
++#include <stdint.h>
++#else
+ #define INT32_MIN    ((int32_t)_I32_MIN)
+ #define INT32_MAX    _I32_MAX
+ #define INT64_MIN    ((int64_t)_I64_MIN)
+ #define INT64_MAX    _I64_MAX
++#endif
++
+ #else
+ #include <inttypes.h>
+ #endif
+diff --git a/libmetis/CMakeLists.txt b/libmetis/CMakeLists.txt
+index c46039c..69c0012 100644
+--- a/libmetis/CMakeLists.txt
++++ b/libmetis/CMakeLists.txt
+@@ -4,6 +4,8 @@ include_directories(.)
+ file(GLOB metis_sources *.c)
+ # Build libmetis.
+ add_library(metis ${METIS_LIBRARY_TYPE} ${GKlib_sources} ${metis_sources})
++set_target_properties(metis PROPERTIES OUTPUT_NAME "${BINARY_NAME}")
++
+ if(UNIX)
+   target_link_libraries(metis m)
+ endif()
+@@ -15,8 +17,9 @@ else()
+ endif()
+ 
+ if(METIS_INSTALL)
+-  install(TARGETS metis
++  install(TARGETS metis EXPORT metisTargets
+     LIBRARY DESTINATION lib
+     RUNTIME DESTINATION ${RT_DEST}
+-    ARCHIVE DESTINATION lib)
++    ARCHIVE DESTINATION lib
++    INCLUDES DESTINATION include)
+ endif()
+diff --git a/libmetis/metislib.h b/libmetis/metislib.h
+index 93d48f0..14990fb 100644
+--- a/libmetis/metislib.h
++++ b/libmetis/metislib.h
+@@ -31,7 +31,7 @@
+ #include <proto.h>
+ 
+ 
+-#if defined(COMPILER_MSC)
++#if defined(COMPILER_MSC) && (_MSC_VER < 1900)
+ #if defined(rint)
+   #undef rint
+ #endif
