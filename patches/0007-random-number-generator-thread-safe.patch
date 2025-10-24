@@ -1,14 +1,3 @@
-diff --git a/.gitignore b/.gitignore
-index d163863..966b4f2 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -1 +1,3 @@
--build/
-\ No newline at end of file
-+build/
-+*.DS_Store
-+.vscode
-\ No newline at end of file
 diff --git a/GKlib/gk_macros.h b/GKlib/gk_macros.h
 index d1e288b..ec83657 100644
 --- a/GKlib/gk_macros.h
