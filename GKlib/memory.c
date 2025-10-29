@@ -16,7 +16,7 @@ can be used to define other memory allocation routines.
 #include <GKlib.h>
 
 /* This is for the global mcore that tracks all heap allocations */
-static __thread gk_mcore_t *gkmcore = NULL;
+// static __thread gk_mcore_t *gkmcore = NULL;
 
 
 /*************************************************************************/
@@ -108,6 +108,7 @@ void gk_FreeMatrix(void ***r_matrix, size_t ndim1, size_t ndim2)
 /*************************************************************************/
 int gk_malloc_init()
 {
+  /*
   if (gkmcore == NULL)
     gkmcore = gk_gkmcoreCreate();
 
@@ -115,7 +116,7 @@ int gk_malloc_init()
     return 0;
 
   gk_gkmcorePush(gkmcore);
-
+  */
   return 1;
 }
 
@@ -127,6 +128,7 @@ int gk_malloc_init()
 /*************************************************************************/
 void gk_malloc_cleanup(int showstats)
 {
+  /*
   if (gkmcore != NULL) {
     gk_gkmcorePop(gkmcore);
     if (gkmcore->cmop == 0) {
@@ -134,6 +136,7 @@ void gk_malloc_cleanup(int showstats)
       gkmcore = NULL;
     }
   }
+    */
 }
 
 
@@ -165,7 +168,7 @@ void *gk_malloc(size_t nbytes, char *msg)
   }
 
   /* add this memory allocation */
-  if (gkmcore != NULL) gk_gkmcoreAdd(gkmcore, GK_MOPT_HEAP, nbytes, ptr);
+  // if (gkmcore != NULL) gk_gkmcoreAdd(gkmcore, GK_MOPT_HEAP, nbytes, ptr);
 
   return ptr;
 }
@@ -182,7 +185,7 @@ void *gk_realloc(void *oldptr, size_t nbytes, char *msg)
     nbytes++;  /* Force mallocs to actually allocate some memory */
 
   /* remove this memory de-allocation */
-  if (gkmcore != NULL && oldptr != NULL) gk_gkmcoreDel(gkmcore, oldptr);
+  // if (gkmcore != NULL && oldptr != NULL) gk_gkmcoreDel(gkmcore, oldptr);
 
   ptr = (void *)realloc(oldptr, nbytes);
 
@@ -195,7 +198,7 @@ void *gk_realloc(void *oldptr, size_t nbytes, char *msg)
   }
 
   /* add this memory allocation */
-  if (gkmcore != NULL) gk_gkmcoreAdd(gkmcore, GK_MOPT_HEAP, nbytes, ptr);
+  // if (gkmcore != NULL) gk_gkmcoreAdd(gkmcore, GK_MOPT_HEAP, nbytes, ptr);
 
   return ptr;
 }
@@ -213,8 +216,8 @@ void gk_free(void **ptr1,...)
     free(*ptr1);
 
     /* remove this memory de-allocation */
-    if (gkmcore != NULL) 
-      gk_gkmcoreDel(gkmcore, *ptr1);
+    //if (gkmcore != NULL) 
+    //  gk_gkmcoreDel(gkmcore, *ptr1);
   }
   *ptr1 = NULL;
 
@@ -224,8 +227,8 @@ void gk_free(void **ptr1,...)
       free(*ptr);
 
       /* remove this memory de-allocation */
-      if (gkmcore != NULL) 
-        gk_gkmcoreDel(gkmcore, *ptr);
+      //if (gkmcore != NULL) 
+      //  gk_gkmcoreDel(gkmcore, *ptr);
     }
     *ptr = NULL;
   }
@@ -239,10 +242,13 @@ void gk_free(void **ptr1,...)
 **************************************************************************/
 size_t gk_GetCurMemoryUsed()
 {
+  /*
   if (gkmcore == NULL)
     return 0;
   else
     return gkmcore->cur_hallocs;
+    */
+  return 0;
 }
 
 
@@ -252,10 +258,13 @@ size_t gk_GetCurMemoryUsed()
 **************************************************************************/
 size_t gk_GetMaxMemoryUsed()
 {
+  /*
   if (gkmcore == NULL)
     return 0;
   else
     return gkmcore->max_hallocs;
+    */
+   return 0;
 }
 
 
