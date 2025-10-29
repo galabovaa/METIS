@@ -4,12 +4,11 @@
 
 \date   Started 4/12/2007
 \author George
-\version\verbatim $Id: util.c 10711 2011-08-31 22:23:04Z karypis $ \endverbatim
+\version\verbatim $Id: gk_util.c 16223 2014-02-15 21:34:09Z karypis $ \endverbatim
 */
 
 
 #include <GKlib.h>
-
 
 
 /*************************************************************************
@@ -19,7 +18,7 @@
 **************************************************************************/
 void gk_RandomPermute(size_t n, int *p, int flag)
 {
-  gk_idx_t i, u, v;
+  size_t i, u, v;
   int tmp;
 
   if (flag == 1) {
@@ -61,7 +60,7 @@ store in CSF format the list of elements belonging in each partition.
 /************************************************************************/
 void gk_array2csr(size_t n, size_t range, int *array, int *ptr, int *ind)
 {
-  gk_idx_t i;
+  size_t i;
 
   gk_iset(range+1, 0, ptr);
 
@@ -76,13 +75,12 @@ void gk_array2csr(size_t n, size_t range, int *array, int *ptr, int *ind)
 }
 
 
-
 /*************************************************************************
 * This function returns the log2(x)
 **************************************************************************/
 int gk_log2(int a)
 {
-  gk_idx_t i;
+  size_t i;
 
   for (i=1; a > 1; i++, a = a>>1);
   return i-1;
@@ -105,4 +103,5 @@ float gk_flog2(float a)
 {
   return log(a)/log(2.0);
 }
+
 

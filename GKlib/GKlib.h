@@ -3,7 +3,7 @@
  * 
  * George's library of most frequently used routines
  *
- * $Id: GKlib.h 13005 2012-10-23 22:34:36Z karypis $
+ * $Id: GKlib.h 14866 2013-08-03 16:40:04Z karypis $
  *
  */
 
@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <memory.h>
 #include <errno.h>
 #include <ctype.h>
 #include <math.h>
@@ -42,16 +43,13 @@
 #include <assert.h>
 #include <sys/stat.h>
 
-#if defined(__WITHPCRE__)
+#if defined(USE_PCRE) && defined(HAVE_PCREPOSIX_H)
   #include <pcreposix.h>
+#elif defined(HAVE_REGEX_H)
+  #include <regex.h>
 #else
-  #if defined(USE_GKREGEX)
-    #include "gkregex.h"
-  #else
-    #include <regex.h>
-  #endif /* defined(USE_GKREGEX) */
-#endif /* defined(__WITHPCRE__) */
-
+  #include "gkregex.h"
+#endif
 
 
 #if defined(__OPENMP__) 
