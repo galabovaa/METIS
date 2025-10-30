@@ -19,17 +19,17 @@ This file contains functions dealing with error reporting and termination
 /* These are the jmp_buf for the graceful exit in case of severe errors.
    Multiple buffers are defined to allow for recursive invokation. */
 #define MAX_JBUFS 128
-__thread int gk_cur_jbufs=-1;
-__thread jmp_buf gk_jbufs[MAX_JBUFS];
-__thread jmp_buf gk_jbuf;
+// __thread int gk_cur_jbufs=-1;
+// __thread jmp_buf gk_jbufs[MAX_JBUFS];
+// __thread jmp_buf gk_jbuf;
 
 typedef void (*gksighandler_t)(int);
 
 /* These are the holders of the old singal handlers for the trapped signals */
-static __thread gksighandler_t old_SIGMEM_handler;  /* Custom signal */
-static __thread gksighandler_t old_SIGERR_handler;  /* Custom signal */
-static __thread gksighandler_t old_SIGMEM_handlers[MAX_JBUFS];  /* Custom signal */
-static __thread gksighandler_t old_SIGERR_handlers[MAX_JBUFS];  /* Custom signal */
+// static __thread gksighandler_t old_SIGMEM_handler;  /* Custom signal */
+// static __thread gksighandler_t old_SIGERR_handler;  /* Custom signal */
+// static __thread gksighandler_t old_SIGMEM_handlers[MAX_JBUFS];  /* Custom signal */
+// static __thread gksighandler_t old_SIGERR_handlers[MAX_JBUFS];  /* Custom signal */
 
 /* The following is used to control if the gk_errexit() will actually abort or not.
    There is always a single copy of this variable */
@@ -97,6 +97,7 @@ void gk_errexit(int signum, char *f_str,...)
 /***************************************************************************/
 int gk_sigtrap() 
 {
+  /*
   if (gk_cur_jbufs+1 >= MAX_JBUFS)
     return 0;
 
@@ -104,7 +105,7 @@ int gk_sigtrap()
 
   old_SIGMEM_handlers[gk_cur_jbufs]  = signal(SIGMEM,  gk_sigthrow);
   old_SIGERR_handlers[gk_cur_jbufs]  = signal(SIGERR,  gk_sigthrow);
-
+  */
   return 1;
 }
   
@@ -115,6 +116,7 @@ int gk_sigtrap()
 /***************************************************************************/
 int gk_siguntrap() 
 {
+  /*
   if (gk_cur_jbufs == -1)
     return 0;
 
@@ -122,7 +124,7 @@ int gk_siguntrap()
   signal(SIGERR,  old_SIGERR_handlers[gk_cur_jbufs]);
 
   gk_cur_jbufs--;
-
+  */
   return 1;
 }
   
@@ -134,7 +136,7 @@ int gk_siguntrap()
 /*************************************************************************/
 void gk_sigthrow(int signum)
 {
-  longjmp(gk_jbufs[gk_cur_jbufs], signum);
+  //longjmp(gk_jbufs[gk_cur_jbufs], signum);
 }
   
 
@@ -144,8 +146,8 @@ void gk_sigthrow(int signum)
 ****************************************************************************/
 void gk_SetSignalHandlers() 
 {
-  old_SIGMEM_handler = signal(SIGMEM,  gk_NonLocalExit_Handler);
-  old_SIGERR_handler = signal(SIGERR,  gk_NonLocalExit_Handler);
+  //old_SIGMEM_handler = signal(SIGMEM,  gk_NonLocalExit_Handler);
+  //old_SIGERR_handler = signal(SIGERR,  gk_NonLocalExit_Handler);
 }
   
 
@@ -154,8 +156,8 @@ void gk_SetSignalHandlers()
 ****************************************************************************/
 void gk_UnsetSignalHandlers() 
 {
-  signal(SIGMEM,  old_SIGMEM_handler);
-  signal(SIGERR,  old_SIGERR_handler);
+  //signal(SIGMEM,  old_SIGMEM_handler);
+  //signal(SIGERR,  old_SIGERR_handler);
 }
   
 
@@ -165,7 +167,7 @@ void gk_UnsetSignalHandlers()
 **************************************************************************/
 void gk_NonLocalExit_Handler(int signum)
 {
-  longjmp(gk_jbuf, signum);
+  //longjmp(gk_jbuf, signum);
 }
   
 
@@ -174,6 +176,7 @@ void gk_NonLocalExit_Handler(int signum)
 /**************************************************************************/
 char *gk_strerror(int errnum)
 {
+  /*
 #if defined(WIN32) || defined(__MINGW32__)
   return strerror(errnum);
 #else 
@@ -188,6 +191,7 @@ char *gk_strerror(int errnum)
   return strerror(errnum);
 #endif
 #endif
+*/
 }
 
 
