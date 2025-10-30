@@ -93,6 +93,8 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   ctrl->nparts  = nparts;
   ctrl->maxvwgt = ismalloc(ncon, 0, "SetupCtrl: maxvwgt");
 
+  ctrl->rng_state = (ctrl->seed == -1 ? 4321 : ctrl->seed);
+
   /* setup the target partition weights */
   if (ctrl->optype != METIS_OP_OMETIS) {
     ctrl->tpwgts = rsmalloc(nparts*ncon, 0.0, "SetupCtrl: ctrl->tpwgts");

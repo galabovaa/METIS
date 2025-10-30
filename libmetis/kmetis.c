@@ -278,7 +278,7 @@ idx_t BlockKWayPartitioning(ctrl_t *ctrl, graph_t *graph, idx_t *part)
 
   for (i=0; i<nvtxs; i++)
     part[i] = i%nparts;
-  irandArrayPermute(nvtxs, part, 4*nvtxs, 0);
+  irandArrayPermute(nvtxs, part, 4*nvtxs, 0, &ctrl->rng_state);
   printf("Random cut: %d\n", (int)ComputeCut(graph, part));
 
   /* create the initial multi-section */
@@ -302,7 +302,7 @@ idx_t BlockKWayPartitioning(ctrl_t *ctrl, graph_t *graph, idx_t *part)
   /* assign the fine partitions into the coarse partitions */
   fpart = iwspacemalloc(ctrl, mynparts);
   perm  = iwspacemalloc(ctrl, mynparts);
-  irandArrayPermute(mynparts, perm, mynparts, 1);
+  irandArrayPermute(mynparts, perm, mynparts, 1, &ctrl->rng_state);
   for (ii=0; ii<mynparts; ii++) {
     i = perm[ii];
     j = ipqSeeTopVal(queue);
@@ -354,7 +354,7 @@ idx_t GrowMultisection(ctrl_t *ctrl, graph_t *graph, idx_t nparts, idx_t *where)
   }
   nparts = gk_min(nparts, nleft);
   for (i=0; i<nparts; i++) {
-    j = irandInRange(nleft);
+    j = irandInRange(nleft, &ctrl->rng_state);
     queue[i] = where[j];
     where[j] = --nleft;
   }
@@ -398,7 +398,7 @@ idx_t GrowMultisection(ctrl_t *ctrl, graph_t *graph, idx_t nparts, idx_t *where)
   if (nleft > 0) { 
     for (i=0; i<nvtxs; i++) {
       if (where[i] == -1)
-        where[i] = irandInRange(nparts);
+        where[i] = irandInRange(nparts, &ctrl->rng_state);
     }
   }
 
@@ -455,7 +455,7 @@ void BalanceAndRefineLP(ctrl_t *ctrl, graph_t *graph, idx_t nparts, idx_t *where
     if (imax(nparts, pwgts, 1)*nparts < ubfactor*tvwgt)
       break;
 
-    irandArrayPermute(nvtxs, perm, nvtxs/8, 1);
+    irandArrayPermute(nvtxs, perm, nvtxs/8, 1, &ctrl->rng_state);
     nmoves = 0;
 
     for (ii=0; ii<nvtxs; ii++) {
@@ -509,7 +509,7 @@ void BalanceAndRefineLP(ctrl_t *ctrl, graph_t *graph, idx_t nparts, idx_t *where
     printf("RLP: nparts: %"PRIDX", min-max: [%"PRIDX", %"PRIDX"], bal: %7.4"PRREAL", cut: %9"PRIDX"\n",
         nparts, minpwgt, maxpwgt, 1.0*imax(nparts, pwgts, 1)*nparts/tvwgt, ComputeCut(graph, where));
   for (iter=0; iter<ctrl->niter; iter++) {
-    irandArrayPermute(nvtxs, perm, nvtxs/8, 1);
+    irandArrayPermute(nvtxs, perm, nvtxs/8, 1, &ctrl->rng_state);
     nmoves = 0;
 
     for (ii=0; ii<nvtxs; ii++) {

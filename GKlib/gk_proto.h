@@ -151,7 +151,7 @@ void PrintBackTrace();
 /*-------------------------------------------------------------
  * util.c
  *-------------------------------------------------------------*/
-void  gk_RandomPermute(size_t, int *, int);
+void  gk_RandomPermute(size_t, int *, int, unsigned*);
 void  gk_array2csr(size_t n, size_t range, int *array, int *ptr, int *ind);
 int   gk_log2(int);
 int   gk_ispow2(int);
@@ -285,8 +285,9 @@ GK_MKRANDOM_PROTO(gk_idx, size_t, gk_idx_t)
 GK_MKRANDOM_PROTO(gk_z,   size_t, ssize_t)
 GK_MKRANDOM_PROTO(gk_zu,  size_t, size_t)
 void gk_randinit(uint64_t);
-uint64_t gk_randint64(void);
-uint32_t gk_randint32(void);
+uint64_t gk_randint64(unsigned *rng_state);
+uint32_t gk_randint32(unsigned *rng_state);
+int my_rand_r(unsigned *rng_state);
 
 
 /*-------------------------------------------------------------
@@ -333,7 +334,7 @@ void gk_csr_Scale(gk_csr_t *mat, int type);
 void gk_csr_ComputeSums(gk_csr_t *mat, int what);
 void gk_csr_ComputeNorms(gk_csr_t *mat, int what);
 void gk_csr_ComputeSquaredNorms(gk_csr_t *mat, int what);
-gk_csr_t *gk_csr_Shuffle(gk_csr_t *mat, int what, int summetric);
+gk_csr_t *gk_csr_Shuffle(gk_csr_t *mat, int what, int summetric, unsigned* rng_state);
 gk_csr_t *gk_csr_Transpose(gk_csr_t *mat);
 float gk_csr_ComputeSimilarity(gk_csr_t *mat, int i1, int i2, int what, int simtype);
 float gk_csr_ComputePairSimilarity(gk_csr_t *mat_a, gk_csr_t *mat_b, int i1, int i2, int what, int simtype);
@@ -345,7 +346,7 @@ int gk_csr_FindConnectedComponents(gk_csr_t *mat, int32_t *cptr, int32_t *cind,
 gk_csr_t *gk_csr_MakeSymmetric(gk_csr_t *mat, int op);
 gk_csr_t *gk_csr_ReorderSymmetric(gk_csr_t *mat, int32_t *perm, int32_t *iperm);
 void gk_csr_ComputeBFSOrderingSymmetric(gk_csr_t *mat, int maxdegree, int v, 
-          int32_t **r_perm, int32_t **r_iperm);
+          int32_t **r_perm, int32_t **r_iperm, unsigned* rng_state);
 void gk_csr_ComputeBestFOrderingSymmetric(gk_csr_t *mat, int v, int type,
           int32_t **r_perm, int32_t **r_iperm);
 

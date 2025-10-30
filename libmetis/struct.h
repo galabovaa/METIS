@@ -211,6 +211,8 @@ typedef struct ctrl_t {
   idx_t **adwgts;               /* The edge-weight to the adjacent domains */
   idx_t *pvec1, *pvec2;         /* Auxiliary nparts-size vectors for efficiency */
 
+  unsigned rng_state;
+
   /* ondisk related info */
   pid_t pid;            /*!< The pid of the running process */
 } ctrl_t;

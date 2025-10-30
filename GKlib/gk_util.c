@@ -16,7 +16,7 @@
 * flag == 0, don't initialize perm
 * flag == 1, set p[i] = i 
 **************************************************************************/
-void gk_RandomPermute(size_t n, int *p, int flag)
+void gk_RandomPermute(size_t n, int *p, int flag, unsigned *rng_state)
 {
   size_t i, u, v;
   int tmp;
@@ -27,8 +27,8 @@ void gk_RandomPermute(size_t n, int *p, int flag)
   }
 
   for (i=0; i<n/2; i++) {
-    v = RandomInRange(n);
-    u = RandomInRange(n);
+    v = RandomInRange(n, rng_state);
+    u = RandomInRange(n, rng_state);
     gk_SWAP(p[v], p[u], tmp);
   }
 }

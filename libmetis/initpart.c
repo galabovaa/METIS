@@ -139,7 +139,7 @@ void RandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     iset(nvtxs, 1, where);
 
     if (inbfs > 0) {
-      irandArrayPermute(nvtxs, perm, nvtxs/2, 1);
+      irandArrayPermute(nvtxs, perm, nvtxs/2, 1, &ctrl->rng_state);
       pwgts[1] = graph->tvwgt[0];
       pwgts[0] = 0;
 
@@ -222,7 +222,7 @@ void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     pwgts[0] = 0;
 
 
-    queue[0] = irandInRange(nvtxs);
+    queue[0] = irandInRange(nvtxs, &ctrl->rng_state);
     touched[queue[0]] = 1;
     first = 0; 
     last  = 1;
@@ -235,7 +235,7 @@ void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
         if (nleft == 0 || drain)
           break;
 
-        k = irandInRange(nleft);
+        k = irandInRange(nleft, &ctrl->rng_state);
         for (i=0; i<nvtxs; i++) {
           if (touched[i] == 0) {
             if (k == 0)
@@ -276,9 +276,9 @@ void GrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 
     /* Check to see if we hit any bad limiting cases */
     if (pwgts[1] == 0) 
-      where[irandInRange(nvtxs)] = 1;
+      where[irandInRange(nvtxs, &ctrl->rng_state)] = 1;
     if (pwgts[0] == 0) 
-      where[irandInRange(nvtxs)] = 0;
+      where[irandInRange(nvtxs, &ctrl->rng_state)] = 0;
 
     /*************************************************************
     * Do some partition refinement 
@@ -343,7 +343,7 @@ void McRandomBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
   counts    = iwspacemalloc(ctrl, ncon);
 
   for (inbfs=0; inbfs<2*niparts; inbfs++) {
-    irandArrayPermute(nvtxs, perm, nvtxs/2, 1);
+    irandArrayPermute(nvtxs, perm, nvtxs/2, 1, &ctrl->rng_state);
     iset(ncon, 0, counts);
 
     /* partition by splitting the queues randomly */
@@ -399,7 +399,7 @@ void McGrowBisection(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 
   for (inbfs=0; inbfs<2*niparts; inbfs++) {
     iset(nvtxs, 1, where);
-    where[irandInRange(nvtxs)] = 0;
+    where[irandInRange(nvtxs, &ctrl->rng_state)] = 0;
 
     Compute2WayPartitionParams(ctrl, graph);
 
@@ -473,7 +473,7 @@ void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
     pwgts[1] = graph->tvwgt[0];
     pwgts[0] = 0;
 
-    queue[0] = irandInRange(nvtxs);
+    queue[0] = irandInRange(nvtxs, &ctrl->rng_state);
     touched[queue[0]] = 1;
     first = 0; last = 1;
     nleft = nvtxs-1;
@@ -485,7 +485,7 @@ void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
         if (nleft == 0 || drain)
           break;
   
-        k = irandInRange(nleft);
+        k = irandInRange(nleft, &ctrl->rng_state);
         for (i=0; i<nvtxs; i++) { /* select the kth untouched vertex */
           if (touched[i] == 0) {
             if (k == 0)
@@ -595,7 +595,7 @@ void GrowBisectionNode2(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
   for (inbfs=0; inbfs<niparts; inbfs++) {
     iset(nvtxs, 1, where);
     if (inbfs > 0)
-      where[irandInRange(nvtxs)] = 0;
+      where[irandInRange(nvtxs, &ctrl->rng_state)] = 0;
 
     Compute2WayPartitionParams(ctrl, graph);
     General2WayBalance(ctrl, graph, ntpwgts);

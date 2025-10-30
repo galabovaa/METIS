@@ -179,7 +179,7 @@ idx_t Match_RM(ctrl_t *ctrl, graph_t *graph)
 
   /* Determine a "random" traversal order that is biased towards 
      low-degree vertices */
-  irandArrayPermute(nvtxs, tperm, nvtxs/8, 1);
+  irandArrayPermute(nvtxs, tperm, nvtxs/8, 1, &ctrl->rng_state);
 
   avgdegree = 4.0*(xadj[nvtxs]/nvtxs);
   for (i=0; i<nvtxs; i++) {
@@ -319,7 +319,7 @@ idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph)
   degrees = iwspacemalloc(ctrl, nvtxs);
 
   /* Determine a "random" traversal order that is biased towards low-degree vertices */
-  irandArrayPermute(nvtxs, tperm, nvtxs/8, 1);
+  irandArrayPermute(nvtxs, tperm, nvtxs/8, 1, &ctrl->rng_state);
 
   avgdegree = 4.0*(xadj[nvtxs]/nvtxs);
   for (i=0; i<nvtxs; i++) {
@@ -650,7 +650,7 @@ idx_t Match_JC(ctrl_t *ctrl, graph_t *graph)
   tperm   = iwspacemalloc(ctrl, nvtxs);
   degrees = iwspacemalloc(ctrl, nvtxs);
 
-  irandArrayPermute(nvtxs, tperm, nvtxs/8, 1);
+  irandArrayPermute(nvtxs, tperm, nvtxs/8, 1, &ctrl->rng_state);
 
   avgdegree = 4.0*(xadj[nvtxs]/nvtxs);
   for (i=0; i<nvtxs; i++) {
@@ -866,7 +866,7 @@ void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
     medianewgts = iset(cnvtxs, -1, iwspacemalloc(ctrl, cnvtxs));
 
     for (v=0; v<cnvtxs; v++) 
-      noise[v] = irandInRange(128);
+      noise[v] = irandInRange(128, &ctrl->rng_state);
   }
 
   /* Initialize the coarser graph */

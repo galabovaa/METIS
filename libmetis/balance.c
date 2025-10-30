@@ -85,7 +85,7 @@ void Bnd2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
 
   /* Insert the boundary nodes of the proper partition whose size is OK in the priority queue */
   nbnd = graph->nbnd;
-  irandArrayPermute(nbnd, perm, nbnd/5, 1);
+  irandArrayPermute(nbnd, perm, nbnd/5, 1, &ctrl->rng_state);
   for (ii=0; ii<nbnd; ii++) {
     i = perm[ii];
     ASSERT(ed[bndind[i]] > 0 || id[bndind[i]] == 0);
@@ -211,7 +211,7 @@ void General2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
   ASSERT(CheckBnd(graph));
 
   /* Insert the nodes of the proper partition whose size is OK in the priority queue */
-  irandArrayPermute(nvtxs, perm, nvtxs/5, 1);
+  irandArrayPermute(nvtxs, perm, nvtxs/5, 1, &ctrl->rng_state);
   for (ii=0; ii<nvtxs; ii++) {
     i = perm[ii];
     if (where[i] == from && vwgt[i] <= mindiff)
@@ -371,7 +371,7 @@ void McGeneral2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
 
   /* Insert all nodes in the priority queues */
   nbnd = graph->nbnd;
-  irandArrayPermute(nvtxs, perm, nvtxs/10, 1);
+  irandArrayPermute(nvtxs, perm, nvtxs/10, 1, &ctrl->rng_state);
   for (ii=0; ii<nvtxs; ii++) {
     i = perm[ii];
     rpqInsert(queues[2*qnum[i]+where[i]], i, ed[i]-id[i]);

@@ -181,7 +181,7 @@ void Greedy_KWayCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
       maxndoms = imax(nparts, nads,1);
 
     /* Insert the boundary vertices in the priority queue */
-    irandArrayPermute(nbnd, perm, nbnd/4, 1);
+    irandArrayPermute(nbnd, perm, nbnd/4, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[perm[ii]];
       rgain = (graph->ckrinfo[i].nnbrs > 0 ? 
@@ -510,7 +510,7 @@ void Greedy_KWayVolOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
       maxndoms = imax(nparts, nads,1);
 
     /* Insert the boundary vertices in the priority queue */
-    irandArrayPermute(graph->nbnd, perm, graph->nbnd/4, 1);
+    irandArrayPermute(graph->nbnd, perm, graph->nbnd/4, 1, &ctrl->rng_state);
     for (ii=0; ii<graph->nbnd; ii++) {
       i = bndind[perm[ii]];
       ipqInsert(queue, i, graph->vkrinfo[i].gv);
@@ -841,7 +841,7 @@ void Greedy_McKWayCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
       maxndoms = imax(nparts, nads,1);
 
     /* Insert the boundary vertices in the priority queue */
-    irandArrayPermute(nbnd, perm, nbnd/4, 1);
+    irandArrayPermute(nbnd, perm, nbnd/4, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[perm[ii]];
       rgain = (graph->ckrinfo[i].nnbrs > 0 ? 
@@ -1185,7 +1185,7 @@ void Greedy_McKWayVolOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter,
       maxndoms = imax(nparts, nads,1);
 
     /* Insert the boundary vertices in the priority queue */
-    irandArrayPermute(graph->nbnd, perm, graph->nbnd/4, 1);
+    irandArrayPermute(graph->nbnd, perm, graph->nbnd/4, 1, &ctrl->rng_state);
     for (ii=0; ii<graph->nbnd; ii++) {
       i = bndind[perm[ii]];
       ipqInsert(queue, i, graph->vkrinfo[i].gv);
@@ -2058,7 +2058,7 @@ void Greedy_KWayEdgeCutOptimize(ctrl_t *ctrl, graph_t *graph, idx_t niter)
 
     /* Insert the boundary vertices in the priority queue */
     /* Visit the vertices in random order and see if you can swap them */
-    irandArrayPermute(nvtxs, perm, nbnd, 1);
+    irandArrayPermute(nvtxs, perm, nbnd, 1, &ctrl->rng_state);
     for (ii=0; ii<nvtxs; ii++) {
       if (bndptr[u=perm[ii]] == -1)
         continue;

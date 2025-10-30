@@ -587,7 +587,7 @@ graph_t **SplitGraphOrderCC(ctrl_t *ctrl, graph_t *graph, idx_t ncmps,
 
   /* Go and split the graph a component at a time */
   for (iii=0; iii<ncmps; iii++) {
-    irandArrayPermute(cptr[iii+1]-cptr[iii], cind+cptr[iii], cptr[iii+1]-cptr[iii], 0);
+    irandArrayPermute(cptr[iii+1]-cptr[iii], cind+cptr[iii], cptr[iii+1]-cptr[iii], 0, &ctrl->rng_state);
     snvtxs = snedges = 0;
     for (j=cptr[iii]; j<cptr[iii+1]; j++) {
       i = cind[j];

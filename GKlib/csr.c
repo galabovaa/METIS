@@ -2006,7 +2006,7 @@ void gk_csr_ComputeSquaredNorms(gk_csr_t *mat, int what)
           The input matrix is not modified. 
 */
 /**************************************************************************/
-gk_csr_t *gk_csr_Shuffle(gk_csr_t *mat, int what, int symmetric)
+gk_csr_t *gk_csr_Shuffle(gk_csr_t *mat, int what, int symmetric, unsigned* rng_state)
 {
   ssize_t i, j;
   int nrows, ncols;
@@ -2030,34 +2030,34 @@ gk_csr_t *gk_csr_Shuffle(gk_csr_t *mat, int what, int symmetric)
 
   switch (what) {
     case GK_CSR_ROW:
-      gk_RandomPermute(nrows, rperm, 1);
+      gk_RandomPermute(nrows, rperm, 1, rng_state);
       for (i=0; i<20; i++)
-        gk_RandomPermute(nrows, rperm, 0);
+        gk_RandomPermute(nrows, rperm, 0, rng_state);
 
       for (i=0; i<ncols; i++)
         cperm[i] = i;
       break;
 
     case GK_CSR_COL:
-      gk_RandomPermute(ncols, cperm, 1);
+      gk_RandomPermute(ncols, cperm, 1, rng_state);
       for (i=0; i<20; i++)
-        gk_RandomPermute(ncols, cperm, 0);
+        gk_RandomPermute(ncols, cperm, 0, rng_state);
 
       for (i=0; i<nrows; i++)
         rperm[i] = i;
       break;
 
     case GK_CSR_ROWCOL:
-      gk_RandomPermute(nrows, rperm, 1);
+      gk_RandomPermute(nrows, rperm, 1, rng_state);
       for (i=0; i<20; i++)
-        gk_RandomPermute(nrows, rperm, 0);
+        gk_RandomPermute(nrows, rperm, 0, rng_state);
 
       if (symmetric)
         gk_icopy(nrows, rperm, cperm);
       else {
-        gk_RandomPermute(ncols, cperm, 1);
+        gk_RandomPermute(ncols, cperm, 1, rng_state);
         for (i=0; i<20; i++)
-          gk_RandomPermute(ncols, cperm, 0);
+          gk_RandomPermute(ncols, cperm, 0, rng_state);
       }
       break;
 
@@ -3052,7 +3052,7 @@ gk_csr_t *gk_csr_ReorderSymmetric(gk_csr_t *mat, int32_t *perm, int32_t *iperm)
 */
 /*************************************************************************/
 void gk_csr_ComputeBFSOrderingSymmetric(gk_csr_t *mat, int maxdegree, int v, 
-          int32_t **r_perm, int32_t **r_iperm)
+          int32_t **r_perm, int32_t **r_iperm, unsigned* rng_state)
 {
   int i, k, nrows, first, last;
   ssize_t j, *rowptr;
@@ -3115,7 +3115,7 @@ void gk_csr_ComputeBFSOrderingSymmetric(gk_csr_t *mat, int maxdegree, int v,
       gk_free((void **)&cand, LTERM);
     }
 
-    v = cot[last + RandomInRange(nrows-last)];
+    v = cot[last + RandomInRange(nrows-last, rng_state)];
   }
 
 

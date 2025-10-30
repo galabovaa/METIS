@@ -289,7 +289,7 @@ void FM_2WayNodeRefine1SidedP(ctrl_t *ctrl, graph_t *graph,
     nbnd = graph->nbnd;
 
     /* use the swaps array in place of the traditional perm array to save memory */
-    irandArrayPermute(nbnd, swaps, nbnd, 1);
+    irandArrayPermute(nbnd, swaps, nbnd, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[swaps[ii]];
       ASSERT(where[i] == 2);
@@ -514,7 +514,7 @@ void FM_2WayNodeRefine2SidedP(ctrl_t *ctrl, graph_t *graph,
     nbnd = graph->nbnd;
 
     /* use the swaps array in place of the traditional perm array to save memory */
-    irandArrayPermute(nbnd, swaps, nbnd, 1);
+    irandArrayPermute(nbnd, swaps, nbnd, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[swaps[ii]];
       ASSERT(where[i] == 2);
@@ -737,6 +737,7 @@ int METIS_CacheFriendlyReordering(idx_t nvtxs, idx_t *xadj, idx_t *adjncy,
   ikv_t *levels;
 
   InitRandom(123);
+  unsigned rng_state = 123;
 
   /* This array ([C]losed[O]pen[T]odo => cot) serves three purposes.
      Positions from [0...first) is the current iperm[] vector of the explored vertices;
@@ -748,7 +749,7 @@ int METIS_CacheFriendlyReordering(idx_t nvtxs, idx_t *xadj, idx_t *adjncy,
   pos = iincset(nvtxs, 0, imalloc(nvtxs, "METIS_CacheFriendlyReordering: pos"));
 
   /* pick a random starting vertex */
-  i = irandInRange(nvtxs);
+  i = irandInRange(nvtxs, &rng_state);
   pos[0] = cot[0] = i;
   pos[i] = cot[i] = 0;
 

@@ -21,7 +21,7 @@
 #define sign(a, b) ((a >= 0 ? b : -b))
 
 #define ONEOVERRANDMAX (1.0/(RAND_MAX+1.0))
-#define RandomInRange(u) ((int) (ONEOVERRANDMAX*(u)*rand()))
+#define RandomInRange(u, rng_state) ((int) (ONEOVERRANDMAX*(u)*my_rand_r(rng_state)))
 #define RandomInRange_r(s, u) ((int) (ONEOVERRANDMAX*(u)*rand_r(s)))
 
 #define gk_abs(x) ((x) >= 0 ? (x) : -(x))
