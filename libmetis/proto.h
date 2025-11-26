@@ -28,11 +28,6 @@ void McGeneral2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts);
 void BucketSortKeysInc(ctrl_t *ctrl, idx_t n, idx_t max, idx_t *keys,
          idx_t *tperm, idx_t *perm);
 
-
-/* checkgraph.c */
-int CheckGraph(graph_t *graph, int numflag, int verbose);
-
-
 /* coarsen.c */
 graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph);
 graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels);
@@ -63,14 +58,6 @@ graph_t *PruneGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t *xadj, idx_t *adjncy,
 idx_t FindSepInducedComponents(ctrl_t *, graph_t *, idx_t *, idx_t *);
 
 
-/* debug.c */
-idx_t ComputeCut(graph_t *graph, idx_t *where);
-idx_t CheckBnd(graph_t *);
-idx_t CheckNodeBnd(graph_t *, idx_t);
-idx_t CheckNodePartitionParams(graph_t *);
-idx_t IsSeparable(graph_t *);
-
-
 /* fm.c */
 void FM_2WayRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter);
 void FM_2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter);
@@ -79,11 +66,6 @@ void SelectQueue(graph_t *graph, real_t *pijbm, real_t *ubfactors, rpq_t **queue
          idx_t *from, idx_t *cnum);
 void Print2WayRefineStats(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, 
          real_t deltabal, idx_t mincutorder);
-
-
-/* fortran.c */
-void Change2CNumbering(idx_t, idx_t *, idx_t *);
-void Change2FNumberingOrder(idx_t, idx_t *, idx_t *, idx_t *, idx_t *);
 
 
 /* graph.c */
@@ -171,13 +153,9 @@ void Allocate2WayNodePartitionMemory(ctrl_t *ctrl, graph_t *graph);
 void Compute2WayNodePartitionParams(ctrl_t *ctrl, graph_t *graph);
 void Project2WayNodePartition(ctrl_t *ctrl, graph_t *graph);
 
-/* timing.c */
-void InitTimers(ctrl_t *);
-
 /* util.c */
 idx_t iargmax_nrm(size_t n, idx_t *x, real_t *y);
 idx_t iargmax2_nrm(size_t n, idx_t *x, real_t *y);
-void InitRandom(idx_t);
 int metis_rcode(int sigrval);
 
 

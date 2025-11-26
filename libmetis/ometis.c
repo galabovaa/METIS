@@ -43,7 +43,7 @@
 int METIS_NodeND(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
           idx_t *options, idx_t *perm, idx_t *iperm) 
 {
-  int sigrval=0, renumber=0;
+  int sigrval=0;
   idx_t i, ii, j, l, nnvtxs=0;
   graph_t *graph=NULL;
   ctrl_t *ctrl;
@@ -66,15 +66,6 @@ int METIS_NodeND(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
     gk_siguntrap();
     return METIS_ERROR_INPUT;
   }
-
-  /* if required, change the numbering to 0 */
-  if (ctrl->numflag == 1) {
-    Change2CNumbering(*nvtxs, xadj, adjncy);
-    renumber = 1;
-  }
-
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, InitTimers(ctrl));
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->TotalTmr));
 
   /* prune the dense columns */
   if (ctrl->pfactor > 0.0) { 
@@ -117,7 +108,6 @@ int METIS_NodeND(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
   if (ctrl->pfactor == 0.0 && ctrl->compress == 0) 
     graph = SetupGraph(ctrl, *nvtxs, 1, xadj, adjncy, vwgt, NULL, NULL);
 
-  ASSERT(CheckGraph(graph, ctrl->numflag, 1));
 
   /* allocate workspace memory */
   AllocateWorkSpace(ctrl, graph);
@@ -154,15 +144,10 @@ int METIS_NodeND(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
   for (i=0; i<*nvtxs; i++)
     perm[iperm[i]] = i;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->TotalTmr));
-
   /* clean up */
   FreeCtrl(&ctrl);
 
 SIGTHROW:
-  /* if required, change the numbering back to 1 */
-  if (renumber)
-    Change2FNumberingOrder(*nvtxs, xadj, adjncy, perm, iperm);
 
   gk_siguntrap();
   gk_malloc_cleanup(0);
@@ -430,8 +415,6 @@ void SplitGraphOrder(ctrl_t *ctrl, graph_t *graph, graph_t **r_lgraph,
 
   WCOREPUSH;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->SplitTmr));
-
   nvtxs   = graph->nvtxs;
   xadj    = graph->xadj;
   vwgt    = graph->vwgt;
@@ -441,7 +424,6 @@ void SplitGraphOrder(ctrl_t *ctrl, graph_t *graph, graph_t **r_lgraph,
   where   = graph->where;
   bndptr  = graph->bndptr;
   bndind  = graph->bndind;
-  ASSERT(bndptr != NULL);
 
   rename = iwspacemalloc(ctrl, nvtxs);
   
@@ -520,8 +502,6 @@ void SplitGraphOrder(ctrl_t *ctrl, graph_t *graph, graph_t **r_lgraph,
   SetupGraph_tvwgt(lgraph);
   SetupGraph_tvwgt(rgraph);
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->SplitTmr));
-
   *r_lgraph = lgraph;
   *r_rgraph = rgraph;
 
@@ -560,8 +540,6 @@ graph_t **SplitGraphOrderCC(ctrl_t *ctrl, graph_t *graph, idx_t ncmps,
 
   WCOREPUSH;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->SplitTmr));
-
   nvtxs   = graph->nvtxs;
   xadj    = graph->xadj;
   vwgt    = graph->vwgt;
@@ -571,7 +549,6 @@ graph_t **SplitGraphOrderCC(ctrl_t *ctrl, graph_t *graph, idx_t ncmps,
   where   = graph->where;
   bndptr  = graph->bndptr;
   bndind  = graph->bndind;
-  ASSERT(bndptr != NULL);
 
   /* Go and use bndptr to also mark the boundary nodes in the two partitions */
   for (ii=0; ii<graph->nbnd; ii++) {
@@ -638,8 +615,6 @@ graph_t **SplitGraphOrderCC(ctrl_t *ctrl, graph_t *graph, idx_t ncmps,
 
     SetupGraph_tvwgt(sgraphs[iii]);
   }
-
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->SplitTmr));
 
   WCOREPOP;
 

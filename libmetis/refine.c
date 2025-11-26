@@ -57,10 +57,8 @@ void Compute2WayPartitionParams(ctrl_t *ctrl, graph_t *graph)
   /* Compute pwgts */
   if (ncon == 1) {
     for (i=0; i<nvtxs; i++) {
-      ASSERT(where[i] >= 0 && where[i] <= 1);
       pwgts[where[i]] += vwgt[i];
     }
-    ASSERT(pwgts[0]+pwgts[1] == graph->tvwgt[0]);
   }
   else {
     for (i=0; i<nvtxs; i++) {

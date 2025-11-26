@@ -112,10 +112,6 @@ typedef struct ctrl_t {
 
   real_t cfactor;               /*!< The achieved compression factor */
 
-  /* Various Timers */
-  double TotalTmr, InitPartTmr, MatchTmr, ContractTmr, CoarsenTmr, UncoarsenTmr, 
-         RefTmr, ProjectTmr, SplitTmr, Aux1Tmr, Aux2Tmr, Aux3Tmr;
-
   /* Workspace information */
   gk_mcore_t *mcore;    /*!< The persistent memory core for within function 
                              mallocs/frees */

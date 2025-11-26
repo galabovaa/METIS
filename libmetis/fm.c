@@ -75,16 +75,12 @@ void FM_2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter
     newcut = mincut = initcut = graph->mincut;
     mindiff = iabs(tpwgts[0]-pwgts[0]);
 
-    ASSERT(ComputeCut(graph, where) == graph->mincut);
-    ASSERT(CheckBnd(graph));
 
     /* Insert boundary nodes in the priority queues */
     nbnd = graph->nbnd;
     irandArrayPermute(nbnd, perm, nbnd, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = perm[ii];
-      ASSERT(ed[bndind[i]] > 0 || id[bndind[i]] == 0);
-      ASSERT(bndptr[bndind[i]] != -1);
       rpqInsert(queues[where[bndind[i]]], bndind[i], ed[bndind[i]]-id[bndind[i]]);
     }
 
@@ -94,7 +90,6 @@ void FM_2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t niter
 
       if ((higain = rpqGetTop(queues[from])) == -1)
         break;
-      ASSERT(bndptr[higain] != -1);
 
       newcut -= (ed[higain]-id[higain]);
       INC_DEC(pwgts[to], pwgts[from], vwgt[higain]);
@@ -278,16 +273,12 @@ void FM_Mc2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t nit
 
     minbal = ComputeLoadImbalanceDiffVec(graph, 2, ctrl->pijbm, ubfactors, minbalv);
 
-    ASSERT(ComputeCut(graph, where) == graph->mincut);
-    ASSERT(CheckBnd(graph));
 
     /* Insert boundary nodes in the priority queues */
     nbnd = graph->nbnd;
     irandArrayPermute(nbnd, perm, nbnd/5, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[perm[ii]];
-      ASSERT(ed[i] > 0 || id[i] == 0);
-      ASSERT(bndptr[i] != -1);
       //rgain = 1.0*(ed[i]-id[i])/sqrt(vwgt[i*ncon+qnum[i]]+1);
       //rgain = (ed[i]-id[i] > 0 ? 1.0*(ed[i]-id[i])/sqrt(vwgt[i*ncon+qnum[i]]+1) : ed[i]-id[i]);
       rgain = ed[i]-id[i];
@@ -301,7 +292,6 @@ void FM_Mc2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t nit
 
       if (from == -1 || (higain = rpqGetTop(queues[2*cnum+from])) == -1)
         break;
-      ASSERT(bndptr[higain] != -1);
 
       newcut -= (ed[higain]-id[higain]);
 

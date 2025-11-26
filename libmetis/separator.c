@@ -46,15 +46,11 @@ void ConstructSeparator(ctrl_t *ctrl, graph_t *graph)
 
   WCOREPOP;
 
-  ASSERT(IsSeparable(graph));
 
   Compute2WayNodePartitionParams(ctrl, graph);
-
-  ASSERT(CheckNodePartitionParams(graph));
 
   FM_2WayNodeRefine2Sided(ctrl, graph, 1); 
   FM_2WayNodeRefine1Sided(ctrl, graph, 4); 
 
-  ASSERT(IsSeparable(graph));
 
 }

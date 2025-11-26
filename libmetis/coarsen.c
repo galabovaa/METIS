@@ -23,7 +23,6 @@ graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph)
 {
   idx_t i, eqewgts, level=0;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->CoarsenTmr));
 
   /* determine if the weights on the edges are all the same */
   for (eqewgts=1, i=1; i<graph->nedges; i++) {
@@ -66,14 +65,12 @@ graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph)
     eqewgts = 0;
     level++;
 
-    ASSERT(CheckGraph(graph, 0, 1));
 
   } while (graph->nvtxs > ctrl->CoarsenTo && 
            graph->nvtxs < COARSEN_FRACTION*graph->finer->nvtxs && 
            graph->nedges > graph->nvtxs/2);
 
   IFSET(ctrl->dbglvl, METIS_DBG_COARSEN, PrintCGraphStats(ctrl, graph));
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->CoarsenTmr));
 
   return graph;
 }
@@ -88,7 +85,6 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels)
 {
   idx_t i, eqewgts, level;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->CoarsenTmr));
 
   /* determine if the weights on the edges are all the same */
   for (eqewgts=1, i=1; i<graph->nedges; i++) {
@@ -130,7 +126,6 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels)
     graph = graph->coarser;
     eqewgts = 0;
 
-    ASSERT(CheckGraph(graph, 0, 1));
 
     if (graph->nvtxs < ctrl->CoarsenTo || 
         graph->nvtxs > COARSEN_FRACTION*graph->finer->nvtxs || 
@@ -139,7 +134,6 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels)
   } 
 
   IFSET(ctrl->dbglvl, METIS_DBG_COARSEN, PrintCGraphStats(ctrl, graph));
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->CoarsenTmr));
 
   return graph;
 }
@@ -160,7 +154,6 @@ idx_t Match_RM(ctrl_t *ctrl, graph_t *graph)
 
   WCOREPUSH;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->MatchTmr));
 
   nvtxs  = graph->nvtxs;
   ncon   = graph->ncon;
@@ -275,7 +268,6 @@ idx_t Match_RM(ctrl_t *ctrl, graph_t *graph)
     }
   }
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->MatchTmr));
 
   CreateCoarseGraph(ctrl, graph, cnvtxs, match);
 
@@ -301,7 +293,6 @@ idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph)
 
   WCOREPUSH;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->MatchTmr));
 
   nvtxs  = graph->nvtxs;
   ncon   = graph->ncon;
@@ -421,7 +412,6 @@ idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph)
     }
   }
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->MatchTmr));
 
   CreateCoarseGraph(ctrl, graph, cnvtxs, match);
 
@@ -465,7 +455,6 @@ idx_t Match_2HopAny(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
   idx_t *cmap;
   size_t nunmatched;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->Aux3Tmr));
 
   nvtxs  = graph->nvtxs;
   xadj   = graph->xadj;
@@ -519,10 +508,6 @@ idx_t Match_2HopAny(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
   }
   WCOREPOP;
 
-  /*IFSET(ctrl->dbglvl, METIS_DBG_COARSEN, printf("OUT: nunmatched: %zu\n", nunmatched)); */
-
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->Aux3Tmr));
-
   *r_nunmatched = nunmatched;
   return cnvtxs;
 }
@@ -544,8 +529,6 @@ idx_t Match_2HopAll(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
   idx_t *cmap, *mark;
   ikv_t *keys;
   size_t nunmatched, ncand;
-
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->Aux3Tmr));
 
   nvtxs  = graph->nvtxs;
   xadj   = graph->xadj;
@@ -608,10 +591,6 @@ idx_t Match_2HopAll(ctrl_t *ctrl, graph_t *graph, idx_t *perm, idx_t *match,
   }
   WCOREPOP;
 
-  /*IFSET(ctrl->dbglvl, METIS_DBG_COARSEN, printf("OUT: ncand: %zu, nunmatched: %zu\n", ncand, nunmatched)); */
-
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->Aux3Tmr));
-
   *r_nunmatched = nunmatched;
   return cnvtxs;
 }
@@ -659,8 +638,6 @@ void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
 
   mask = HTLENGTH;
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->ContractTmr));
-
   nvtxs   = graph->nvtxs;
   ncon    = graph->ncon;
   xadj    = graph->xadj;
@@ -700,8 +677,6 @@ void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
     if ((u = match[v]) < v)
       continue;
 
-    ASSERT(cmap[v] == cnvtxs);
-    ASSERT(cmap[match[v]] == cnvtxs);
 
     /* take care of the vertices */
     if (ncon == 1)
@@ -808,7 +783,6 @@ void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
 
         /* Remove the contracted self-loop, when present */
         if ((j = dtable[cnvtxs]) != -1) {
-          ASSERT(cadjncy[j] == cnvtxs);
           cadjncy[j]        = cadjncy[--nedges];
           cadjwgt[j]        = cadjwgt[nedges];
           dtable[cnvtxs] = -1;
@@ -824,7 +798,6 @@ void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
     /* Determine the median weight of the incident edges, which will be used
        to keep an edge (u, v) iff wgt(u, v) >= min(medianewgts[u], medianewgts[v]) */
     if (dropedges) {
-      ASSERTP(nedges < nkeys, ("%"PRIDX", %"PRIDX"\n", nkeys, nedges));
       medianewgts[cnvtxs] = 8;  /* default for island nodes */ 
       if (nedges > 0) {
         for (j=0; j<nedges; j++) 
@@ -854,8 +827,6 @@ void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
       iend   = cxadj[u+1];
       for (j=istart; j<iend; j++) {
         v = cadjncy[j];
-        ASSERTP(medianewgts[u] >= 0, ("%"PRIDX" %"PRIDX"\n", u, medianewgts[u]));
-        ASSERTP(medianewgts[v] >= 0, ("%"PRIDX" %"PRIDX" %"PRIDX"\n", v, medianewgts[v], cnvtxs));
         if ((cadjwgt[j]<<8) + noise[u] + noise[v] >= gk_min(medianewgts[u], medianewgts[v])) {
           cadjncy[cnedges]   = cadjncy[j];
           cadjwgt[cnedges++] = cadjwgt[j];
@@ -878,8 +849,6 @@ void CreateCoarseGraph(ctrl_t *ctrl, graph_t *graph, idx_t cnvtxs,
   }
 
   ReAdjustMemory(ctrl, graph, cgraph);
-
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->ContractTmr));
 
   WCOREPOP;
 }

@@ -13,17 +13,6 @@
 
 #include "metislib.h"
 
-
-/*************************************************************************/
-/*! This function initializes the random number generator 
-  */
-/*************************************************************************/
-void InitRandom(idx_t seed)
-{
-  //isrand((seed == -1 ? 4321 : seed)); 
-}
-
-
 /*************************************************************************/
 /*! Returns the highest weight index of x[i]*y[i] 
  */

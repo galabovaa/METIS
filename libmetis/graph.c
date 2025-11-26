@@ -88,7 +88,6 @@ graph_t *SetupGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t ncon, idx_t *xadj,
   if (ctrl->optype == METIS_OP_PMETIS || ctrl->optype == METIS_OP_OMETIS) 
     SetupGraph_label(graph);
 
-  ASSERT(CheckGraph(graph, ctrl->numflag, 1));
 
   return graph;
 }

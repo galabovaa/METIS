@@ -71,13 +71,10 @@ void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
     irandArrayPermute(nbnd, swaps, nbnd, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[swaps[ii]];
-      ASSERT(where[i] == 2);
       rpqInsert(queues[0], i, vwgt[i]-rinfo[i].edegrees[1]);
       rpqInsert(queues[1], i, vwgt[i]-rinfo[i].edegrees[0]);
     }
 
-    ASSERT(CheckNodeBnd(graph, nbnd));
-    ASSERT(CheckNodePartitionParams(graph));
 
     limit = (ctrl->compress ? gk_min(5*nbnd, 400) : gk_min(2*nbnd, 300));
 
@@ -117,7 +114,6 @@ void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
       if (moved[higain] == -1) /* Delete if it was in the separator originally */
         rpqDelete(queues[other], higain);
 
-      ASSERT(bndptr[higain] != -1);
 
       /* The following check is to ensure we break out if there is a possibility
          of over-running the mind array.  */
@@ -159,7 +155,6 @@ void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
             rpqUpdate(queues[other], k, oldgain-vwgt[higain]);
         }
         else if (where[k] == other) { /* This vertex is pulled into the separator */
-          ASSERTP(bndptr[k] == -1, ("%"PRIDX" %"PRIDX" %"PRIDX"\n", k, bndptr[k], where[k]));
           BNDInsert(nbnd, bndind, bndptr, k);
 
           mind[nmind++] = k;  /* Keep track for rollback */
@@ -201,7 +196,6 @@ void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
     for (nswaps--; nswaps>mincutorder; nswaps--) {
       higain = swaps[nswaps];
 
-      ASSERT(CheckNodePartitionParams(graph));
 
       to = where[higain];
       other = (to+1)%2;
@@ -222,7 +216,6 @@ void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
       /* Push nodes out of the separator */
       for (j=mptr[nswaps]; j<mptr[nswaps+1]; j++) {
         k = mind[j];
-        ASSERT(where[k] == 2);
         where[k] = other;
         INC_DEC(pwgts[other], pwgts[2], vwgt[k]);
         BNDDelete(nbnd, bndind, bndptr, k);
@@ -233,8 +226,6 @@ void FM_2WayNodeRefine2Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
         }
       }
     }
-
-    ASSERT(mincut == pwgts[2]);
 
     IFSET(ctrl->dbglvl, METIS_DBG_REFINE,
       printf("\tMinimum sep: %6"PRIDX" at %5"PRIDX", PWGTS: [%6"PRIDX" %6"PRIDX"], NBND: %6"PRIDX"\n", mincut, mincutorder, pwgts[0], pwgts[1], nbnd));
@@ -312,26 +303,20 @@ void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
     irandArrayPermute(nbnd, swaps, nbnd, 1, &ctrl->rng_state);
     for (ii=0; ii<nbnd; ii++) {
       i = bndind[swaps[ii]];
-      ASSERT(where[i] == 2);
       rpqInsert(queue, i, vwgt[i]-rinfo[i].edegrees[other]);
     }
 
-    ASSERT(CheckNodeBnd(graph, nbnd));
-    ASSERT(CheckNodePartitionParams(graph));
 
     limit = (ctrl->compress ? gk_min(5*nbnd, 500) : gk_min(3*nbnd, 300));
 
     /******************************************************
     * Get into the FM loop
     *******************************************************/
-    IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->Aux3Tmr));
     mptr[0] = nmind = 0;
     mindiff = iabs(pwgts[0]-pwgts[1]);
     for (nswaps=0; nswaps<nvtxs; nswaps++) {
       if ((higain = rpqGetTop(queue)) == -1)
         break;
-
-      ASSERT(bndptr[higain] != -1);
 
       /* The following check is to ensure we break out if there is a possibility
          of over-running the mind array.  */
@@ -366,7 +351,6 @@ void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
       /**********************************************************
       * Update the degrees of the affected nodes
       ***********************************************************/
-      IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->Aux1Tmr));
       for (j=xadj[higain]; j<xadj[higain+1]; j++) {
         k = adjncy[j];
 
@@ -374,7 +358,6 @@ void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
           rinfo[k].edegrees[to] += vwgt[higain];
         }
         else if (where[k] == other) { /* This vertex is pulled into the separator */
-          ASSERTP(bndptr[k] == -1, ("%"PRIDX" %"PRIDX" %"PRIDX"\n", k, bndptr[k], where[k]));
           BNDInsert(nbnd, bndind, bndptr, k);
 
           mind[nmind++] = k;  /* Keep track for rollback */
@@ -400,7 +383,6 @@ void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
         }
       }
       mptr[nswaps+1] = nmind;
-      IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->Aux1Tmr));
 
 
       IFSET(ctrl->dbglvl, METIS_DBG_MOVEINFO,
@@ -408,18 +390,13 @@ void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
                 higain, to, (vwgt[higain]-rinfo[higain].edegrees[other]), vwgt[higain], 
                 pwgts[0], pwgts[1], pwgts[2], nswaps, limit));
     }
-    IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->Aux3Tmr));
 
 
     /****************************************************************
     * Roll back computation 
     *****************************************************************/
-    IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->Aux2Tmr));
     for (nswaps--; nswaps>mincutorder; nswaps--) {
       higain = swaps[nswaps];
-
-      ASSERT(CheckNodePartitionParams(graph));
-      ASSERT(where[higain] == to);
 
       INC_DEC(pwgts[2], pwgts[to], vwgt[higain]);
       where[higain] = 2;
@@ -438,7 +415,6 @@ void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
       /* Push nodes out of the separator */
       for (j=mptr[nswaps]; j<mptr[nswaps+1]; j++) {
         k = mind[j];
-        ASSERT(where[k] == 2);
         where[k] = other;
         INC_DEC(pwgts[other], pwgts[2], vwgt[k]);
         BNDDelete(nbnd, bndind, bndptr, k);
@@ -449,9 +425,6 @@ void FM_2WayNodeRefine1Sided(ctrl_t *ctrl, graph_t *graph, idx_t niter)
         }
       }
     }
-    IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->Aux2Tmr));
-
-    ASSERT(mincut == pwgts[2]);
 
     IFSET(ctrl->dbglvl, METIS_DBG_REFINE,
       printf("\tMinimum sep: %6"PRIDX" at %5"PRIDX", PWGTS: [%6"PRIDX" %6"PRIDX"], NBND: %6"PRIDX"\n", mincut, mincutorder, pwgts[0], pwgts[1], nbnd));
@@ -519,12 +492,9 @@ void FM_2WayNodeBalance(ctrl_t *ctrl, graph_t *graph)
   irandArrayPermute(nbnd, perm, nbnd, 1, &ctrl->rng_state);
   for (ii=0; ii<nbnd; ii++) {
     i = bndind[perm[ii]];
-    ASSERT(where[i] == 2);
     rpqInsert(queue, i, vwgt[i]-rinfo[i].edegrees[other]);
   }
 
-  ASSERT(CheckNodeBnd(graph, nbnd));
-  ASSERT(CheckNodePartitionParams(graph));
 
   /******************************************************
   * Get into the FM loop
@@ -550,8 +520,6 @@ void FM_2WayNodeBalance(ctrl_t *ctrl, graph_t *graph)
     if (pwgts[to]+vwgt[higain] > badmaxpwgt) 
       continue;
 
-    ASSERT(bndptr[higain] != -1);
-
     pwgts[2] -= gain;
 
     BNDDelete(nbnd, bndind, bndptr, higain);
@@ -571,7 +539,6 @@ void FM_2WayNodeBalance(ctrl_t *ctrl, graph_t *graph)
         rinfo[k].edegrees[to] += vwgt[higain];
       }
       else if (where[k] == other) { /* This vertex is pulled into the separator */
-        ASSERTP(bndptr[k] == -1, ("%"PRIDX" %"PRIDX" %"PRIDX"\n", k, bndptr[k], where[k]));
         BNDInsert(nbnd, bndind, bndptr, k);
 
         where[k] = 2;
@@ -584,7 +551,6 @@ void FM_2WayNodeBalance(ctrl_t *ctrl, graph_t *graph)
           if (where[kk] != 2) 
             edegrees[where[kk]] += vwgt[kk];
           else {
-            ASSERT(bndptr[kk] != -1);
             oldgain = vwgt[kk]-rinfo[kk].edegrees[other];
             rinfo[kk].edegrees[other] -= vwgt[k];
 

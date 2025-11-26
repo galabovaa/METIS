@@ -25,8 +25,6 @@ void InitSeparator(ctrl_t *ctrl, graph_t *graph, idx_t niparts)
   IFSET(ctrl->dbglvl, METIS_DBG_REFINE, ctrl->dbglvl -= METIS_DBG_REFINE);
   IFSET(ctrl->dbglvl, METIS_DBG_MOVEINFO, ctrl->dbglvl -= METIS_DBG_MOVEINFO);
 
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_startcputimer(ctrl->InitPartTmr));
-
   /* this is required for the cut-based part of the refinement */
   Setup2WayBalMultipliers(ctrl, graph, ntpwgts);
 
@@ -50,7 +48,6 @@ void InitSeparator(ctrl_t *ctrl, graph_t *graph, idx_t niparts)
   }
 
   IFSET(ctrl->dbglvl, METIS_DBG_IPART, printf("Initial Sep: %"PRIDX"\n", graph->mincut));
-  IFSET(ctrl->dbglvl, METIS_DBG_TIME, gk_stopcputimer(ctrl->InitPartTmr));
 
   ctrl->dbglvl = dbglvl;
 

@@ -127,8 +127,6 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
      than required as balance multipliers for 2 parts is sufficient. */
   ctrl->pijbm = rmalloc(nparts*ncon, "SetupCtrl: ctrl->pijbm");
 
-  InitRandom(ctrl->seed);
-
   IFSET(ctrl->dbglvl, METIS_DBG_INFO, PrintCtrl(ctrl));
 
   if (!CheckParams(ctrl)) {
