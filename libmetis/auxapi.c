@@ -11,22 +11,6 @@
 
 #include "metislib.h"
 
-
-/*************************************************************************/
-/*! This function frees memory that was allocated by METIS and returns
-    to the application.
-    
-    \param ptr points to the memory that was previously allocated by
-           METIS.
-*/
-/*************************************************************************/
-int METIS_Free(void *ptr)
-{
-  if (ptr != NULL) free(ptr);
-  return METIS_OK;
-}
-
-
 /*************************************************************************/
 /*! This function sets the default values for the options.
     

@@ -214,8 +214,6 @@ void InitGraph(graph_t *graph)
   graph->bndptr    = NULL;
   graph->bndind    = NULL;
   graph->nrinfo    = NULL;
-  graph->ckrinfo   = NULL;
-  graph->vkrinfo   = NULL;
 
   /* linked-list structure */
   graph->coarser   = NULL;
@@ -248,17 +246,9 @@ void FreeSData(graph_t *graph)
 /*************************************************************************/
 void FreeRData(graph_t *graph) 
 {
-
-  /* The following is for the -minconn and -contig to work properly in
-     the vol-refinement routines */
-  if ((void *)graph->ckrinfo == (void *)graph->vkrinfo)
-    graph->ckrinfo = NULL;
-
-
   /* free partition/refinement structure */
   gk_free((void **)&graph->where, &graph->pwgts, &graph->id, &graph->ed, 
-      &graph->bndptr, &graph->bndind, &graph->nrinfo, &graph->ckrinfo, 
-      &graph->vkrinfo, LTERM);
+      &graph->bndptr, &graph->bndind, &graph->nrinfo, LTERM);
 }
 
 

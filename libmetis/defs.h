@@ -26,20 +26,6 @@
                                            adjacent domains. This number will be
                                            adjusted as required. */
 
-/* Types of boundaries */
-#define BNDTYPE_REFINE          1       /* Used for k-way refinement-purposes */
-#define BNDTYPE_BALANCE         2       /* Used for k-way balancing purposes */
-
-/* Mode of optimization */
-#define OMODE_REFINE            1       /* Optimize the objective function */
-#define OMODE_BALANCE           2       /* Balance the subdomains */
-
-/* Types of vertex statues in the priority queue */
-#define VPQSTATUS_PRESENT      1       /* The vertex is in the queue */
-#define VPQSTATUS_EXTRACTED    2       /* The vertex has been extracted from the queue */
-#define VPQSTATUS_NOTPRESENT   3       /* The vertex is not present in the queue and
-                                          has not been extracted before */
-
 #define UNMATCHED		-1
 
 #define LARGENIPARTS		7	/* Number of random initial partitions */
