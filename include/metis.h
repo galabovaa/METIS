@@ -167,7 +167,7 @@ typedef __int64 int64_t;
 #define METIS_VER_SUBMINOR      1
 
 /* The maximum length of the options[] array */
-#define METIS_NOPTIONS          40
+#define METIS_NOPTIONS          13
 
 
 
@@ -220,19 +220,12 @@ typedef enum {
 
 /*! Options codes (i.e., options[]) */
 typedef enum {
-  METIS_OPTION_PTYPE,
-  METIS_OPTION_OBJTYPE,
   METIS_OPTION_CTYPE,
   METIS_OPTION_IPTYPE,
   METIS_OPTION_RTYPE,
   METIS_OPTION_DBGLVL,
-  METIS_OPTION_NIPARTS,
   METIS_OPTION_NITER,
-  METIS_OPTION_NCUTS,
   METIS_OPTION_SEED,
-  METIS_OPTION_ONDISK,
-  METIS_OPTION_MINCONN,
-  METIS_OPTION_CONTIG,
   METIS_OPTION_COMPRESS,
   METIS_OPTION_CCORDER,
   METIS_OPTION_PFACTOR,
@@ -240,8 +233,6 @@ typedef enum {
   METIS_OPTION_UFACTOR,
   METIS_OPTION_DROPEDGES,
   METIS_OPTION_NO2HOP,
-  METIS_OPTION_TWOHOP,
-  METIS_OPTION_FAST,
 } moptions_et;
 
 /*! Coarsening Schemes */
@@ -252,18 +243,13 @@ typedef enum {
 
 /*! Initial partitioning schemes */
 typedef enum {
-  METIS_IPTYPE_GROW,
-  METIS_IPTYPE_RANDOM,
   METIS_IPTYPE_EDGE,
   METIS_IPTYPE_NODE,
-  METIS_IPTYPE_METISRB
 } miptype_et;
 
 
 /*! Refinement schemes */
 typedef enum {
-  METIS_RTYPE_FM,
-  METIS_RTYPE_GREEDY,
   METIS_RTYPE_SEP2SIDED,
   METIS_RTYPE_SEP1SIDED
 } mrtype_et;
@@ -272,25 +258,12 @@ typedef enum {
 /*! Debug Levels */
 typedef enum {
   METIS_DBG_INFO       = 1,       /*!< Shows various diagnostic messages */
-  METIS_DBG_TIME       = 2,       /*!< Perform timing analysis */
-  METIS_DBG_COARSEN    = 4,	  /*!< Show the coarsening progress */
-  METIS_DBG_REFINE     = 8,	  /*!< Show the refinement progress */
-  METIS_DBG_IPART      = 16, 	  /*!< Show info on initial partitioning */
-  METIS_DBG_MOVEINFO   = 32, 	  /*!< Show info on vertex moves during refinement */
-  METIS_DBG_SEPINFO    = 64, 	  /*!< Show info on vertex moves during sep refinement */
-  METIS_DBG_CONNINFO   = 128,     /*!< Show info on minimization of subdomain connectivity */
-  METIS_DBG_CONTIGINFO = 256,     /*!< Show info on elimination of connected components */ 
-  METIS_DBG_MEMORY     = 2048     /*!< Show info related to wspace allocation */
+  METIS_DBG_COARSEN    = 2,	      /*!< Show the coarsening progress */
+  METIS_DBG_REFINE     = 4,	      /*!< Show the refinement progress */
+  METIS_DBG_IPART      = 8, 	    /*!< Show info on initial partitioning */
+  METIS_DBG_MOVEINFO   = 16, 	    /*!< Show info on vertex moves during refinement */
+  METIS_DBG_SEPINFO    = 32, 	    /*!< Show info on vertex moves during sep refinement */
 } mdbglvl_et;
-
-
-/* Types of objectives */
-typedef enum {
-  METIS_OBJTYPE_CUT,
-  METIS_OBJTYPE_VOL,
-  METIS_OBJTYPE_NODE
-} mobjtype_et;
-
 
 
 #endif  /* _METIS_H_ */

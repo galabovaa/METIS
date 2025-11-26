@@ -33,16 +33,6 @@ void AllocateWorkSpace(ctrl_t *ctrl, graph_t *graph)
 void FreeWorkSpace(ctrl_t *ctrl)
 {
   gk_mcoreDestroy(&ctrl->mcore, ctrl->dbglvl&METIS_DBG_INFO);
-
-  if (ctrl->minconn) {
-    iFreeMatrix(&(ctrl->adids),  ctrl->nparts, INIT_MAXNAD);
-    iFreeMatrix(&(ctrl->adwgts), ctrl->nparts, INIT_MAXNAD);
-
-    gk_free((void **)&ctrl->pvec1);
-    gk_free((void**)&ctrl->pvec2);
-    gk_free((void**)&ctrl->maxnads);
-    gk_free((void**)&ctrl->nads);
-  }
 }
 
 

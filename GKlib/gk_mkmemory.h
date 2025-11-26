@@ -66,26 +66,6 @@ TYPE *PRFX ## copy(size_t n, TYPE *a, TYPE *b)\
 {\
   return (TYPE *)memmove((void *)b, (void *)a, sizeof(TYPE)*n);\
 }\
-\
-\
-/*************************************************************************/\
-/*! The macro for gk_?AllocMatrix()-class of routines */\
-/**************************************************************************/\
-void PRFX ## FreeMatrix(TYPE ***r_matrix, size_t ndim1, size_t ndim2)\
-{\
-  gk_idx_t i;\
-  TYPE **matrix;\
-\
-  if (*r_matrix == NULL) \
-    return; \
-\
-  matrix = *r_matrix;\
-\
-  for (i=0; i<ndim1; i++) \
-    gk_free((void **)&(matrix[i]));\
-\
-  gk_free((void **)r_matrix);\
-}\
 
 
 #define GK_MKALLOC_PROTO(PRFX, TYPE)\
@@ -94,7 +74,6 @@ void PRFX ## FreeMatrix(TYPE ***r_matrix, size_t ndim1, size_t ndim2)\
   TYPE  *PRFX ## smalloc(size_t n, TYPE ival);\
   TYPE  *PRFX ## set(size_t n, TYPE val, TYPE *x);\
   TYPE  *PRFX ## copy(size_t n, TYPE *a, TYPE *b);\
-  void   PRFX ## FreeMatrix(TYPE ***r_matrix, size_t ndim1, size_t ndim2);\
 
 
 

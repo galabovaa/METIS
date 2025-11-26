@@ -26,7 +26,6 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
 
   switch (optype) {
     case METIS_OP_OMETIS:
-      ctrl->objtype  = GETOPTION(options, METIS_OPTION_OBJTYPE,  METIS_OBJTYPE_NODE);
       ctrl->rtype    = GETOPTION(options, METIS_OPTION_RTYPE,    METIS_RTYPE_SEP1SIDED);
       ctrl->iptype   = GETOPTION(options, METIS_OPTION_IPTYPE,   METIS_IPTYPE_EDGE);
       ctrl->nseps    = GETOPTION(options, METIS_OPTION_NSEPS,    1);
@@ -105,21 +104,6 @@ void PrintCtrl(ctrl_t *ctrl)
 
   printf(" Runtime parameters:\n");
 
-  printf("   Objective type: ");
-  switch (ctrl->objtype) {
-    case METIS_OBJTYPE_CUT:
-      printf("METIS_OBJTYPE_CUT\n");
-      break;
-    case METIS_OBJTYPE_VOL:
-      printf("METIS_OBJTYPE_VOL\n");
-      break;
-    case METIS_OBJTYPE_NODE:
-      printf("METIS_OBJTYPE_NODE\n");
-      break;
-    default:
-      printf("Unknown!\n");
-  }
-
   printf("   Coarsening type: ");
   switch (ctrl->ctype) {
     case METIS_CTYPE_RM:
@@ -134,20 +118,11 @@ void PrintCtrl(ctrl_t *ctrl)
 
   printf("   Initial partitioning type: ");
   switch (ctrl->iptype) {
-    case METIS_IPTYPE_GROW:
-      printf("METIS_IPTYPE_GROW\n");
-      break;
-    case METIS_IPTYPE_RANDOM:
-      printf("METIS_IPTYPE_RANDOM\n");
-      break;
     case METIS_IPTYPE_EDGE:
       printf("METIS_IPTYPE_EDGE\n");
       break;
     case METIS_IPTYPE_NODE:
       printf("METIS_IPTYPE_NODE\n");
-      break;
-    case METIS_IPTYPE_METISRB:
-      printf("METIS_IPTYPE_METISRB\n");
       break;
     default:
       printf("Unknown!\n");
@@ -155,12 +130,6 @@ void PrintCtrl(ctrl_t *ctrl)
 
   printf("   Refinement type: ");
   switch (ctrl->rtype) {
-    case METIS_RTYPE_FM:
-      printf("METIS_RTYPE_FM\n");
-      break;
-    case METIS_RTYPE_GREEDY:
-      printf("METIS_RTYPE_GREEDY\n");
-      break;
     case METIS_RTYPE_SEP2SIDED:
       printf("METIS_RTYPE_SEP2SIDED\n");
       break;
@@ -177,7 +146,6 @@ void PrintCtrl(ctrl_t *ctrl)
 
   printf("   Number of balancing constraints: %"PRIDX"\n", ctrl->ncon);
   printf("   Number of refinement iterations: %"PRIDX"\n", ctrl->niter);
-  printf("   Number of initial partitionings: %"PRIDX"\n", ctrl->nIparts);
   printf("   Random number seed: %"PRIDX"\n", ctrl->seed);
 
   if (ctrl->optype == METIS_OP_OMETIS) {
@@ -207,10 +175,6 @@ int CheckParams(ctrl_t *ctrl)
 
   switch (ctrl->optype) {
     case METIS_OP_OMETIS:
-      if (ctrl->objtype != METIS_OBJTYPE_NODE) {
-        IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect objective type.\n"));
-        return 0;
-      }
       if (ctrl->ctype != METIS_CTYPE_RM && ctrl->ctype != METIS_CTYPE_SHEM) {
         IFSET(dbglvl, METIS_DBG_INFO, printf("Input Error: Incorrect coarsening scheme.\n"));
         return 0;

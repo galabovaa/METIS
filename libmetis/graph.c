@@ -53,33 +53,15 @@ graph_t *SetupGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t ncon, idx_t *xadj,
   }
 
 
-  if (ctrl->objtype == METIS_OBJTYPE_VOL) { 
-    /* Setup the vsize */
-    if (vsize) {
-      graph->vsize      = vsize;
-      graph->free_vsize = 0;
-    }
-    else {
-      vsize = graph->vsize = ismalloc(nvtxs, 1);
-    }
-
-    /* Allocate memory for edge weights and initialize them to the sum of the vsize */
-    adjwgt = graph->adjwgt = imalloc(graph->nedges);
-    for (i=0; i<nvtxs; i++) {
-      for (j=xadj[i]; j<xadj[i+1]; j++)
-        adjwgt[j] = 1+vsize[i]+vsize[adjncy[j]];
-    }
+  /* setup the edge weights */
+  if (adjwgt) {
+    graph->adjwgt      = adjwgt;
+    graph->free_adjwgt = 0;
   }
-  else { /* For edgecut minimization */
-    /* setup the edge weights */
-    if (adjwgt) {
-      graph->adjwgt      = adjwgt;
-      graph->free_adjwgt = 0;
-    }
-    else {
-      adjwgt = graph->adjwgt = ismalloc(graph->nedges, 1);
-    }
+  else {
+    adjwgt = graph->adjwgt = ismalloc(graph->nedges, 1);
   }
+  
 
 
   /* setup various derived info */
