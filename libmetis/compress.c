@@ -30,9 +30,9 @@ graph_t *CompressGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t *xadj, idx_t *adjncy,
   ikv_t *keys;
   graph_t *graph=NULL;
 
-  mark = ismalloc(nvtxs, -1, "CompressGraph: mark");
-  map  = ismalloc(nvtxs, -1, "CompressGraph: map");
-  keys = ikvmalloc(nvtxs, "CompressGraph: keys");
+  mark = ismalloc(nvtxs, -1);
+  map  = ismalloc(nvtxs, -1);
+  keys = ikvmalloc(nvtxs);
 
   /* Compute a key for each adjacency list */
   for (i=0; i<nvtxs; i++) {
@@ -96,10 +96,10 @@ graph_t *CompressGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t *xadj, idx_t *adjncy,
     }
 
     /* Allocate memory for the compressed graph */
-    cxadj   = graph->xadj   = imalloc(cnvtxs+1, "CompressGraph: xadj");
-    cvwgt   = graph->vwgt   = ismalloc(cnvtxs, 0, "CompressGraph: vwgt");
-    cadjncy = graph->adjncy = imalloc(cnedges, "CompressGraph: adjncy");
-              graph->adjwgt = ismalloc(cnedges, 1, "CompressGraph: adjwgt");
+    cxadj   = graph->xadj   = imalloc(cnvtxs+1);
+    cvwgt   = graph->vwgt   = ismalloc(cnvtxs, 0);
+    cadjncy = graph->adjncy = imalloc(cnedges);
+              graph->adjwgt = ismalloc(cnedges, 1);
 
     /* Now go and compress the graph */
     iset(nvtxs, -1, mark);
@@ -157,7 +157,7 @@ graph_t *PruneGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t *xadj, idx_t *adjncy,
   idx_t *perm;
   graph_t *graph=NULL;
 
-  perm = imalloc(nvtxs, "PruneGraph: perm");
+  perm = imalloc(nvtxs);
 
   factor = factor*xadj[nvtxs]/nvtxs;
 
@@ -183,10 +183,10 @@ graph_t *PruneGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t *xadj, idx_t *adjncy,
     graph = CreateGraph();
 
     /* Allocate memory for the prunned graph*/
-    pxadj   = graph->xadj   = imalloc(pnvtxs+1, "PruneGraph: xadj");
-    pvwgt   = graph->vwgt   = imalloc(pnvtxs, "PruneGraph: vwgt");
-    padjncy = graph->adjncy = imalloc(pnedges, "PruneGraph: adjncy");
-              graph->adjwgt = ismalloc(pnedges, 1, "PruneGraph: adjwgt");
+    pxadj   = graph->xadj   = imalloc(pnvtxs+1);
+    pvwgt   = graph->vwgt   = imalloc(pnvtxs);
+    padjncy = graph->adjncy = imalloc(pnedges);
+              graph->adjwgt = ismalloc(pnedges, 1);
 
     pxadj[0] = pnedges = l = 0;
     for (i=0; i<nvtxs; i++) {

@@ -21,12 +21,12 @@ void Allocate2WayPartitionMemory(ctrl_t *ctrl, graph_t *graph)
   nvtxs = graph->nvtxs;
   ncon  = graph->ncon;
 
-  graph->pwgts  = imalloc(2*ncon, "Allocate2WayPartitionMemory: pwgts");
-  graph->where  = imalloc(nvtxs, "Allocate2WayPartitionMemory: where");
-  graph->bndptr = imalloc(nvtxs, "Allocate2WayPartitionMemory: bndptr");
-  graph->bndind = imalloc(nvtxs, "Allocate2WayPartitionMemory: bndind");
-  graph->id     = imalloc(nvtxs, "Allocate2WayPartitionMemory: id");
-  graph->ed     = imalloc(nvtxs, "Allocate2WayPartitionMemory: ed");
+  graph->pwgts  = imalloc(2*ncon);
+  graph->where  = imalloc(nvtxs);
+  graph->bndptr = imalloc(nvtxs);
+  graph->bndind = imalloc(nvtxs);
+  graph->id     = imalloc(nvtxs);
+  graph->ed     = imalloc(nvtxs);
 }
 
 

@@ -42,7 +42,7 @@ graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph)
     /* allocate memory for cmap, if it has not already been done due to
        multiple cuts */
     if (graph->cmap == NULL)
-      graph->cmap = imalloc(graph->nvtxs, "CoarsenGraph: graph->cmap");
+      graph->cmap = imalloc(graph->nvtxs);
 
     /* determine which matching scheme you will use */
     switch (ctrl->ctype) {
@@ -56,7 +56,7 @@ graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph)
           Match_SHEM(ctrl, graph);
         break;
       default:
-        gk_errexit(SIGERR, "Unknown ctype: %d\n", ctrl->ctype);
+        gk_errexit("Unknown ctype: %d\n", ctrl->ctype);
     }
 
     graph = graph->coarser;
@@ -102,7 +102,7 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels)
     /* allocate memory for cmap, if it has not already been done due to
        multiple cuts */
     if (graph->cmap == NULL)
-      graph->cmap = imalloc(graph->nvtxs, "CoarsenGraph: graph->cmap");
+      graph->cmap = imalloc(graph->nvtxs);
 
     /* determine which matching scheme you will use */
     switch (ctrl->ctype) {
@@ -116,7 +116,7 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels)
           Match_SHEM(ctrl, graph);
         break;
       default:
-        gk_errexit(SIGERR, "Unknown ctype: %d\n", ctrl->ctype);
+        gk_errexit("Unknown ctype: %d\n", ctrl->ctype);
     }
 
     graph = graph->coarser;
@@ -871,15 +871,15 @@ graph_t *SetupCoarseGraph(graph_t *graph, idx_t cnvtxs, int dovsize)
            detection by adding ahead of time the self-loop. That optimization
            requires a +1 adjncy/adjwgt array for the limit case where the 
            coarser graph is of the same size of the previous graph. */
-  cgraph->xadj     = imalloc(cnvtxs+1, "SetupCoarseGraph: xadj");
-  cgraph->adjncy   = imalloc(graph->nedges+1,   "SetupCoarseGraph: adjncy");
-  cgraph->adjwgt   = imalloc(graph->nedges+1,   "SetupCoarseGraph: adjwgt");
-  cgraph->vwgt     = imalloc(cgraph->ncon*cnvtxs, "SetupCoarseGraph: vwgt");
-  cgraph->tvwgt    = imalloc(cgraph->ncon, "SetupCoarseGraph: tvwgt");
-  cgraph->invtvwgt = rmalloc(cgraph->ncon, "SetupCoarseGraph: invtvwgt");
+  cgraph->xadj     = imalloc(cnvtxs+1);
+  cgraph->adjncy   = imalloc(graph->nedges+1);
+  cgraph->adjwgt   = imalloc(graph->nedges+1);
+  cgraph->vwgt     = imalloc(cgraph->ncon*cnvtxs);
+  cgraph->tvwgt    = imalloc(cgraph->ncon);
+  cgraph->invtvwgt = rmalloc(cgraph->ncon);
 
   if (dovsize)
-    cgraph->vsize = imalloc(cnvtxs,   "SetupCoarseGraph: vsize");
+    cgraph->vsize = imalloc(cnvtxs);
 
   return cgraph;
 }
@@ -893,7 +893,7 @@ graph_t *SetupCoarseGraph(graph_t *graph, idx_t cnvtxs, int dovsize)
 void ReAdjustMemory(ctrl_t *ctrl, graph_t *graph, graph_t *cgraph) 
 {
   if (cgraph->nedges > 10000 && cgraph->nedges < 0.9*graph->nedges) {
-    cgraph->adjncy = irealloc(cgraph->adjncy, cgraph->nedges, "ReAdjustMemory: adjncy");
-    cgraph->adjwgt = irealloc(cgraph->adjwgt, cgraph->nedges, "ReAdjustMemory: adjwgt");
+    cgraph->adjncy = irealloc(cgraph->adjncy, cgraph->nedges);
+    cgraph->adjwgt = irealloc(cgraph->adjwgt, cgraph->nedges);
   }
 }

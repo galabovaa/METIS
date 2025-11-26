@@ -16,7 +16,6 @@
 #define _LIBMETIS_DEFS_H_
 
 #define METISTITLE              "METIS 5.2.1 Copyright 1998-22, Regents of the University of Minnesota\n"
-#define MAXLINE			1280000
 
 #define HTLENGTH		((1<<13)-1)
 
@@ -35,10 +34,6 @@
 
 #define MMDSWITCH		        120
 
-/* Default ufactors for the various operational modes */
-#define PMETIS_DEFAULT_UFACTOR          1
-#define MCPMETIS_DEFAULT_UFACTOR        10
-#define KMETIS_DEFAULT_UFACTOR          30
 #define OMETIS_DEFAULT_UFACTOR          200
 
 #endif

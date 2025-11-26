@@ -19,11 +19,6 @@ void AllocateWorkSpace(ctrl_t *ctrl, graph_t *graph)
   size_t coresize;
 
   switch (ctrl->optype) {
-    case METIS_OP_PMETIS:
-      coresize = 3*(graph->nvtxs+1)*sizeof(idx_t) + 
-                 5*(ctrl->nparts+1)*graph->ncon*sizeof(idx_t) + 
-                 5*(ctrl->nparts+1)*graph->ncon*sizeof(real_t);
-      break;
     default:
       coresize = 4*(graph->nvtxs+1)*sizeof(idx_t) + 
                  5*(ctrl->nparts+1)*graph->ncon*sizeof(idx_t) + 

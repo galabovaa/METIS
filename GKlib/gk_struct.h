@@ -61,17 +61,6 @@ typedef struct gk_mcore_t {
   size_t nmops;         /*!< The number of maop_t entries that have been allocated */
   size_t cmop;          /*!< Index of the first free location in maops */
   gk_mop_t *mops;       /*!< The array recording the maop_t operations */
-
-  /* These are for keeping various statistics for wspacemalloc */
-  size_t num_callocs;   /*!< The number of core mallocs */
-  size_t num_hallocs;   /*!< The number of heap mallocs */
-  size_t size_callocs;  /*!< The total # of bytes in core mallocs */
-  size_t size_hallocs;  /*!< The total # of bytes in heap mallocs */
-  size_t cur_callocs;   /*!< The current # of bytes in core mallocs */
-  size_t cur_hallocs;   /*!< The current # of bytes in heap mallocs */
-  size_t max_callocs;   /*!< The maximum # of bytes in core mallocs at any given time */
-  size_t max_hallocs;   /*!< The maximum # of bytes in heap mallocs at any given time */
-
 } gk_mcore_t;
 
 #endif

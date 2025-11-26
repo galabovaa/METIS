@@ -15,7 +15,7 @@
 /*************************************************************************/\
 /*! The macro for gk_?malloc()-class of routines */\
 /**************************************************************************/\
-TYPE *PRFX ## malloc(size_t n, char *msg)\
+TYPE *PRFX ## malloc(size_t n)\
 {\
   return (TYPE *)malloc(sizeof(TYPE)*n);\
 }\
@@ -24,7 +24,7 @@ TYPE *PRFX ## malloc(size_t n, char *msg)\
 /*************************************************************************/\
 /*! The macro for gk_?realloc()-class of routines */\
 /**************************************************************************/\
-TYPE *PRFX ## realloc(TYPE *ptr, size_t n, char *msg)\
+TYPE *PRFX ## realloc(TYPE *ptr, size_t n)\
 {\
   return (TYPE *)realloc((void *)ptr, sizeof(TYPE)*n);\
 }\
@@ -33,7 +33,7 @@ TYPE *PRFX ## realloc(TYPE *ptr, size_t n, char *msg)\
 /*************************************************************************/\
 /*! The macro for gk_?smalloc()-class of routines */\
 /**************************************************************************/\
-TYPE *PRFX ## smalloc(size_t n, TYPE ival, char *msg)\
+TYPE *PRFX ## smalloc(size_t n, TYPE ival)\
 {\
   TYPE *ptr;\
 \
@@ -89,9 +89,9 @@ void PRFX ## FreeMatrix(TYPE ***r_matrix, size_t ndim1, size_t ndim2)\
 
 
 #define GK_MKALLOC_PROTO(PRFX, TYPE)\
-  TYPE  *PRFX ## malloc(size_t n, char *msg);\
-  TYPE  *PRFX ## realloc(TYPE *ptr, size_t n, char *msg);\
-  TYPE  *PRFX ## smalloc(size_t n, TYPE ival, char *msg);\
+  TYPE  *PRFX ## malloc(size_t n);\
+  TYPE  *PRFX ## realloc(TYPE *ptr, size_t n);\
+  TYPE  *PRFX ## smalloc(size_t n, TYPE ival);\
   TYPE  *PRFX ## set(size_t n, TYPE val, TYPE *x);\
   TYPE  *PRFX ## copy(size_t n, TYPE *a, TYPE *b);\
   void   PRFX ## FreeMatrix(TYPE ***r_matrix, size_t ndim1, size_t ndim2);\

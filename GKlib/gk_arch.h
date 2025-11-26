@@ -26,11 +26,6 @@
 #endif
 
 
-#ifdef HAVE_EXECINFO_H
-#include <execinfo.h>
-#endif
-
-
 #ifdef __MSC__ 
   #include "gk_ms_stdint.h"
   #include "gk_ms_inttypes.h"

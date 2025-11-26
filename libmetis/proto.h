@@ -154,7 +154,6 @@ void Project2WayNodePartition(ctrl_t *ctrl, graph_t *graph);
 /* util.c */
 idx_t iargmax_nrm(size_t n, idx_t *x, real_t *y);
 idx_t iargmax2_nrm(size_t n, idx_t *x, real_t *y);
-int metis_rcode(int sigrval);
 
 
 

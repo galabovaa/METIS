@@ -42,11 +42,11 @@ graph_t *SetupGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t ncon, idx_t *xadj,
     graph->free_vwgt = 0;
   }
   else {
-    vwgt = graph->vwgt = ismalloc(ncon*nvtxs, 1, "SetupGraph: vwgt");
+    vwgt = graph->vwgt = ismalloc(ncon*nvtxs, 1);
   }
 
-  graph->tvwgt    = imalloc(ncon, "SetupGraph: tvwgts");
-  graph->invtvwgt = rmalloc(ncon, "SetupGraph: invtvwgts");
+  graph->tvwgt    = imalloc(ncon);
+  graph->invtvwgt = rmalloc(ncon);
   for (i=0; i<ncon; i++) {
     graph->tvwgt[i]    = isum(nvtxs, vwgt+i, ncon);
     graph->invtvwgt[i] = 1.0/(graph->tvwgt[i] > 0 ? graph->tvwgt[i] : 1);
@@ -60,11 +60,11 @@ graph_t *SetupGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t ncon, idx_t *xadj,
       graph->free_vsize = 0;
     }
     else {
-      vsize = graph->vsize = ismalloc(nvtxs, 1, "SetupGraph: vsize");
+      vsize = graph->vsize = ismalloc(nvtxs, 1);
     }
 
     /* Allocate memory for edge weights and initialize them to the sum of the vsize */
-    adjwgt = graph->adjwgt = imalloc(graph->nedges, "SetupGraph: adjwgt");
+    adjwgt = graph->adjwgt = imalloc(graph->nedges);
     for (i=0; i<nvtxs; i++) {
       for (j=xadj[i]; j<xadj[i+1]; j++)
         adjwgt[j] = 1+vsize[i]+vsize[adjncy[j]];
@@ -77,7 +77,7 @@ graph_t *SetupGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t ncon, idx_t *xadj,
       graph->free_adjwgt = 0;
     }
     else {
-      adjwgt = graph->adjwgt = ismalloc(graph->nedges, 1, "SetupGraph: adjwgt");
+      adjwgt = graph->adjwgt = ismalloc(graph->nedges, 1);
     }
   }
 
@@ -85,7 +85,7 @@ graph_t *SetupGraph(ctrl_t *ctrl, idx_t nvtxs, idx_t ncon, idx_t *xadj,
   /* setup various derived info */
   SetupGraph_tvwgt(graph);
 
-  if (ctrl->optype == METIS_OP_PMETIS || ctrl->optype == METIS_OP_OMETIS) 
+  if (ctrl->optype == METIS_OP_OMETIS) 
     SetupGraph_label(graph);
 
 
@@ -101,9 +101,9 @@ void SetupGraph_tvwgt(graph_t *graph)
   idx_t i;
 
   if (graph->tvwgt == NULL) 
-    graph->tvwgt  = imalloc(graph->ncon, "SetupGraph_tvwgt: tvwgt");
+    graph->tvwgt  = imalloc(graph->ncon);
   if (graph->invtvwgt == NULL) 
-    graph->invtvwgt = rmalloc(graph->ncon, "SetupGraph_tvwgt: invtvwgt");
+    graph->invtvwgt = rmalloc(graph->ncon);
 
   for (i=0; i<graph->ncon; i++) {
     graph->tvwgt[i]    = isum(graph->nvtxs, graph->vwgt+i, graph->ncon);
@@ -120,7 +120,7 @@ void SetupGraph_label(graph_t *graph)
   idx_t i;
 
   if (graph->label == NULL)
-    graph->label = imalloc(graph->nvtxs, "SetupGraph_label: label");
+    graph->label = imalloc(graph->nvtxs);
 
   for (i=0; i<graph->nvtxs; i++)
     graph->label[i] = i;
@@ -141,16 +141,16 @@ graph_t *SetupSplitGraph(graph_t *graph, idx_t snvtxs, idx_t snedges)
   sgraph->ncon   = graph->ncon;
 
   /* Allocate memory for the split graph */
-  sgraph->xadj        = imalloc(snvtxs+1, "SetupSplitGraph: xadj");
-  sgraph->vwgt        = imalloc(sgraph->ncon*snvtxs, "SetupSplitGraph: vwgt");
-  sgraph->adjncy      = imalloc(snedges,  "SetupSplitGraph: adjncy");
-  sgraph->adjwgt      = imalloc(snedges,  "SetupSplitGraph: adjwgt");
-  sgraph->label	      = imalloc(snvtxs,   "SetupSplitGraph: label");
-  sgraph->tvwgt       = imalloc(sgraph->ncon, "SetupSplitGraph: tvwgt");
-  sgraph->invtvwgt    = rmalloc(sgraph->ncon, "SetupSplitGraph: invtvwgt");
+  sgraph->xadj        = imalloc(snvtxs+1);
+  sgraph->vwgt        = imalloc(sgraph->ncon*snvtxs);
+  sgraph->adjncy      = imalloc(snedges);
+  sgraph->adjwgt      = imalloc(snedges);
+  sgraph->label	      = imalloc(snvtxs);
+  sgraph->tvwgt       = imalloc(sgraph->ncon);
+  sgraph->invtvwgt    = rmalloc(sgraph->ncon);
 
   if (graph->vsize)
-    sgraph->vsize     = imalloc(snvtxs,   "SetupSplitGraph: vsize");
+    sgraph->vsize     = imalloc(snvtxs);
 
   return sgraph;
 }

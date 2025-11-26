@@ -90,7 +90,6 @@ typedef struct ctrl_t {
   idx_t seed;                   /* The seed for the random number generator */
   idx_t ncuts;                  /* The number of different partitionings to compute */
   idx_t niter;                  /* The number of iterations during each refinement */
-  idx_t numflag;                /* The user-supplied numflag for the graph */
   idx_t dropedges;              /* Indicates if edges will be randomly dropped during coarsening */
   idx_t *maxvwgt;		/* The maximum allowed weight for a vertex */
 

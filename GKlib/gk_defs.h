@@ -15,9 +15,5 @@
 #define GK_MOPT_CORE            2
 #define GK_MOPT_HEAP            3
 
-/* GKlib signals to standard signal mapping */
-#define SIGMEM  SIGABRT
-#define SIGERR  SIGTERM
-
 
 #endif

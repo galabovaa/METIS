@@ -44,7 +44,7 @@ void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph)
           FM_2WayNodeRefine1Sided(ctrl, graph, ctrl->niter); 
           break;
         default:
-          gk_errexit(SIGERR, "Unknown rtype of %d\n", ctrl->rtype);
+          gk_errexit("Unknown rtype of %d\n", ctrl->rtype);
       }
 
     } while (graph != orggraph);
@@ -62,10 +62,10 @@ void Allocate2WayNodePartitionMemory(ctrl_t *ctrl, graph_t *graph)
 
   nvtxs = graph->nvtxs;
 
-  graph->pwgts  = imalloc(3, "Allocate2WayNodePartitionMemory: pwgts");
-  graph->where  = imalloc(nvtxs, "Allocate2WayNodePartitionMemory: where");
-  graph->bndptr = imalloc(nvtxs, "Allocate2WayNodePartitionMemory: bndptr");
-  graph->bndind = imalloc(nvtxs, "Allocate2WayNodePartitionMemory: bndind");
+  graph->pwgts  = imalloc(3);
+  graph->where  = imalloc(nvtxs);
+  graph->bndptr = imalloc(nvtxs);
+  graph->bndind = imalloc(nvtxs);
   graph->nrinfo = (nrinfo_t *)malloc(nvtxs*sizeof(nrinfo_t));
 }
 

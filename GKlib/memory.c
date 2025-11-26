@@ -15,9 +15,6 @@ can be used to define other memory allocation routines.
 
 #include <GKlib.h>
 
-/*************************************************************************
-* This function is my wrapper around free, allows multiple pointers    
-**************************************************************************/
 void gk_free(void **ptr1)
 {
   free(*ptr1);

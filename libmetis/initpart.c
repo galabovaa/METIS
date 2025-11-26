@@ -44,7 +44,7 @@ void InitSeparator(ctrl_t *ctrl, graph_t *graph, idx_t niparts)
       break;
 
     default:
-      gk_errexit(SIGERR, "Unknown iptype of %"PRIDX"\n", ctrl->iptype);
+      gk_errexit("Unknown iptype of %"PRIDX"\n", ctrl->iptype);
   }
 
   IFSET(ctrl->dbglvl, METIS_DBG_IPART, printf("Initial Sep: %"PRIDX"\n", graph->mincut));
@@ -296,12 +296,12 @@ void GrowBisectionNode(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts,
 
 
   /* Allocate refinement memory. Allocate sufficient memory for both edge and node */
-  graph->pwgts  = imalloc(3, "GrowBisectionNode: pwgts");
-  graph->where  = imalloc(nvtxs, "GrowBisectionNode: where");
-  graph->bndptr = imalloc(nvtxs, "GrowBisectionNode: bndptr");
-  graph->bndind = imalloc(nvtxs, "GrowBisectionNode: bndind");
-  graph->id     = imalloc(nvtxs, "GrowBisectionNode: id");
-  graph->ed     = imalloc(nvtxs, "GrowBisectionNode: ed");
+  graph->pwgts  = imalloc(3);
+  graph->where  = imalloc(nvtxs);
+  graph->bndptr = imalloc(nvtxs);
+  graph->bndind = imalloc(nvtxs);
+  graph->id     = imalloc(nvtxs);
+  graph->ed     = imalloc(nvtxs);
   graph->nrinfo = (nrinfo_t *)malloc(nvtxs*sizeof(nrinfo_t));
   
   where  = graph->where;

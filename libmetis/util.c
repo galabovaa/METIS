@@ -56,23 +56,4 @@ idx_t iargmax2_nrm(size_t n, idx_t *x, real_t *y)
   return max2;
 }
 
-/*************************************************************************/
-/*! converts a signal code into a Metis return code 
- */
-/*************************************************************************/
-int metis_rcode(int sigrval)
-{
-  switch (sigrval) {
-    case 0:
-      return METIS_OK;
-      break;
-    case SIGMEM:
-      return METIS_ERROR_MEMORY;
-      break;
-    default:
-      return METIS_ERROR;
-      break;
-  }
-}
-
 

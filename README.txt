@@ -22,3 +22,5 @@ Galabova and Filippo Zanetti.
   potential issues with thread safety. This required to 
   remove `gkmcore` in GKlib/memory.c and to remove the signal 
   handling in GKlib/error.c.
+
+- Any function not needed to call METIS_NodeND has been removed.
