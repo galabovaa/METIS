@@ -79,8 +79,6 @@ void InitGraph(graph_t *graph);
 void FreeSData(graph_t *graph);
 void FreeRData(graph_t *graph);
 void FreeGraph(graph_t **graph);
-void graph_WriteToDisk(ctrl_t *ctrl, graph_t *graph);
-void graph_ReadFromDisk(ctrl_t *ctrl, graph_t *graph);
 
 
 /* initpart.c */

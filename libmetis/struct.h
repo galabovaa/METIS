@@ -59,10 +59,6 @@ typedef struct graph_t {
   /* Node refinement information */
   nrinfo_t *nrinfo;
 
-  /* various fields for out-of-core processing */
-  int gID;
-  int ondisk;
-
   /* keep track of the dropped edgewgt */
   idx_t droppedewgt;
 
@@ -85,7 +81,6 @@ typedef struct ctrl_t {
   idx_t CoarsenTo;		/* The # of vertices in the coarsest graph */
   idx_t nIparts;                /* The number of initial partitions to compute */
   idx_t no2hop;                 /* Indicates if 2-hop matching will be used */
-  idx_t ondisk;                 /* Indicates out-of-core execution */
   idx_t minconn;                /* Indicates if the subdomain connectivity will be minimized */
   idx_t contig;                 /* Indicates if contiguous partitions are required */
   idx_t nseps;			/* The number of separators to be found during multiple bisections */
@@ -124,9 +119,7 @@ typedef struct ctrl_t {
   idx_t *pvec1, *pvec2;         /* Auxiliary nparts-size vectors for efficiency */
 
   unsigned rng_state;
-
-  /* ondisk related info */
-  pid_t pid;            /*!< The pid of the running process */
+  
 } ctrl_t;
 
 

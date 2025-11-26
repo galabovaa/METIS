@@ -24,8 +24,6 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   
   memset((void *)ctrl, 0, sizeof(ctrl_t));
 
-  ctrl->pid = getpid();
-
   switch (optype) {
     case METIS_OP_PMETIS:
       ctrl->objtype = GETOPTION(options, METIS_OPTION_OBJTYPE, METIS_OBJTYPE_CUT);
@@ -81,7 +79,6 @@ ctrl_t *SetupCtrl(moptype_et optype, idx_t *options, idx_t ncon, idx_t nparts,
   /* common options */
   ctrl->ctype     = GETOPTION(options, METIS_OPTION_CTYPE, METIS_CTYPE_SHEM);
   ctrl->no2hop    = GETOPTION(options, METIS_OPTION_NO2HOP, 0);
-  ctrl->ondisk    = GETOPTION(options, METIS_OPTION_ONDISK, 0);
   ctrl->seed      = GETOPTION(options, METIS_OPTION_SEED, -1);
   ctrl->dbglvl    = GETOPTION(options, METIS_OPTION_DBGLVL, 0);
   ctrl->numflag   = GETOPTION(options, METIS_OPTION_NUMBERING, 0);
@@ -229,7 +226,6 @@ void PrintCtrl(ctrl_t *ctrl)
 
   printf("   Perform a 2-hop matching: %s\n", (ctrl->no2hop ? "No" : "Yes"));
 
-  printf("   On disk storage: %s\n", (ctrl->ondisk ? "Yes" : "No"));
   printf("   Drop edges: %s\n", (ctrl->dropedges ? "Yes" : "No"));
 
   printf("   Number of balancing constraints: %"PRIDX"\n", ctrl->ncon);

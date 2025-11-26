@@ -59,8 +59,6 @@ graph_t *CoarsenGraph(ctrl_t *ctrl, graph_t *graph)
         gk_errexit(SIGERR, "Unknown ctype: %d\n", ctrl->ctype);
     }
 
-    graph_WriteToDisk(ctrl, graph);
-
     graph = graph->coarser;
     eqewgts = 0;
     level++;
@@ -120,8 +118,6 @@ graph_t *CoarsenGraphNlevels(ctrl_t *ctrl, graph_t *graph, idx_t nlevels)
       default:
         gk_errexit(SIGERR, "Unknown ctype: %d\n", ctrl->ctype);
     }
-
-    graph_WriteToDisk(ctrl, graph);
 
     graph = graph->coarser;
     eqewgts = 0;

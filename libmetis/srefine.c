@@ -31,8 +31,6 @@ void Refine2WayNode(ctrl_t *ctrl, graph_t *orggraph, graph_t *graph)
     do {
       graph = graph->finer;
 
-      graph_ReadFromDisk(ctrl, graph);
-
       Project2WayNodePartition(ctrl, graph);
 
       FM_2WayNodeBalance(ctrl, graph); 
