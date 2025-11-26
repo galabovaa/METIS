@@ -22,15 +22,6 @@
 /**************************************************************************/\
 #define GK_MKRANDOM(FPRFX, RNGT, VALT)\
 /*************************************************************************/\
-/*! Initializes the generator */ \
-/**************************************************************************/\
-void FPRFX ## srand(RNGT seed) \
-{\
-  gk_randinit((uint64_t) seed);\
-}\
-\
-\
-/*************************************************************************/\
 /*! Returns a random number */ \
 /**************************************************************************/\
 RNGT FPRFX ## rand(unsigned *rng_state) \
@@ -88,36 +79,11 @@ void FPRFX ## randArrayPermute(RNGT n, VALT *p, RNGT nshuffles, int flag, unsign
     }\
   }\
 }\
-\
-\
-/*************************************************************************/\
-/*! Randomly permutes the elements of an array p[]. \
-    flag == 1, p[i] = i prior to permutation, \
-    flag == 0, p[] is not initialized. */\
-/**************************************************************************/\
-void FPRFX ## randArrayPermuteFine(RNGT n, VALT *p, int flag, unsigned *rng_state)\
-{\
-  RNGT i, v;\
-  VALT tmp;\
-\
-  if (flag == 1) {\
-    for (i=0; i<n; i++)\
-      p[i] = (VALT)i;\
-  }\
-\
-  for (i=0; i<n; i++) {\
-    v = FPRFX ## randInRange(n, rng_state);\
-    gk_SWAP(p[i], p[v], tmp);\
-  }\
-}\
 
 
 #define GK_MKRANDOM_PROTO(FPRFX, RNGT, VALT)\
-  void FPRFX ## srand(RNGT seed); \
   RNGT FPRFX ## rand(unsigned *rng_state); \
   RNGT FPRFX ## randInRange(RNGT max, unsigned *rng_state); \
   void FPRFX ## randArrayPermute(RNGT n, VALT *p, RNGT nshuffles, int flag, unsigned *rng_state);\
-  void FPRFX ## randArrayPermuteFine(RNGT n, VALT *p, int flag, unsigned *rng_state);\
-
 
 #endif

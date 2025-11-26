@@ -43,8 +43,10 @@ void FreeWorkSpace(ctrl_t *ctrl)
     iFreeMatrix(&(ctrl->adids),  ctrl->nparts, INIT_MAXNAD);
     iFreeMatrix(&(ctrl->adwgts), ctrl->nparts, INIT_MAXNAD);
 
-    gk_free((void **)&ctrl->pvec1, &ctrl->pvec2, 
-        &ctrl->maxnads, &ctrl->nads, LTERM);
+    gk_free((void **)&ctrl->pvec1);
+    gk_free((void**)&ctrl->pvec2);
+    gk_free((void**)&ctrl->maxnads);
+    gk_free((void**)&ctrl->nads);
   }
 }
 

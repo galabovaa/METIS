@@ -163,7 +163,7 @@ graph_t *CreateGraph(void)
 {
   graph_t *graph;
 
-  graph = (graph_t *)gk_malloc(sizeof(graph_t), "CreateGraph: graph");
+  graph = (graph_t *)malloc(sizeof(graph_t));
 
   InitGraph(graph);
 
@@ -228,15 +228,15 @@ void FreeSData(graph_t *graph)
 {
   /* free graph structure */
   if (graph->free_xadj)
-    gk_free((void **)&graph->xadj, LTERM);
+    gk_free((void **)&graph->xadj);
   if (graph->free_vwgt)
-    gk_free((void **)&graph->vwgt, LTERM);
+    gk_free((void **)&graph->vwgt);
   if (graph->free_vsize)
-    gk_free((void **)&graph->vsize, LTERM);
+    gk_free((void **)&graph->vsize);
   if (graph->free_adjncy)
-    gk_free((void **)&graph->adjncy, LTERM);
+    gk_free((void **)&graph->adjncy);
   if (graph->free_adjwgt)
-    gk_free((void **)&graph->adjwgt, LTERM);
+    gk_free((void **)&graph->adjwgt);
 }
 
 
@@ -246,8 +246,13 @@ void FreeSData(graph_t *graph)
 void FreeRData(graph_t *graph) 
 {
   /* free partition/refinement structure */
-  gk_free((void **)&graph->where, &graph->pwgts, &graph->id, &graph->ed, 
-      &graph->bndptr, &graph->bndind, &graph->nrinfo, LTERM);
+  gk_free((void **)&graph->where);
+  gk_free((void**)&graph->pwgts);
+  gk_free((void**)&graph->id);
+  gk_free((void**)&graph->ed);
+  gk_free((void**)&graph->bndptr);
+  gk_free((void**)&graph->bndind);
+  gk_free((void**)&graph->nrinfo);
 }
 
 
@@ -266,8 +271,11 @@ void FreeGraph(graph_t **r_graph)
   /* free the partition/refinement fields */
   FreeRData(graph);
 
-  gk_free((void **)&graph->tvwgt, &graph->invtvwgt, &graph->label, 
-      &graph->cmap, &graph, LTERM);
+  gk_free((void **)&graph->tvwgt);
+  gk_free((void**)&graph->invtvwgt);
+  gk_free((void**)&graph->label);
+  gk_free((void**)&graph->cmap);
+  gk_free((void**)&graph);
 
   *r_graph = NULL;
 }

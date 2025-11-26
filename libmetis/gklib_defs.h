@@ -36,7 +36,6 @@ GK_MKALLOC_PROTO(rkv, rkv_t)
 GK_MKPQUEUE_PROTO(ipq, ipq_t, idx_t, idx_t)
 GK_MKPQUEUE_PROTO(rpq, rpq_t, real_t, idx_t)
 GK_MKRANDOM_PROTO(i, idx_t, idx_t)
-GK_MKARRAY2CSR_PROTO(i, idx_t)
 void isorti(size_t n, idx_t *base);
 void isortd(size_t n, idx_t *base);
 void rsorti(size_t n, real_t *base);

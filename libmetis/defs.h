@@ -18,8 +18,6 @@
 #define METISTITLE              "METIS 5.2.1 Copyright 1998-22, Regents of the University of Minnesota\n"
 #define MAXLINE			1280000
 
-#define LTERM			(void **) 0	/* List terminator for gk_free() */
-
 #define HTLENGTH		((1<<13)-1)
 
 #define INIT_MAXNAD             200     /* Initial number of maximum number of 

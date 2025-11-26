@@ -40,39 +40,19 @@
 #include <limits.h>
 #include <signal.h>
 #include <setjmp.h>
-#include <assert.h>
 #include <sys/stat.h>
-
-#if defined(USE_PCRE) && defined(HAVE_PCREPOSIX_H)
-  #include <pcreposix.h>
-#elif defined(HAVE_REGEX_H)
-  #include <regex.h>
-#else
-  #include "gkregex.h"
-#endif
-
-
-#if defined(__OPENMP__) 
-#include <omp.h>
-#endif
-
-
 
 
 #include <gk_types.h>
 #include <gk_struct.h>
-#include <gk_externs.h>
 #include <gk_defs.h>
 #include <gk_macros.h>
-#include <gk_getopt.h>
 
 #include <gk_mksort.h>
 #include <gk_mkblas.h>
 #include <gk_mkmemory.h>
 #include <gk_mkpqueue.h>
-#include <gk_mkpqueue2.h>
 #include <gk_mkrandom.h>
-#include <gk_mkutils.h>
 
 #include <gk_proto.h>
 
